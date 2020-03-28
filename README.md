@@ -36,3 +36,7 @@ Otherwise you will get:
 >>> import myModule
 ImportError: dynamic module does not define init function (PyInit_whateverYouCalledYourModule)
 ```
+
+### `-std=c++14` ###
+
+Right now the `pybind11` cmake interface library adds `C++14` as a flag. This should be circumvented somehow in the future.

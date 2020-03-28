@@ -16,6 +16,13 @@ target_include_directories(TestUtil INTERFACE TestUtil/include)
 set(Catch2_FOUND TRUE)
 set(Catch2_INCLUDE_DIRS ${Catch2_SOURCE_DIR}/single_include)
 
+
+include(../cmake/GetPybind11.cmake)
+getpybind11(VERSION 2.4.3)
+
+pybind11_add_module(pybind11_examples pybind11_examples.cpp SYSTEM)
+target_compile_options(pybind11 INTERFACE -fsized-deallocation)
+
 # include(cmake/CodeCoverage.cmake)
 
 # # Defines create_catch2_test

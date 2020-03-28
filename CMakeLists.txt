@@ -22,30 +22,24 @@ include(cmake/Sanitizers.cmake)
 # Set the sanitizer options on project_options
 enable_sanitizers(frontend.py_options)
 
-# include(FetchContent)
-# FetchContent_Declare(
-#   Parser
-#   GIT_REPOSITORY git@github.com:srydell/Parser.git
-#   GIT_TAG master)
-# FetchContent_MakeAvailable(Parser)
+include(FetchContent)
+FetchContent_Declare(
+  Parser
+  GIT_REPOSITORY git@github.com:srydell/Parser.git
+  GIT_TAG master)
+FetchContent_MakeAvailable(Parser)
 
-include(cmake/GetPybind11.cmake)
-getpybind11(VERSION 2.4.3)
+add_library(Frontend.py src/Frontend/Python/frontend.cpp)
+target_link_libraries(Frontend.py PRIVATE Tolc::Parser frontend.py_options
+                                          frontend.py_warnings)
 
-pybind11_add_module(frontend src/Frontend.py.cpp SYSTEM)
-target_compile_options(pybind11 INTERFACE -fsized-deallocation)
-
-set(PYBIND11_CPP_STANDARD -std=c++1z)
-# target_link_libraries(frontend PRIVATE Parser frontend.py_options
-                                          # frontend.py_warnings)
-
-target_include_directories(frontend PRIVATE src)
-target_include_directories(frontend PUBLIC include)
-# set_target_properties(frontend PROPERTIES CXX_STANDARD_REQUIRED ON
-#                                              CXX_EXTENSIONS OFF CXX_STANDARD 17)
+target_include_directories(Frontend.py PRIVATE src)
+target_include_directories(Frontend.py PUBLIC include)
+set_target_properties(Frontend.py PROPERTIES CXX_STANDARD_REQUIRED ON
+                                             CXX_EXTENSIONS OFF CXX_STANDARD 17)
 
 # Add library to link against
-add_library(Tolc::Frontend.py ALIAS frontend)
+add_library(Tolc::Frontend.py ALIAS Frontend.py)
 
 # Only build tests and benchmarks if building this project directly
 if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
