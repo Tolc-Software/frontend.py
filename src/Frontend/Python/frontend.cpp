@@ -1,6 +1,6 @@
-#include "Frontend/Python/frontend.h"
+#include "Frontend/Python/frontend.hpp"
 #include <IR/ir.hpp>
-#include <Parser/Parse.h>
+#include <Parser/Parse.hpp>
 #include <string>
 #include <vector>
 
