@@ -14,6 +14,7 @@ pybind11_add_module(myModule src/module.cpp SYSTEM)
 ```
 
 ```cpp
+// src/module.cpp
 #include <pybind11/pybind11.h>
 
 namespace py = pybind11;
