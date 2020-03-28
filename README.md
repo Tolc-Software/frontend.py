@@ -2,7 +2,7 @@
 
 ## Good to know ##
 
-### ImportError: dynamic module does not define init function (PyInit_\*) ###
+### `ImportError: dynamic module does not define init function (PyInit_\*)` ###
 
 The module name must be **exactly** the same as the library name.
 
