@@ -22,6 +22,10 @@ include(cmake/Sanitizers.cmake)
 # Set the sanitizer options on project_options
 enable_sanitizers(frontend.py_options)
 
+# Define run_conan
+include(cmake/ConanHelpers.cmake)
+run_conan(REQUIRES fmt/6.1.2)
+
 include(FetchContent)
 FetchContent_Declare(
   Parser
@@ -30,7 +34,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Parser)
 
 add_library(Frontend.py src/Frontend/Python/frontend.cpp)
-target_link_libraries(Frontend.py PRIVATE Tolc::Parser frontend.py_options
+target_link_libraries(Frontend.py PRIVATE Tolc::Parser CONAN_PKG::fmt frontend.py_options
                                           frontend.py_warnings)
 
 target_include_directories(Frontend.py PRIVATE src)
