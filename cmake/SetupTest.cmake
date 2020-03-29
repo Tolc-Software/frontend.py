@@ -1,7 +1,7 @@
 include_guard()
 # Requires other scripts
-include(Catch2Helpers)
-include(CodeCoverage)
+include(${CMAKE_CURRENT_LIST_DIR}/Catch2Helpers.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/CodeCoverage.cmake)
 
 # Helper function to create a test
 function(setup_test)
@@ -23,15 +23,11 @@ function(setup_test)
     INCLUDE
     ${project_dir}/src
     LINK_LIBRARIES
-    project_warnings
-    project_options
-    clangTooling
-    clangBasic
-    clangASTMatchers
-    Parser
+    Frontend.py
+    CONAN_PKG::fmt
+    frontend.py_options
+    frontend.py_warnings
     ${ARG_LIBRARIES})
-  target_include_directories(${ARG_TEST_NAME} SYSTEM
-                             PRIVATE ${llvm_entry_INCLUDE_DIR})
 
   # Assumes CodeCoverage.cmake is included Adds code coverage to the test and
   # adds it to the ccov-all target

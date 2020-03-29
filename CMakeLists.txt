@@ -35,8 +35,10 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(IRSpecification)
 
 add_library(Frontend.py src/Frontend/Python/frontend.cpp)
-target_link_libraries(Frontend.py PRIVATE IR::IR CONAN_PKG::fmt frontend.py_options
-                                          frontend.py_warnings)
+target_link_libraries(
+  Frontend.py
+  PUBLIC IR::IR
+  PRIVATE CONAN_PKG::fmt frontend.py_options frontend.py_warnings)
 
 target_include_directories(Frontend.py PRIVATE src)
 target_include_directories(Frontend.py PUBLIC include)
