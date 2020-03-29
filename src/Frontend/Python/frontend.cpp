@@ -1,9 +1,14 @@
 #include "Frontend/Python/frontend.hpp"
 #include <IR/ir.hpp>
-#include <Parser/Parse.hpp>
+#include <filesystem>
 #include <string>
 #include <vector>
 
-std::vector<std::string> createModules(std::string const& filename) {
-	return {filename};
+namespace Frontend::Python {
+
+std::vector<std::pair<std::filesystem::path, std::string>>
+createModules(IR::Namespace const& /* globalNamespace*/) {
+	return {std::make_pair(std::filesystem::path("hi"), "ho")};
 }
+
+}    // namespace Frontend::Python

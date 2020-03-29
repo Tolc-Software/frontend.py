@@ -28,13 +28,14 @@ run_conan(REQUIRES fmt/6.1.2)
 
 include(FetchContent)
 FetchContent_Declare(
-  Parser
-  GIT_REPOSITORY git@github.com:srydell/Parser.git
+  IRSpecification
+  GIT_REPOSITORY git@github.com:srydell/IntermediateRepresentation.git
   GIT_TAG master)
-FetchContent_MakeAvailable(Parser)
+
+FetchContent_MakeAvailable(IRSpecification)
 
 add_library(Frontend.py src/Frontend/Python/frontend.cpp)
-target_link_libraries(Frontend.py PRIVATE Tolc::Parser CONAN_PKG::fmt frontend.py_options
+target_link_libraries(Frontend.py PRIVATE IR::IR CONAN_PKG::fmt frontend.py_options
                                           frontend.py_warnings)
 
 target_include_directories(Frontend.py PRIVATE src)
