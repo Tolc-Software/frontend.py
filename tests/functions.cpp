@@ -1,22 +1,26 @@
+#include "Frontend/Python/frontend.hpp"
 #include <IR/ir.hpp>
+#include <Parser/Parse.hpp>
 #include <catch2/catch.hpp>
+#include <filesystem>
+#include <fstream>
+
+namespace {
+void writeFileToTestStage(std::filesystem::path const& file,
+                          std::string const& content) {
+	std::filesystem::path stagePath =
+	    "/home/simon/external/code/cpp/frontend.py/tests/testStage/src/" / file;
+	std::ofstream f(stagePath);
+	f << content;
+	f.close();
+}
+}    // namespace
 
 TEST_CASE("Function works with default modifier", "[functions]") {
-	// using IR::AccessModifier;
-	// for (auto [accessModifier, structure] :
-	//      {std::make_pair(AccessModifier::Private, std::string("class")),
-	//       std::make_pair(AccessModifier::Public, std::string("struct"))}) {
-	// 	auto globalNS =
-	// 	    TestUtil::parseString(structure + " MyStructure { void fun(); };");
-
-	// 	SECTION("Parser finds the function") {
-	// 		REQUIRE(globalNS.m_functions.size() == 0);
-	// 		REQUIRE(globalNS.m_structs.size() == 1);
-	// 		auto structure = globalNS.m_structs[0];
-	// 		REQUIRE(structure.m_functions.size() == 1);
-	// 		auto& [access, fun] = structure.m_functions.back();
-	// 		CHECK(fun.m_name == "fun");
-	// 		CHECK(access == accessModifier);
-	// 	}
-	// }
+	auto globalNS = Parser::parseString("class MyStructure { void fun(); };");
+	std::string globalModuleName = "myModule";
+	for (auto& [file, content] :
+	     Frontend::Python::createModules(globalNS, globalModuleName)) {
+		writeFileToTestStage(file, content);
+	}
 }
