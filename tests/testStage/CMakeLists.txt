@@ -2,19 +2,16 @@ cmake_minimum_required(VERSION 3.15)
 
 project(
   TestStage
-  VERSION 0.1
+  VERSION 1.0
   LANGUAGES CXX)
 
 include(cmake/GetPybind11.cmake)
-getpybind11(VERSION 2.4.3)
-target_compile_options(pybind11 INTERFACE -fsized-deallocation)
+get_pybind11(VERSION 2.4.3)
 
-# pybind11_add_module(example src/pybind11_examples.cpp SYSTEM)
-pybind11_add_module(myModule src/myModule.cpp SYSTEM)
+# Get the variable 'module_name'
+# NOTE: This will be generated for each test
+include(cmake/ModuleName.cmake)
+
+# Create the python module
+pybind11_add_module(${module_name} src/${module_name}.cpp SYSTEM)
 target_include_directories(myModule PRIVATE src)
-
-# # Integration tests are located at the root
-# foreach(integrationTest functions)
-#   setup_test(TEST_NAME ${integrationTest} SOURCE ${integrationTest}.cpp
-#              LIBRARIES TestUtil)
-# endforeach()

@@ -31,10 +31,26 @@ target_code_coverage(Frontend.py)
 
 add_code_coverage_all_targets()
 
+# Create a test fixture for downloading dependencies in the test stage
+# In this case pybind11
+add_test(NAME ConfigureTestStage
+  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/testStage
+  COMMAND cmake -S. -Bbuild -GNinja
+)
+set_tests_properties(ConfigureTestStage PROPERTIES
+  FIXTURES_SETUP TestStage
+)
+
 # Integration tests are located at the root
 foreach(integrationTest functions)
   setup_test(TEST_NAME ${integrationTest} SOURCE ${integrationTest}.cpp
     LIBRARIES TestUtil Tolc::Parser)
+
+  # Require that the dependencies are downloaded
+  # so they can be copied to a temporary test stage
+  set_tests_properties(${integrationTest} PROPERTIES
+    FIXTURES_REQUIRED TestStage
+  )
 endforeach()
 
 # setup_test(TEST_NAME split SOURCE Helpers/Utils/split.cpp)
