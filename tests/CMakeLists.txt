@@ -31,17 +31,23 @@ target_code_coverage(Frontend.py)
 
 add_code_coverage_all_targets()
 
+# Create a platform independent way of getting the path to the test stage
+set(test_stage ${CMAKE_CURRENT_LIST_DIR}/testStage)
+configure_file(TestUtil/include/TestStage/paths.hpp.in
+               ${CMAKE_CURRENT_LIST_DIR}/TestUtil/include/TestStage/paths.hpp @ONLY)
+
 # Create a test fixture for downloading dependencies in the test stage
 # In this case pybind11
 add_test(NAME ConfigureTestStage
-  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/testStage
-  COMMAND cmake -S. -Bbuild -GNinja
+  WORKING_DIRECTORY ${test_stage}
+  COMMAND ${CMAKE_COMMAND} -S. -Bbuild -GNinja
 )
 set_tests_properties(ConfigureTestStage PROPERTIES
   FIXTURES_SETUP TestStage
 )
 
 # Integration tests are located at the root
+# and executed in a temporary test stage
 foreach(integrationTest functions)
   setup_test(TEST_NAME ${integrationTest} SOURCE ${integrationTest}.cpp
     LIBRARIES TestUtil Tolc::Parser)

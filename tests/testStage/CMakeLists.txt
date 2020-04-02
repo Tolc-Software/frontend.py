@@ -8,10 +8,10 @@ project(
 include(cmake/GetPybind11.cmake)
 get_pybind11(VERSION 2.4.3)
 
-# Get the variable 'module_name'
+# Get the variable 'target_name'
 # NOTE: This will be generated for each test
-include(cmake/ModuleName.cmake)
+include(cmake/TargetName.cmake)
 
 # Create the python module
-pybind11_add_module(${module_name} src/${module_name}.cpp SYSTEM)
-target_include_directories(myModule PRIVATE src)
+pybind11_add_module(${target_name} src/${target_name}.cpp SYSTEM)
+target_include_directories(${target_name} PRIVATE src)
