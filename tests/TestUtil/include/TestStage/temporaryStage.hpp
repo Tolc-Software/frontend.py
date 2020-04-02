@@ -1,7 +1,9 @@
 #pragma once
 
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <random>
 
 namespace TestStage {
@@ -62,4 +64,58 @@ void setTargetName(std::filesystem::path const& stage,
 	file << "set(target_name \"" + target + "\")";
 	file.close();
 }
+
+/**
+* Adds a file to the source directory in the stage
+* Returns the path to the file
+*/
+std::filesystem::path addFileToStage(std::filesystem::path const& file,
+                                     std::string const& content,
+                                     std::filesystem::path const& stage) {
+	auto src = stage / "src";
+	std::filesystem::create_directories(src);
+	std::ofstream f(src / file);
+	f << content;
+	f.close();
+	return src / file;
+}
+
+/**
+* Configure cmake project in stage
+* Provides reasonable defaults
+*/
+void runCMakeConfigure(std::filesystem::path const& stage,
+                       std::string const& compiler = "clang++",
+                       std::string const& generator = "Ninja",
+                       std::string const& buildType = "Release") {
+	// Save to restore after function call
+	auto originalDirectory = std::filesystem::current_path();
+
+	// Switch to stage
+	std::filesystem::current_path(stage);
+	auto cmd = "cmake -S. -Bbuild -G " + generator +
+	           " -DCMAKE_CXX_COMPILER=" + compiler +
+	           " -DCMAKE_BUILD_TYPE=" + buildType;
+	std::cout << cmd << '\n';
+	std::system(cmd.c_str());
+
+	std::filesystem::current_path(originalDirectory);
+}
+
+/**
+* Build cmake project in stage
+*/
+void buildCMakeProject(std::filesystem::path const& stage) {
+	// Save to restore after function call
+	auto originalDirectory = std::filesystem::current_path();
+
+	// Switch to stage
+	std::filesystem::current_path(stage);
+	auto cmd = "cmake --build build -j1";
+	std::cout << cmd << '\n';
+	std::system(cmd);
+
+	std::filesystem::current_path(originalDirectory);
+}
+
 }    // namespace TestStage

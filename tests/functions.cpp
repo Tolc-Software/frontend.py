@@ -15,22 +15,32 @@ TEST_CASE("Function works with default modifier", "[functions]") {
 	std::cout << tempStage << '\n';
 	TestStage::populateStageFromRoot(tempStage, rootStage);
 
-	TestStage::setTargetName(tempStage, "myWonderfulModule");
+	std::string moduleName = "myWonderfulModule";
+	TestStage::setTargetName(tempStage, moduleName);
 
-	std::filesystem::remove(tempStage);
+	auto testFile = TestStage::addFileToStage(moduleName + ".hpp",
+	                                          R"(
+#include <iostream>
+
+void sayHello() {
+	std::cout << "Hello!" << '\n';
 }
+)",
+	                                          tempStage);
 
-// namespace {
-// std::filesystem::path writeFileToTestStage(std::filesystem::path const& file,
-//                                            std::string const& content) {
-// 	std::filesystem::path stagePath =
-// 	    TestStage::getRootStagePath() / "src" / file;
-// 	std::ofstream f(stagePath);
-// 	f << content;
-// 	f.close();
-// 	return stagePath;
-// }
-// }    // namespace
+	auto globalNS = Parser::parseFile(testFile.generic_string());
+	for (auto [file, content] :
+	     Frontend::Python::createModules(globalNS, moduleName)) {
+		TestStage::addFileToStage(
+		    file, "#include \"" + moduleName + ".hpp\"\n" + content, tempStage);
+	}
+
+	TestStage::runCMakeConfigure(tempStage);
+
+	TestStage::buildCMakeProject(tempStage);
+
+	std::filesystem::remove_all(tempStage);
+}
 
 // TEST_CASE("Function works with default modifier", "[functions]") {
 // 	auto cppFile = writeFileToTestStage("test.hpp", R"(
