@@ -20,10 +20,12 @@ TEST_CASE("Function works with default modifier", "[functions]") {
 
 	auto testFile = TestStage::addFileToStage(moduleName + ".hpp",
 	                                          R"(
-#include <iostream>
+#include <fstream>
 
 void sayHello() {
-	std::cout << "Hello!" << '\n';
+	std::ofstream f("hello.txt");
+	f << "Hello!";
+	f.close();
 }
 )",
 	                                          tempStage);
@@ -36,9 +38,20 @@ void sayHello() {
 	}
 
 	TestStage::runCMakeConfigure(tempStage);
-
 	TestStage::buildCMakeProject(tempStage);
 
+	std::vector<std::string> includes = {"myWonderfulModule"};
+	std::string testName = "sayHello";
+	std::vector<std::string> testBody = {
+	    R"(myWonderfulModule.sayHello())",
+	    R"(with open("hello.txt", "r") as f:)",
+	    R"(    self.assertEqual(f.readline(), "Hello!"))"};
+
+	TestStage::addPythonUnittest(
+	    tempStage, moduleName, testName, testBody, includes);
+
+	auto errorCode = TestStage::runPythonUnittest(tempStage, moduleName);
+	REQUIRE(errorCode == 0);
 	std::filesystem::remove_all(tempStage);
 }
 
