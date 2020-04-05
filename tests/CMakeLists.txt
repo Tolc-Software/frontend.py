@@ -26,6 +26,11 @@ include(${PROJECT_SOURCE_DIR}/cmake/CodeCoverage.cmake)
 # Defines create_catch2_test
 include(${PROJECT_SOURCE_DIR}/cmake/SetupTest.cmake)
 
+add_library(TestStage TestUtil/include/TestStage/stage.cpp)
+target_include_directories(TestStage PUBLIC TestUtil/include)
+target_link_libraries(TestStage
+  PRIVATE frontend.py_options frontend.py_warnings)
+
 # Use coverage of frontend
 target_code_coverage(Frontend.py)
 

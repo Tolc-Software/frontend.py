@@ -77,6 +77,13 @@ std::filesystem::path addFileToStage(std::filesystem::path const& file,
 	std::ofstream f(src / file);
 	f << content;
 	f.close();
+
+	// Add the sources variable
+	std::filesystem::create_directories(stage / "cmake");
+	std::ofstream cmakeFile(stage / "cmake" / "Sources.cmake");
+	cmakeFile << "set(sources \"" + (src / file).generic_string() + "\")";
+	cmakeFile.close();
+
 	return src / file;
 }
 

@@ -12,6 +12,10 @@ get_pybind11(VERSION 2.4.3)
 # NOTE: This will be generated for each test
 include(cmake/TargetName.cmake)
 
+# Get the variable 'sources'
+# NOTE: This will be generated for each test
+include(cmake/Sources.cmake)
+
 # Create the python module
-pybind11_add_module(${target_name} src/${target_name}.cpp SYSTEM)
+pybind11_add_module(${target_name} ${sources} SYSTEM)
 target_include_directories(${target_name} PRIVATE src)
