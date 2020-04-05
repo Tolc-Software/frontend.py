@@ -1,5 +1,6 @@
 #include "Frontend/Python/frontend.hpp"
 #include "TestStage/paths.hpp"
+#include "TestStage/stage.hpp"
 #include "TestStage/temporaryStage.hpp"
 #include <IR/ir.hpp>
 #include <Parser/Parse.hpp>
@@ -9,17 +10,12 @@
 #include <iostream>
 
 TEST_CASE("Function works with default modifier", "[functions]") {
-	auto rootStage = TestStage::getRootStagePath();
-	std::cout << rootStage << '\n';
-	auto tempStage = TestStage::createUniqueStage(rootStage);
-	std::cout << tempStage << '\n';
-	TestStage::populateStageFromRoot(tempStage, rootStage);
-
+	// Create a mock project
+	auto stage = TestStage::Stage(TestStage::getRootStagePath());
+	stage.setTargetName("myWonderfulModule");
 	std::string moduleName = "myWonderfulModule";
-	TestStage::setTargetName(tempStage, moduleName);
-
-	auto testFile = TestStage::addFileToStage(moduleName + ".hpp",
-	                                          R"(
+	auto testFile = stage.addSourceFile(moduleName + ".hpp",
+	                                    R"(
 #include <fstream>
 
 void sayHello() {
@@ -27,18 +23,16 @@ void sayHello() {
 	f << "Hello!";
 	f.close();
 }
-)",
-	                                          tempStage);
-
+)");
 	auto globalNS = Parser::parseFile(testFile.generic_string());
 	for (auto [file, content] :
 	     Frontend::Python::createModules(globalNS, moduleName)) {
-		TestStage::addFileToStage(
-		    file, "#include \"" + moduleName + ".hpp\"\n" + content, tempStage);
+		stage.addSourceFile(file,
+		                    "#include \"" + moduleName + ".hpp\"\n" + content);
 	}
 
-	TestStage::runCMakeConfigure(tempStage);
-	TestStage::buildCMakeProject(tempStage);
+	stage.runCMakeConfigure();
+	stage.buildCMakeProject();
 
 	std::vector<std::string> includes = {"myWonderfulModule"};
 	std::string testName = "sayHello";
@@ -48,11 +42,10 @@ void sayHello() {
 	    R"(    self.assertEqual(f.readline(), "Hello!"))"};
 
 	TestStage::addPythonUnittest(
-	    tempStage, moduleName, testName, testBody, includes);
+	    stage.m_stage, moduleName, testName, testBody, includes);
 
-	auto errorCode = TestStage::runPythonUnittest(tempStage, moduleName);
+	auto errorCode = TestStage::runPythonUnittest(stage.m_stage, moduleName);
 	REQUIRE(errorCode == 0);
-	std::filesystem::remove_all(tempStage);
 }
 
 // TEST_CASE("Function works with default modifier", "[functions]") {

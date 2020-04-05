@@ -55,7 +55,7 @@ set_tests_properties(ConfigureTestStage PROPERTIES
 # and executed in a temporary test stage
 foreach(integrationTest functions)
   setup_test(TEST_NAME ${integrationTest} SOURCE ${integrationTest}.cpp
-    LIBRARIES TestUtil Tolc::Parser)
+    LIBRARIES TestUtil TestStage Tolc::Parser)
 
   # Require that the dependencies are downloaded
   # so they can be copied to a temporary test stage
