@@ -53,7 +53,9 @@ Stage::Stage(std::filesystem::path const& baseStage)
 }
 
 Stage::~Stage() {
-	std::filesystem::remove_all(m_stage);
+	if (m_removeOnDestruction) {
+		std::filesystem::remove_all(m_stage);
+	}
 }
 
 void Stage::setTargetName(std::string const& target) {
@@ -121,7 +123,7 @@ int Stage::runCommand(std::string const& cmd,
 	}
 	std::filesystem::current_path(cwd);
 
-	fmt::print(cmd);
+	fmt::print(cmd + '\n');
 	auto errorCode = std::system(cmd.c_str());
 
 	std::filesystem::current_path(originalDirectory);

@@ -93,6 +93,6 @@ struct Stage {
 	std::vector<std::filesystem::path> m_sources = {};
 
 	// If the stage should be removed when this object is destroyed
-	bool removeOnDestruction = true;
+	bool m_removeOnDestruction = true;
 };
 }

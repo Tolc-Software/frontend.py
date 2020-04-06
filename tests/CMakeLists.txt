@@ -14,8 +14,10 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Parser)
 
 # Everything put in TestUtil/include is available
-add_library(TestUtil INTERFACE)
-target_include_directories(TestUtil INTERFACE TestUtil/include)
+add_library(TestUtil TestUtil/include/TestUtil/pybindStage.cpp)
+target_include_directories(TestUtil PUBLIC TestUtil/include)
+target_link_libraries(TestUtil PRIVATE Tolc::Parser frontend.py_options frontend.py_warnings)
+target_link_libraries(TestUtil PUBLIC IR::IR)
 
 # These are needed to use create_catch2_test
 set(Catch2_FOUND TRUE)
@@ -55,7 +57,7 @@ set_tests_properties(ConfigureTestStage PROPERTIES
 # and executed in a temporary test stage
 foreach(integrationTest functions)
   setup_test(TEST_NAME ${integrationTest} SOURCE ${integrationTest}.cpp
-    LIBRARIES TestUtil TestStage Tolc::Parser)
+    LIBRARIES TestUtil TestStage)
 
   # Require that the dependencies are downloaded
   # so they can be copied to a temporary test stage
