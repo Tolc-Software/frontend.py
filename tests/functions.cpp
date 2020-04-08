@@ -1,11 +1,9 @@
 #include "Frontend/Python/frontend.hpp"
 #include "TestStage/paths.hpp"
 #include "TestUtil/pybindStage.hpp"
-#include <IR/ir.hpp>
 #include <catch2/catch.hpp>
-#include <filesystem>
 
-TEST_CASE("Function works with default modifier", "[functions]") {
+TEST_CASE("Simple function without arguments", "[functions]") {
 	std::string moduleName = "myWonderfulModule";
 	auto pybindStage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
@@ -33,19 +31,3 @@ with open("hello.txt", "r") as f:
 	auto errorCode = pybindStage.runPythonUnittest(pythonTestBody);
 	REQUIRE(errorCode == 0);
 }
-
-// TEST_CASE("Function works with default modifier", "[functions]") {
-// 	auto cppFile = writeFileToTestStage("test.hpp", R"(
-// #include <iostream>
-
-// void sayHello() {
-// 	std::cout << "Hello!" << '\n';
-// }
-// )");
-// 	auto globalNS = Parser::parseFile(cppFile.generic_string());
-// 	std::string globalModuleName = "myModule";
-// 	for (auto [file, content] :
-// 	     Frontend::Python::createModules(globalNS, globalModuleName)) {
-// 		writeFileToTestStage(file, content);
-// 	}
-// }
