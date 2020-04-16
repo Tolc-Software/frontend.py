@@ -2,6 +2,12 @@
 
 ## Good to know ##
 
+### The test stage contains pybind11 examples ###
+
+The example `pybind11` module in `tests/testStage/src/myModule.cpp` contains a buildable module with example code.
+
+Whenever there is new ways to do things, it should be added there. This will not affect any tests.
+
 ### `ImportError: dynamic module does not define init function (PyInit_\*)` ###
 
 The module name must be **exactly** the same as the library name.
