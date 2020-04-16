@@ -14,7 +14,12 @@ PYBIND11_MODULE(myModule, myModule) {
 	myModule.doc() = "pybind11 example plugin";
 
 	// Adding a simple function with optional help text
-	myModule.def("add", &add, "A function which adds two numbers");
+	// and named variables (allows python to use add(i = 5, j = 3))
+	myModule.def("add",
+	             &add,
+	             "A function which adds two numbers",
+	             py::arg("i"),
+	             py::arg("j"));
 
 	// Adding a submodule within this module
 	auto myNamespace = myModule.def_submodule("MyNamespace");

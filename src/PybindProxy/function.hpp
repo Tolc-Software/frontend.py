@@ -1,27 +1,16 @@
 #pragma once
 
-#include <fmt/format.h>
 #include <string>
 
 namespace PybindProxy {
 	struct Function {
-	    Function(std::string const& name,
-	             std::vector<std::string> const& includes)
-	        : m_name(name), m_includes(includes) {}
+	    Function(std::string const& name, std::string const& fullyQualifiedName)
+	        : m_name(name), m_fullyQualifiedName(fullyQualifiedName) {}
 
-	    std::string getPybind() const {
-		    return fmt::format(
-		        R"(def("{}", &{}, "A happy function!"))", m_name, m_name);
-	    }
-
-	    std::vector<std::string> const& getIncludes() const {
-		    return m_includes;
-	    }
+	    std::string getPybind() const;
 
 	private:
 	    std::string m_name;
-	    // What will be included
-	    // Ex: 'string' for '#include <string>'
-	    std::vector<std::string> m_includes;
+	    std::string m_fullyQualifiedName;
     };
 }

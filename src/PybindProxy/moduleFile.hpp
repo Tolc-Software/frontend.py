@@ -1,7 +1,7 @@
 #pragma once
 
 #include "PybindProxy/module.hpp"
-#include <fmt/format.h>
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -21,22 +21,11 @@ public:
 		m_modules.push_back(m);
 	}
 
-	std::string getPybind() const {
-		std::string out;
-		for (auto const& include : m_includes) {
-			out += fmt::format("#include {}\n", include);
-		}
-
-		out += fmt::format(
-		    "PYBIND11_MODULE({}, {})", m_rootModuleName, m_rootModuleName);
-		out += "{\n";
-		for (auto const& m : m_modules) {
-			out += m.getPybind();
-		}
-		out += "}";
-
-		return out;
+	std::filesystem::path getFilepath() const {
+		return m_rootModuleName + ".cpp";
 	}
+
+	std::string getPybind() const;
 
 private:
 	std::string m_rootModuleName;

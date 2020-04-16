@@ -18,14 +18,7 @@ namespace PybindProxy {
 		    return m_name;
 	    }
 
-	    std::string getPybind() const {
-		    std::string out;
-		    for (auto const& function : m_functions) {
-			    out += fmt::format("\t{}.{};\n", m_name, function.getPybind());
-		    }
-
-		    return out;
-	    }
+	    std::string getPybind() const;
 
 	private:
 	    std::string m_name;

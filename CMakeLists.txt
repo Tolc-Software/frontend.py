@@ -34,7 +34,13 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(IRSpecification)
 
-add_library(Frontend.py src/Frontend/Python/frontend.cpp)
+add_library(Frontend.py
+  src/Frontend/Python/frontend.cpp
+  src/PybindProxy/function.cpp
+  src/PybindProxy/module.cpp
+  src/PybindProxy/moduleFile.cpp
+)
+
 target_link_libraries(
   Frontend.py
   PUBLIC IR::IR
