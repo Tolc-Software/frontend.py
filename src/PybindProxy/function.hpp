@@ -11,7 +11,7 @@ namespace PybindProxy {
 
 	    std::string getPybind() const {
 		    return fmt::format(
-		        "m.def(\"{}\", &{}, \"A happy function!\");", m_name, m_name);
+		        R"(def("{}", &{}, "A happy function!"))", m_name, m_name);
 	    }
 
 	    std::vector<std::string> const& getIncludes() const {

@@ -5,40 +5,36 @@
 #include <vector>
 
 namespace PybindProxy {
-	struct Module {
-	    Module(std::string const& name)
-	        : m_name(name), m_includes({"pybind11/pybind11.h"}) {}
+
+    struct Module {
+	    explicit Module(std::string const& name, std::string const& parent = "")
+	        : m_name(name), m_parentModule(parent), m_functions() {}
 
 	    void addFunction(Function const& function) {
-		    for (auto const& include : function.getIncludes()) {
-			    // TODO: Make these unique on write
-			    m_includes.push_back(include);
-		    }
-
 		    m_functions.push_back(function);
+	    }
+
+	    std::string const& getName() const {
+		    return m_name;
 	    }
 
 	    std::string getPybind() const {
 		    std::string out;
-		    for (auto const& include : m_includes) {
-			    out += fmt::format("#include <{}>\n", include);
-		    }
-
-		    out += fmt::format("PYBIND11_MODULE({}, m)", m_name);
-		    out += " {\n";
 		    for (auto const& function : m_functions) {
-			    out += fmt::format("\t{}\n", function.getPybind());
+			    out += fmt::format("\t{}.{};\n", m_name, function.getPybind());
 		    }
-		    out += "}";
 
 		    return out;
 	    }
 
 	private:
 	    std::string m_name;
+
+	    // If this is non empty,
+	    // then this module is a submodule
+	    std::string m_parentModule;
+
 	    std::vector<Function> m_functions;
-	    // What will be included
-	    // Ex: 'string' for '#include <string>'
-	    std::vector<std::string> m_includes;
     };
+
 }

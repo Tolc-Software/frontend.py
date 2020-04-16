@@ -8,7 +8,7 @@ TEST_CASE("Simple function without arguments", "[functions]") {
 	auto pybindStage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
-	auto globalNSpy = pybindStage.parseModuleFile(R"(
+	auto globalNS = pybindStage.parseModuleFile(R"(
 #include <fstream>
 
 void sayHello() {
@@ -17,10 +17,12 @@ void sayHello() {
 	f.close();
 }
 )");
-	for (auto [file, content] :
-	     Frontend::Python::createModules(globalNSpy, moduleName)) {
-		pybindStage.addModuleFile(file, content);
-	}
+
+	// Modify globalNS so it has the correct name
+	globalNS.m_name = moduleName;
+	auto [file, content] = Frontend::Python::createModules(globalNS);
+
+	pybindStage.addModuleFile(file, content);
 
 	std::string pythonTestBody = R"(
 myWonderfulModule.sayHello()

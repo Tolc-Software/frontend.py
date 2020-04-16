@@ -40,8 +40,12 @@ target_link_libraries(
   PUBLIC IR::IR
   PRIVATE CONAN_PKG::fmt frontend.py_options frontend.py_warnings)
 
-target_include_directories(Frontend.py PRIVATE src)
-target_include_directories(Frontend.py PUBLIC include)
+target_include_directories(
+  Frontend.py
+  PRIVATE src
+  PUBLIC include
+)
+
 set_target_properties(Frontend.py PROPERTIES CXX_STANDARD_REQUIRED ON
                                              CXX_EXTENSIONS OFF CXX_STANDARD 17)
 
