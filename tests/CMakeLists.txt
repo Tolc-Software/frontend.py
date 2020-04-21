@@ -45,42 +45,34 @@ configure_file(
   TestUtil/include/TestStage/paths.hpp.in
   ${CMAKE_CURRENT_LIST_DIR}/TestUtil/include/TestStage/paths.hpp @ONLY)
 
-# Create a test fixture for downloading dependencies in the test stage In this
-# case pybind11
+# Create a test fixture for downloading dependencies in the test stage
+# In this case pybind11
 add_test(
   NAME ConfigureTestStage
   WORKING_DIRECTORY ${test_stage}
   COMMAND ${CMAKE_COMMAND} -S. -Bbuild -GNinja)
 set_tests_properties(ConfigureTestStage PROPERTIES FIXTURES_SETUP TestStage)
 
-# Integration tests are located at the root and executed in a temporary test
-# stage
-foreach(integrationTest functions)
-  setup_test(
-    TEST_NAME
-    ${integrationTest}
-    SOURCE
-    ${integrationTest}.cpp
-    LIBRARIES
-    TestUtil
-    TestStage)
-
-  # Require that the dependencies are downloaded so they can be copied to a
-  # temporary test stage
-  set_tests_properties(${integrationTest} PROPERTIES FIXTURES_REQUIRED
-                                                     TestStage)
-endforeach()
-
-foreach(unittest PybindProxy/moduleFile.cpp PybindProxy/function.cpp)
+foreach(test functions.cpp namespaces.cpp PybindProxy/moduleFile.cpp PybindProxy/function.cpp)
   # Ex: PybindProxy/moduleFile.cpp -> moduleFile
-  get_filename_component(testName ${unittest} NAME_WLE)
+  get_filename_component(testName ${test} NAME_WLE)
 
   setup_test(
     TEST_NAME
     ${testName}
     SOURCE
-    ${unittest}
+    ${test}
     LIBRARIES
     TestUtil
     TestStage)
+
+  string(FIND "${test}" "/" subdirectory)
+  if(subdirectory EQUAL -1)
+    # The test is in the root => should be an integration test
+
+    # Require that the dependencies are downloaded so they can be copied to a
+    # temporary test stage
+    set_tests_properties(${testName} PROPERTIES FIXTURES_REQUIRED
+                                                       TestStage)
+  endif()
 endforeach()
