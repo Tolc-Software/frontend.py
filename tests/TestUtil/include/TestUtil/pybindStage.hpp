@@ -29,6 +29,10 @@ struct PybindStage {
 	*/
 	int runPythonUnittest(std::string const& testBody);
 
+	void keepAliveAfterTest() {
+		m_stage.m_removeOnDestruction = false;
+	}
+
 	TestStage::Stage m_stage;
 	std::string m_moduleName;
 };

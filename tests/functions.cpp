@@ -1,35 +1,45 @@
 #include "Frontend/Python/frontend.hpp"
 #include "TestStage/paths.hpp"
 #include "TestUtil/pybindStage.hpp"
+#include "TestUtil/runPybindTest.hpp"
 #include <catch2/catch.hpp>
+#include <fmt/format.h>
 
-TEST_CASE("Simple function without arguments", "[functions]") {
-	std::string moduleName = "myWonderfulModule";
-	auto pybindStage =
+TEST_CASE("Write to file functions", "[functions]") {
+	std::string moduleName = "defaultModule";
+	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
-	auto globalNS = pybindStage.parseModuleFile(R"(
+	auto cppCode = R"(
 #include <fstream>
+#include <string>
 
 void sayHello() {
 	std::ofstream f("hello.txt");
 	f << "Hello!";
 	f.close();
 }
-)");
 
-	// Modify globalNS so it has the correct name
-	globalNS.m_name = moduleName;
-	auto [file, content] = Frontend::Python::createModules(globalNS);
-
-	pybindStage.addModuleFile(file, content);
-
-	std::string pythonTestBody = R"(
-myWonderfulModule.sayHello()
-with open("hello.txt", "r") as f:
-    self.assertEqual(f.readline(), "Hello!")
+void addYourOwn(std::string content) {
+	std::ofstream f("hello.txt");
+	f << content;
+	f.close();
+}
 )";
 
-	auto errorCode = pybindStage.runPythonUnittest(pythonTestBody);
+	auto pythonTestCode = fmt::format(R"(
+{moduleName}.sayHello()
+with open("hello.txt", "r") as f:
+    self.assertEqual(f.readline(), "Hello!")
+
+content = "This is from python!"
+{moduleName}.addYourOwn(content)
+with open("hello.txt", "r") as f:
+    self.assertEqual(f.readline(), content)
+)",
+	                                  fmt::arg("moduleName", moduleName));
+
+	auto errorCode = TestUtil::runPybindTest(stage, cppCode, pythonTestCode);
 	REQUIRE(errorCode == 0);
 }
+

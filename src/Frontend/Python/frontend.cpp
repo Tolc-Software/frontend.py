@@ -1,4 +1,5 @@
 #include "Frontend/Python/frontend.hpp"
+#include "Builders/functionBuilder.hpp"
 #include "PybindProxy/function.hpp"
 #include "PybindProxy/module.hpp"
 #include "PybindProxy/moduleFile.hpp"
@@ -18,8 +19,7 @@ createModules(IR::Namespace const& rootNamespace) {
 	PybindProxy::Module m(rootModuleName);
 
 	for (auto const& function : rootNamespace.m_functions) {
-		PybindProxy::Function f(function.m_name, function.m_representation);
-		m.addFunction(f);
+		m.addFunction(Builders::buildFunction(function));
 	}
 
 	PybindProxy::ModuleFile mf(m);

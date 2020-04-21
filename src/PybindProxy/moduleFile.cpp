@@ -11,7 +11,12 @@ std::string ModuleFile::getPybind() const {
 	}
 
 	out += fmt::format(
-	    "PYBIND11_MODULE({}, {})", m_rootModuleName, m_rootModuleName);
+	    R"(
+namespace py = pybind11;
+
+PYBIND11_MODULE({}, {}))",
+	    m_rootModuleName,
+	    m_rootModuleName);
 	out += "{\n";
 	for (auto const& m : m_modules) {
 		out += m.getPybind();

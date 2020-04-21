@@ -71,5 +71,16 @@ foreach(integrationTest functions)
                                                      TestStage)
 endforeach()
 
-setup_test(TEST_NAME moduleFile SOURCE PybindProxy/moduleFile.cpp)
-# setup_test(TEST_NAME includes SOURCE Helpers/includes.cpp)
+foreach(unittest PybindProxy/moduleFile.cpp PybindProxy/function.cpp)
+  # Ex: PybindProxy/moduleFile.cpp -> moduleFile
+  get_filename_component(testName ${unittest} NAME_WLE)
+
+  setup_test(
+    TEST_NAME
+    ${testName}
+    SOURCE
+    ${unittest}
+    LIBRARIES
+    TestUtil
+    TestStage)
+endforeach()

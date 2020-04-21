@@ -16,7 +16,11 @@ void PybindStage::addModuleFile(std::filesystem::path const& file,
 
 IR::Namespace PybindStage::parseModuleFile(std::string const& content) {
 	auto testFile = m_stage.addSourceFile(m_moduleName + ".hpp", content);
-	return Parser::parseFile(testFile.generic_string());
+	auto globalNS = Parser::parseFile(testFile.generic_string());
+	// The root namespace that is sent into will be the module name
+	// In this case it is the global namespace (m_name = "")
+	globalNS.m_name = m_moduleName;
+	return globalNS;
 }
 
 int PybindStage::runPythonUnittest(std::string const& testBody) {
