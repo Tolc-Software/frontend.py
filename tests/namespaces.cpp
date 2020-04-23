@@ -11,11 +11,27 @@ TEST_CASE("Namespaces turn into modules", "[namespaces]") {
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
 	auto cppCode = R"(
+#include <string>
+
 namespace MyLib {
 
 int complexFunction() {
 	return 5;
 }
+
+	namespace We {
+		namespace Are {
+			namespace Going {
+				namespace Pretty {
+					namespace Deep {
+						std::string meaningOfLife() {
+							return "42";
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 )";
@@ -23,6 +39,9 @@ int complexFunction() {
 	auto pythonTestCode = fmt::format(R"(
 result = {moduleName}.MyLib.complexFunction()
 self.assertEqual(result, 5)
+
+lifeProTips = {moduleName}.MyLib.We.Are.Going.Pretty.Deep.meaningOfLife()
+self.assertEqual(lifeProTips, "42")
 )",
 	                                  fmt::arg("moduleName", moduleName));
 
