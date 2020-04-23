@@ -35,7 +35,6 @@ TEST_CASE("Two level namespace", "[moduleFileBuilder]") {
 		IR::Namespace sub;
 		sub.m_name = subNs;
 		sub.m_representation = sub.m_name;
-		sub.m_parent = ns.m_name;
 		ns.m_namespaces.push_back(sub);
 	}
 
