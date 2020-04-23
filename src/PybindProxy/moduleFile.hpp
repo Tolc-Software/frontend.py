@@ -17,7 +17,7 @@ public:
 	* Add a module to the file.
 	* NOTE: The order these are added is the order they will be put in the file
 	*/
-	void addSubmodule(Module const& m) {
+	void addModule(Module const& m) {
 		m_modules.push_back(m);
 	}
 

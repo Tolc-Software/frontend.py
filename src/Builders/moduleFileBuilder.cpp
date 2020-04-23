@@ -1,24 +1,44 @@
 #include "Builders/moduleFileBuilder.hpp"
 #include "Builders/functionBuilder.hpp"
+#include "Builders/moduleBuilder.hpp"
 #include "PybindProxy/moduleFile.hpp"
 #include <IR/ir.hpp>
+#include <queue>
+
+namespace {
+struct ModulePair {
+	IR::Namespace const& m_namespace;
+	PybindProxy::Module m_module;
+};
+}    // namespace
 
 namespace Builders {
 
 PybindProxy::ModuleFile buildModuleFile(IR::Namespace const& rootNamespace) {
-	std::string rootModuleName = "pybind11Module";
-	if (!rootNamespace.m_name.empty()) {
-		rootModuleName = rootNamespace.m_name;
+	PybindProxy::Module rootModule = Builders::buildModule(rootNamespace);
+	PybindProxy::ModuleFile moduleFile(rootModule);
+
+	std::queue<ModulePair> namespaces;
+	for (auto const& subNamespace : rootNamespace.m_namespaces) {
+		namespaces.push({subNamespace, Builders::buildModule(subNamespace)});
 	}
 
-	PybindProxy::Module m(rootModuleName);
+	while (!namespaces.empty()) {
+		auto const& [currentNamespace, currentModule] = namespaces.front();
 
-	for (auto const& function : rootNamespace.m_functions) {
-		m.addFunction(Builders::buildFunction(function));
+		moduleFile.addModule(currentModule);
+
+		// Go deeper into the nested namespaces
+		for (auto const& subNamespace : currentNamespace.m_namespaces) {
+			namespaces.push(
+			    {subNamespace, Builders::buildModule(subNamespace)});
+		}
+
+		// Need currentNamespace and currentModule to live this far
+		namespaces.pop();
 	}
 
-	PybindProxy::ModuleFile mf(m);
-	return mf;
+	return moduleFile;
 }
 }    // namespace Builders
 

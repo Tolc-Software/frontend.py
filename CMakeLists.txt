@@ -35,12 +35,13 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(IRSpecification)
 
 add_library(Frontend.py
+  src/Builders/functionBuilder.cpp
+  src/Builders/moduleBuilder.cpp
+  src/Builders/moduleFileBuilder.cpp
   src/Frontend/Python/frontend.cpp
   src/PybindProxy/function.cpp
   src/PybindProxy/module.cpp
   src/PybindProxy/moduleFile.cpp
-  src/Builders/functionBuilder.cpp
-  src/Builders/moduleFileBuilder.cpp
 )
 
 target_link_libraries(

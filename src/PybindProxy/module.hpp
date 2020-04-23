@@ -6,28 +6,31 @@
 
 namespace PybindProxy {
 
-    struct Module {
-	    explicit Module(std::string const& name, std::string const& parent = "")
-	        : m_name(name), m_parentModule(parent), m_functions() {}
+struct Module {
+	explicit Module(std::string const& name)
+	    : m_name(name), m_submodules({}), m_functions() {}
 
-	    void addFunction(Function const& function) {
-		    m_functions.push_back(function);
-	    }
+	void addFunction(Function const& function) {
+		m_functions.push_back(function);
+	}
 
-	    std::string const& getName() const {
-		    return m_name;
-	    }
+	std::string const& getName() const {
+		return m_name;
+	}
 
-	    std::string getPybind() const;
+	void addSubmodule(std::string const& child) {
+		m_submodules.push_back(child);
+	}
 
-	private:
-	    std::string m_name;
+	std::string getPybind() const;
 
-	    // If this is non empty,
-	    // then this module is a submodule
-	    std::string m_parentModule;
+private:
+	std::string m_name;
 
-	    std::vector<Function> m_functions;
-    };
+	// If this is non empty,
+	// then this module is a submodule
+	std::vector<std::string> m_submodules;
 
+	std::vector<Function> m_functions;
+};
 }

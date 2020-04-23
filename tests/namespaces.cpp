@@ -9,7 +9,6 @@ TEST_CASE("Namespaces turn into modules", "[namespaces]") {
 	std::string moduleName = "defaultModule";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
-	stage.keepAliveAfterTest();
 
 	auto cppCode = R"(
 namespace MyLib {

@@ -53,7 +53,14 @@ add_test(
   COMMAND ${CMAKE_COMMAND} -S. -Bbuild -GNinja)
 set_tests_properties(ConfigureTestStage PROPERTIES FIXTURES_SETUP TestStage)
 
-foreach(test functions.cpp namespaces.cpp PybindProxy/moduleFile.cpp PybindProxy/function.cpp)
+foreach(test
+    functions.cpp
+    namespaces.cpp
+    PybindProxy/moduleFile.cpp
+    PybindProxy/function.cpp
+    PybindProxy/module.cpp
+    Builders/moduleFileBuilder.cpp
+)
   # Ex: PybindProxy/moduleFile.cpp -> moduleFile
   get_filename_component(testName ${test} NAME_WLE)
 
