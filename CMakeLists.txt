@@ -40,6 +40,7 @@ add_library(Frontend.py
   src/Builders/moduleFileBuilder.cpp
   src/Frontend/Python/frontend.cpp
   src/PybindProxy/function.cpp
+  src/PybindProxy/class.cpp
   src/PybindProxy/module.cpp
   src/PybindProxy/moduleFile.cpp
 )
