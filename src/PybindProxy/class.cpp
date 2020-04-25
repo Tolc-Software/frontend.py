@@ -5,10 +5,11 @@
 namespace PybindProxy {
 
 std::string Class::getPybind(std::string const& moduleName) const {
-	std::string out =
-	    fmt::format("\tpy::class_<{name}>({moduleName}, \"{name}\")\n",
-	                fmt::arg("name", m_name),
-	                fmt::arg("moduleName", moduleName));
+	std::string out = fmt::format(
+	    "\tpy::class_<{fullyQualifiedName}>({moduleName}, \"{name}\")\n",
+	    fmt::arg("fullyQualifiedName", m_fullyQualifiedName),
+	    fmt::arg("name", m_name),
+	    fmt::arg("moduleName", moduleName));
 
 	for (auto const& init : m_constructors) {
 		out += fmt::format("\t\t.def(py::init<{}>())\n",

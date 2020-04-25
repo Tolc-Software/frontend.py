@@ -60,6 +60,7 @@ foreach(test
     PybindProxy/function.cpp
     PybindProxy/module.cpp
     PybindProxy/class.cpp
+    Builders/classBuilder.cpp
     Builders/moduleFileBuilder.cpp
 )
   # Ex: PybindProxy/moduleFile.cpp -> moduleFile

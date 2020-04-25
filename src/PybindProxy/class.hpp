@@ -15,7 +15,10 @@ struct Constructor {
 
 class Class {
 public:
-	explicit Class(std::string const& name) : m_name(name), m_functions() {}
+	explicit Class(std::string const& name,
+	               std::string const& fullyQualifiedName)
+	    : m_name(name), m_fullyQualifiedName(fullyQualifiedName),
+	      m_functions() {}
 
 	void addFunction(Function const& function) {
 		m_functions.push_back(function);
@@ -33,6 +36,7 @@ public:
 
 private:
 	std::string m_name;
+	std::string m_fullyQualifiedName;
 
 	std::vector<Function> m_functions;
 	std::vector<Constructor> m_constructors;
