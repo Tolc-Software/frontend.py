@@ -35,6 +35,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(IRSpecification)
 
 add_library(Frontend.py
+  src/Builders/classBuilder.cpp
   src/Builders/functionBuilder.cpp
   src/Builders/moduleBuilder.cpp
   src/Builders/moduleFileBuilder.cpp
