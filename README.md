@@ -4,20 +4,20 @@
 
 ### Conversion table ###
 
-| C++ concept            | Python translation      |
-| ------------------     |:-----------------------:|
-| Namespace              | Module                  |
-| Nested namespace       | Submodule               |
-| Class                  | Class                   |
-| Nested class           | ???                     |
-| Public Function        | Class function          |
-| Private Function       | Not converted           |
-| Const member           | Read only property      |
-| Non const member       | Read write property     |
-| Private member         | Not converted           |
-| Free function          | Function in module      |
-| Overloaded function    | ???                     |
-|                        |                         |
+| C++ concept                | Python translation      |
+| --------------------------:|------------------------:|
+| Namespace                  | Module                  |
+| Nested namespace           | Submodule               |
+| Class                      | Class                   |
+| Nested class               | ???                     |
+| Public Function            | Class function          |
+| Private Function           | Not converted           |
+| Public const member        | Read only property      |
+| Public non const member    | Read write property     |
+| Private member variables   | Not converted           |
+| Free function              | Function in module      |
+| Overloaded function        | ???                     |
+|                            |                         |
 
 **NOTE**: The term 'Not converted' means that the code can still be called from within `C++`, but is not callable from `python`.
 **NOTE**: '???' means that `frontend.py` does not support it *yet*.

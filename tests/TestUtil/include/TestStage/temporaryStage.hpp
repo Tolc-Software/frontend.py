@@ -156,9 +156,9 @@ class Test)" +
 
 	for (auto const& line : testBody) {
 		test += R"(
-        )" + line +
-		        '\n';
+        )" + line;
 	}
+	test += '\n';
 
 	// Make it easily runnable
 	test += R"(
