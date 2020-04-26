@@ -1,6 +1,33 @@
 # frontend.py #
 
+## What is supported ##
+
+### Conversion table ###
+
+| C++ concept            | Python translation      |
+| ------------------     |:-----------------------:|
+| Namespace              | Module                  |
+| Nested namespace       | Submodule               |
+| Class                  | Class                   |
+| Nested class           | ???                     |
+| Public Function        | Class function          |
+| Private Function       | Not converted           |
+| Const member           | Read only property      |
+| Non const member       | Read write property     |
+| Private member         | Not converted           |
+| Free function          | Function in module      |
+| Overloaded function    | ???                     |
+|                        |                         |
+|                        |                         |
+|                        |                         |
+|                        |                         |
+|                        |                         |
+
 ## Good to know ##
+
+### Frontend.py does not support `IR::Namespace`s with an empty name ###
+
+By default the `Parser` library does emit a `IR::Namespace` corresponding to the global namespace of whatever code it was parsing. To make `frontend.py` as general as possible, there is no default 'global module' made from a nameless `IR::Namespace`. This makes `frontend.py` take a general `namespace`, and recursively creates modules from it. If a parsed `C++` header is used as an input, then it is assumed that the global `namespace` is given a reasonable name.
 
 ### The test stage contains `pybind11` examples ###
 
