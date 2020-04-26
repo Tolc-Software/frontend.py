@@ -1,5 +1,6 @@
 #pragma once
 
+#include "PybindProxy/class.hpp"
 #include "PybindProxy/function.hpp"
 #include <string>
 #include <vector>
@@ -12,6 +13,10 @@ struct Module {
 
 	void addFunction(Function const& function) {
 		m_functions.push_back(function);
+	}
+
+	void addClass(Class const& c) {
+		m_classes.push_back(c);
 	}
 
 	std::string const& getName() const {
@@ -32,5 +37,6 @@ private:
 	std::vector<std::string> m_submodules;
 
 	std::vector<Function> m_functions;
+	std::vector<Class> m_classes;
 };
 }

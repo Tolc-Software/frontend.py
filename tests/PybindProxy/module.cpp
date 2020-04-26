@@ -50,3 +50,28 @@ TEST_CASE("Modules defines their submodules", "[module]") {
 		REQUIRE(contains(pybindCode, containsString));
 	}
 }
+
+TEST_CASE("Modules defines their classes", "[module]") {
+	std::string moduleName = "myTestModule";
+	PybindProxy::Module m(moduleName);
+
+	std::vector<std::string> classes = {"Cl", "MyClass", "OtherClass"};
+	for (auto const& cls : classes) {
+		PybindProxy::Class c(cls, cls);
+		m.addClass(c);
+	}
+
+	auto pybindCode = m.getPybind();
+	CAPTURE(pybindCode);
+
+	using TestUtil::contains;
+	for (auto const& cls : classes) {
+		auto containsString =
+		    fmt::format("\tpy::class_<{cls}>({moduleName}, \"{cls}\");\n",
+		                fmt::arg("cls", cls),
+		                fmt::arg("moduleName", moduleName));
+		CAPTURE(cls);
+		CAPTURE(containsString);
+		REQUIRE(contains(pybindCode, containsString));
+	}
+}

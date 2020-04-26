@@ -1,4 +1,5 @@
 #include "Builders/moduleBuilder.hpp"
+#include "Builders/classBuilder.hpp"
 #include "Builders/functionBuilder.hpp"
 #include "PybindProxy/module.hpp"
 #include <IR/ir.hpp>

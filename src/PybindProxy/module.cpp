@@ -10,6 +10,10 @@ std::string Module::getPybind() const {
 		out += fmt::format("\t{}.{};\n", m_name, function.getPybind());
 	}
 
+	for (auto const& cls : m_classes) {
+		out += fmt::format("\t{};\n", cls.getPybind(m_name));
+	}
+
 	// Define all the children
 	for (auto const& submodule : m_submodules) {
 		out += fmt::format(
