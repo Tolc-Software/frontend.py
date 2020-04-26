@@ -6,6 +6,8 @@ namespace Builders {
 PybindProxy::Class buildClass(IR::Struct const& s) {
 	PybindProxy::Class c(s.m_name, s.m_representation);
 
+	// TODO: Remove this when IR has support for constructors
+	auto addedConstructor = false;
 	for (auto const& [accessModifier, function] : s.m_functions) {
 		// Ignore private functions
 		if (accessModifier == IR::AccessModifier::Public) {
@@ -18,12 +20,18 @@ PybindProxy::Class buildClass(IR::Struct const& s) {
 					arguments.push_back(arg.m_type.m_representation);
 				}
 				c.addConstructor(PybindProxy::Constructor(arguments));
+				addedConstructor = true;
 				continue;
 			}
 
 			// Normal function
 			c.addFunction(buildFunction(function));
 		}
+	}
+
+	// No constructor -> add default constructor
+	if (!addedConstructor) {
+		c.addConstructor(PybindProxy::Constructor({}));
 	}
 
 	return c;

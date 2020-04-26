@@ -54,6 +54,7 @@ add_test(
 set_tests_properties(ConfigureTestStage PROPERTIES FIXTURES_SETUP TestStage)
 
 foreach(test
+    classes.cpp
     functions.cpp
     namespaces.cpp
     PybindProxy/moduleFile.cpp

@@ -13,6 +13,10 @@ PybindProxy::Module buildModule(IR::Namespace const& ns) {
 		builtModule.addFunction(Builders::buildFunction(function));
 	}
 
+	for (auto const& cls : ns.m_structs) {
+		builtModule.addClass(Builders::buildClass(cls));
+	}
+
 	for (auto const& subNamespace : ns.m_namespaces) {
 		builtModule.addSubmodule(subNamespace.m_name);
 	}
