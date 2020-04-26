@@ -11,12 +11,12 @@ TEST_CASE("Empty class", "[class]") {
 	CAPTURE(pybindCode);
 
 	using TestUtil::contains;
-	auto containsString =
+	auto expectedContains =
 	    fmt::format(R"(py::class_<{className}>({moduleName}, "{className}"))",
 	                fmt::arg("className", className),
 	                fmt::arg("moduleName", moduleName));
-	CAPTURE(containsString);
-	REQUIRE(contains(pybindCode, containsString));
+	CAPTURE(expectedContains);
+	REQUIRE(contains(pybindCode, expectedContains));
 }
 
 TEST_CASE("Class with functions", "[class]") {
@@ -34,11 +34,12 @@ TEST_CASE("Class with functions", "[class]") {
 
 	using TestUtil::contains;
 	for (auto const& function : functions) {
-		auto containsString = fmt::format("\t.def(\"{function}\", &{function}",
-		                                  fmt::arg("function", function));
+		auto expectedContains =
+		    fmt::format("\t.def(\"{function}\", &{function}",
+		                fmt::arg("function", function));
 		CAPTURE(function);
-		CAPTURE(containsString);
-		REQUIRE(contains(pybindCode, containsString));
+		CAPTURE(expectedContains);
+		REQUIRE(contains(pybindCode, expectedContains));
 	}
 }
 
@@ -54,11 +55,11 @@ TEST_CASE("Class with constructor", "[class]") {
 	CAPTURE(pybindCode);
 
 	using TestUtil::contains;
-	auto containsString =
+	auto expectedContains =
 	    fmt::format("\t.def(py::init<{arguments}>())",
 	                fmt::arg("arguments", fmt::join(arguments, ", ")));
-	CAPTURE(containsString);
-	REQUIRE(contains(pybindCode, containsString));
+	CAPTURE(expectedContains);
+	REQUIRE(contains(pybindCode, expectedContains));
 }
 
 TEST_CASE("Class with member variables", "[class]") {
@@ -81,22 +82,22 @@ TEST_CASE("Class with member variables", "[class]") {
 
 	using TestUtil::contains;
 	for (auto const& variable : constVariables) {
-		auto containsString = fmt::format(
+		auto expectedContains = fmt::format(
 		    "\t.def_readonly(\"{variable}\", &{className}::{variable})",
 		    fmt::arg("variable", variable),
 		    fmt::arg("className", className));
 
-		CAPTURE(containsString);
-		REQUIRE(contains(pybindCode, containsString));
+		CAPTURE(expectedContains);
+		REQUIRE(contains(pybindCode, expectedContains));
 	}
 
 	for (auto const& variable : nonConstVariables) {
-		auto containsString = fmt::format(
+		auto expectedContains = fmt::format(
 		    "\t.def_readwrite(\"{variable}\", &{className}::{variable})",
 		    fmt::arg("variable", variable),
 		    fmt::arg("className", className));
 
-		CAPTURE(containsString);
-		REQUIRE(contains(pybindCode, containsString));
+		CAPTURE(expectedContains);
+		REQUIRE(contains(pybindCode, expectedContains));
 	}
 }

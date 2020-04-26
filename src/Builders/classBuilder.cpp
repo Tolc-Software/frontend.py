@@ -29,6 +29,12 @@ PybindProxy::Class buildClass(IR::Struct const& s) {
 		}
 	}
 
+	for (auto const& [accessModifier, variable] : s.m_memberVariables) {
+		if (accessModifier == IR::AccessModifier::Public) {
+			c.addMemberVariable(variable.m_name, variable.m_type.m_isConst);
+		}
+	}
+
 	// No constructor -> add default constructor
 	if (!addedConstructor) {
 		c.addConstructor(PybindProxy::Constructor({}));

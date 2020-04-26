@@ -16,13 +16,28 @@ TEST_CASE("Class within namespace", "[classBuilder]") {
 	auto pybind = myStruct.getPybind(moduleName);
 	CAPTURE(pybind);
 
-	auto pybindCode = fmt::format(
-	    R"(py::class_<{fullyQualifiedClassName}>({moduleName}, "{className}");)",
+	auto expectedContains = fmt::format(
+	    R"(py::class_<{fullyQualifiedClassName}>({moduleName}, "{className}"))",
 	    fmt::arg("fullyQualifiedClassName", s.m_representation),
 	    fmt::arg("moduleName", moduleName),
 	    fmt::arg("className", s.m_name));
-	CAPTURE(pybindCode);
-	REQUIRE(TestUtil::contains(pybind, pybindCode));
+	CAPTURE(expectedContains);
+	REQUIRE(TestUtil::contains(pybind, expectedContains));
+}
+
+TEST_CASE("Empty class gets default constructor", "[classBuilder]") {
+	std::string moduleName = "MyModule";
+	IR::Struct s;
+	s.m_name = "MyStruct";
+	s.m_representation = s.m_name;
+
+	auto myStruct = Builders::buildClass(s);
+	auto pybind = myStruct.getPybind(moduleName);
+	CAPTURE(pybind);
+
+	auto expectedContains = "def(py::init<>())";
+	CAPTURE(expectedContains);
+	REQUIRE(TestUtil::contains(pybind, expectedContains));
 }
 
 TEST_CASE("Class with a constructor", "[classBuilder]") {
@@ -46,10 +61,10 @@ TEST_CASE("Class with a constructor", "[classBuilder]") {
 	auto pybind = myStruct.getPybind(moduleName);
 	CAPTURE(pybind);
 
-	auto pybindCode = fmt::format("\t.def(py::init<{type}>());",
-	                              fmt::arg("type", t.m_representation));
-	CAPTURE(pybindCode);
-	REQUIRE(TestUtil::contains(pybind, pybindCode));
+	auto expectedContains = fmt::format("\t.def(py::init<{type}>())",
+	                                    fmt::arg("type", t.m_representation));
+	CAPTURE(expectedContains);
+	REQUIRE(TestUtil::contains(pybind, expectedContains));
 }
 
 TEST_CASE("Class with functions", "[classBuilder]") {
@@ -81,9 +96,51 @@ TEST_CASE("Class with functions", "[classBuilder]") {
 	CAPTURE(pybind);
 
 	for (auto const& [function, type] : functions) {
-		auto pybindCode = fmt::format("\t.def(\"{function}\", &{function}",
-		                              fmt::arg("function", function));
-		CAPTURE(pybindCode);
-		REQUIRE(TestUtil::contains(pybind, pybindCode));
+		auto expectedContains =
+		    fmt::format("\t.def(\"{function}\", &{function}",
+		                fmt::arg("function", function));
+		CAPTURE(expectedContains);
+		REQUIRE(TestUtil::contains(pybind, expectedContains));
+	}
+}
+
+TEST_CASE("Class with member variables", "[classBuilder]") {
+	struct Var {
+		std::string name;
+		std::string type;
+		bool isConst;
+	};
+	std::vector<Var> variables = {Var({"v0", "int", true}),
+	                              Var({"s", "const std::string&", false}),
+	                              Var({"myVar", "double", false})};
+
+	std::string moduleName = "MyModule";
+	IR::Struct s;
+	s.m_name = "MyStruct";
+	s.m_representation = s.m_name;
+
+	for (auto const& var : variables) {
+		IR::Variable v;
+		v.m_name = var.name;
+		IR::Type t;
+		t.m_representation = var.type;
+		t.m_isConst = var.isConst;
+		v.m_type = t;
+		s.m_memberVariables.push_back({IR::AccessModifier::Public, v});
+	}
+
+	auto myStruct = Builders::buildClass(s);
+	auto pybind = myStruct.getPybind(moduleName);
+	CAPTURE(pybind);
+
+	for (auto const& var : variables) {
+		auto accessor = var.isConst ? "readonly" : "readwrite";
+		auto expectedContains = fmt::format(
+		    R"(def_{accessor}("{variableName}", &{className}::{variableName}))",
+		    fmt::arg("accessor", accessor),
+		    fmt::arg("variableName", var.name),
+		    fmt::arg("className", s.m_name));
+		CAPTURE(expectedContains);
+		REQUIRE(TestUtil::contains(pybind, expectedContains));
 	}
 }

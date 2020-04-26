@@ -17,13 +17,13 @@ TEST_CASE("Modules defines their functions", "[module]") {
 
 	using TestUtil::contains;
 	for (auto const& function : functions) {
-		auto containsString =
+		auto expectedContains =
 		    fmt::format(R"({module}.def("{function}", &{function})",
 		                fmt::arg("module", moduleName),
 		                fmt::arg("function", function));
 		CAPTURE(function);
-		CAPTURE(containsString);
-		REQUIRE(contains(pybindCode, containsString));
+		CAPTURE(expectedContains);
+		REQUIRE(contains(pybindCode, expectedContains));
 	}
 }
 
@@ -41,13 +41,13 @@ TEST_CASE("Modules defines their submodules", "[module]") {
 
 	using TestUtil::contains;
 	for (auto const& submodule : submodules) {
-		auto containsString = fmt::format(
+		auto expectedContains = fmt::format(
 		    R"(auto {submodule} = {module}.def_submodule("{submodule}");)",
 		    fmt::arg("module", moduleName),
 		    fmt::arg("submodule", submodule));
 		CAPTURE(submodule);
-		CAPTURE(containsString);
-		REQUIRE(contains(pybindCode, containsString));
+		CAPTURE(expectedContains);
+		REQUIRE(contains(pybindCode, expectedContains));
 	}
 }
 
@@ -66,12 +66,12 @@ TEST_CASE("Modules defines their classes", "[module]") {
 
 	using TestUtil::contains;
 	for (auto const& cls : classes) {
-		auto containsString =
+		auto expectedContains =
 		    fmt::format("\tpy::class_<{cls}>({moduleName}, \"{cls}\");\n",
 		                fmt::arg("cls", cls),
 		                fmt::arg("moduleName", moduleName));
 		CAPTURE(cls);
-		CAPTURE(containsString);
-		REQUIRE(contains(pybindCode, containsString));
+		CAPTURE(expectedContains);
+		REQUIRE(contains(pybindCode, expectedContains));
 	}
 }
