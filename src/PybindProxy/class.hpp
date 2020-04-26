@@ -18,7 +18,7 @@ public:
 	explicit Class(std::string const& name,
 	               std::string const& fullyQualifiedName)
 	    : m_name(name), m_fullyQualifiedName(fullyQualifiedName),
-	      m_functions() {}
+	      m_constructors(), m_functions(), m_memberVariables() {}
 
 	void addFunction(Function const& function) {
 		m_functions.push_back(function);
@@ -28,6 +28,10 @@ public:
 		m_constructors.push_back(constructor);
 	}
 
+	void addMemberVariable(std::string const& variableName, bool isConst) {
+		m_memberVariables.push_back({variableName, isConst});
+	}
+
 	std::string const& getName() const {
 		return m_name;
 	}
@@ -35,10 +39,16 @@ public:
 	std::string getPybind(std::string const& moduleName) const;
 
 private:
+	struct MemberVariable {
+		std::string m_name;
+		bool m_isConst;
+	};
+
 	std::string m_name;
 	std::string m_fullyQualifiedName;
 
-	std::vector<Function> m_functions;
 	std::vector<Constructor> m_constructors;
+	std::vector<Function> m_functions;
+	std::vector<MemberVariable> m_memberVariables;
 };
 }    // namespace PybindProxy

@@ -60,3 +60,43 @@ TEST_CASE("Class with constructor", "[class]") {
 	CAPTURE(containsString);
 	REQUIRE(contains(pybindCode, containsString));
 }
+
+TEST_CASE("Class with member variables", "[class]") {
+	std::string moduleName = "NewlyMadeModule";
+	std::string className = "SuperbClass";
+	PybindProxy::Class c(className, className);
+
+	std::vector<std::string> constVariables = {"myInt", "var", "yes"};
+	for (auto const& variable : constVariables) {
+		c.addMemberVariable(variable, true);
+	}
+
+	std::vector<std::string> nonConstVariables = {"myOtherInt", "var2", "no"};
+	for (auto const& variable : nonConstVariables) {
+		c.addMemberVariable(variable, false);
+	}
+
+	auto pybindCode = c.getPybind(moduleName);
+	CAPTURE(pybindCode);
+
+	using TestUtil::contains;
+	for (auto const& variable : constVariables) {
+		auto containsString = fmt::format(
+		    "\t.def_readonly(\"{variable}\", &{className}::{variable})",
+		    fmt::arg("variable", variable),
+		    fmt::arg("className", className));
+
+		CAPTURE(containsString);
+		REQUIRE(contains(pybindCode, containsString));
+	}
+
+	for (auto const& variable : nonConstVariables) {
+		auto containsString = fmt::format(
+		    "\t.def_readwrite(\"{variable}\", &{className}::{variable})",
+		    fmt::arg("variable", variable),
+		    fmt::arg("className", className));
+
+		CAPTURE(containsString);
+		REQUIRE(contains(pybindCode, containsString));
+	}
+}
