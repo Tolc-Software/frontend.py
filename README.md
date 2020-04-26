@@ -20,6 +20,7 @@
 |                        |                         |
 
 **NOTE**: The term 'Not converted' means that the code can still be called from within `C++`, but is not callable from `python`.
+**NOTE**: '???' means that `frontend.py` does not support it *yet*.
 
 ## Good to know ##
 
