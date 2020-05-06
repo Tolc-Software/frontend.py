@@ -4,7 +4,7 @@ include(FetchContent)
 FetchContent_Declare(
   Catch2
   GIT_REPOSITORY git@github.com:catchorg/Catch2.git
-  GIT_TAG v2.11.0)
+  GIT_TAG v2.12.1)
 FetchContent_MakeAvailable(Catch2)
 
 FetchContent_Declare(
@@ -58,6 +58,7 @@ foreach(test
     functions.cpp
     memberVariables.cpp
     namespaces.cpp
+    userDefined.cpp
     PybindProxy/moduleFile.cpp
     PybindProxy/function.cpp
     PybindProxy/module.cpp

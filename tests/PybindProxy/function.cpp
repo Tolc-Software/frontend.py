@@ -1,4 +1,5 @@
 #include "PybindProxy/function.hpp"
+#include "Helpers/enumsToString.hpp"
 #include "TestUtil/string.hpp"
 #include <catch2/catch.hpp>
 #include <fmt/format.h>
@@ -30,5 +31,31 @@ TEST_CASE("Function with arguments", "[function]") {
 
 	for (auto const& arg : args) {
 		REQUIRE(contains(pybindCode, fmt::format(R"(py::arg("{}"))", arg)));
+	}
+}
+
+TEST_CASE("Return value policy", "[function]") {
+	using ReturnValue = PybindProxy::Function::return_value_policy;
+	std::vector<ReturnValue> policies = {ReturnValue::automatic,
+	                                     ReturnValue::take_ownership,
+	                                     ReturnValue::copy,
+	                                     ReturnValue::move,
+	                                     ReturnValue::reference,
+	                                     ReturnValue::reference_internal,
+	                                     ReturnValue::automatic,
+	                                     ReturnValue::automatic_reference};
+
+	for (auto const& policy : policies) {
+		PybindProxy::Function f("f", "f");
+		f.setReturnValuePolicy(policy);
+
+		auto pybindCode = f.getPybind();
+		auto containsString = fmt::format(
+		    R"(, py::{})", Helpers::returnValuePolicyToString(policy));
+
+		CAPTURE(pybindCode);
+		CAPTURE(containsString);
+
+		REQUIRE(TestUtil::contains(pybindCode, containsString));
 	}
 }

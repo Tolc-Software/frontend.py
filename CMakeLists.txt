@@ -39,6 +39,7 @@ add_library(Frontend.py
   src/Builders/functionBuilder.cpp
   src/Builders/moduleBuilder.cpp
   src/Builders/moduleFileBuilder.cpp
+  src/Helpers/enumsToString.cpp
   src/Frontend/Python/frontend.cpp
   src/PybindProxy/function.cpp
   src/PybindProxy/class.cpp

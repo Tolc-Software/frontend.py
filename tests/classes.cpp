@@ -5,7 +5,7 @@
 #include <catch2/catch.hpp>
 #include <fmt/format.h>
 
-TEST_CASE("Classes", "[namespaces]") {
+TEST_CASE("Classes", "[classes]") {
 	std::string moduleName = "defaultModule";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);

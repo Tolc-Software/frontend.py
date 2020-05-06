@@ -1,23 +1,55 @@
 #pragma once
 
+#include <optional>
 #include <string>
 #include <vector>
 
 namespace PybindProxy {
-	struct Function {
-	    Function(std::string const& name, std::string const& fullyQualifiedName)
-	        : m_name(name), m_fullyQualifiedName(fullyQualifiedName),
-	          m_arguments({}) {}
+class Function {
+public:
+	Function(std::string const& name, std::string const& fullyQualifiedName)
+	    : m_name(name), m_fullyQualifiedName(fullyQualifiedName),
+	      m_returnValuePolicy(std::nullopt), m_arguments({}) {}
 
-	    std::string getPybind() const;
+	/**
+	* Creates a string corresponding to the pybind11 conversion of this function.
+	* E.g.
+	*   def("myFunction", &SomeNamespace::myFunction)
+	*/
+	std::string getPybind() const;
 
-	    void addArgument(std::string const& argument) {
-		    m_arguments.push_back(argument);
-	    };
+	/**
+	* Adds an argument name.
+	* E.g.
+	*   f(int i) would require addArgument("i")
+	*/
+	void addArgument(std::string const& argument);
 
-	private:
-	    std::string m_name;
-	    std::string m_fullyQualifiedName;
-	    std::vector<std::string> m_arguments;
-    };
+	// These are all 1-to-1 with pybind11
+	enum class return_value_policy {
+		take_ownership,
+		copy,
+		move,
+		reference,
+		reference_internal,
+		automatic,
+		automatic_reference
+	};
+
+	/**
+	* Sets the return value policy for the function.
+	* E.g.
+	*   An input of "return_value_policy::take_ownership"
+	*   would result in python calling delete on the object
+	*   when it's garbage collected
+	* NOTE: If not put in, the return_value_policy::automatic is used
+	*/
+	void setReturnValuePolicy(return_value_policy policy);
+
+private:
+	std::string m_name;
+	std::string m_fullyQualifiedName;
+	std::optional<return_value_policy> m_returnValuePolicy;
+	std::vector<std::string> m_arguments;
+};
 }
