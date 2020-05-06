@@ -24,6 +24,10 @@
 
 ## Good to know ##
 
+### `frontend.py` assumes that `C++` code does not let users take care of memory management ###
+
+This means that functions returning a pointer are not treated as transfers of ownership. `frontend.py` just makes `python` see a reference of the pointer and it is assumed that the `C++` code cleans up after the object.
+
 ### Frontend.py does not support `IR::Namespace`s with an empty name ###
 
 By default the `Parser` library does emit a `IR::Namespace` corresponding to the global namespace of whatever code it was parsing. To make `frontend.py` as general as possible, there is no default 'global module' made from a nameless `IR::Namespace`. This makes `frontend.py` take a general `namespace`, and recursively creates modules from it. If a parsed `C++` header is used as an input, then it is assumed that the global `namespace` is given a reasonable name.
