@@ -17,6 +17,9 @@
 | Private member variables   | Not converted           |
 | Free function              | Function in module      |
 | Overloaded function        | ???                     |
+| Enum                       | ???                     |
+| Templated functions        | ???                     |
+| Specialized templates      | ???                     |
 |                            |                         |
 
 **NOTE**: The term 'Not converted' means that the code can still be called from within `C++`, but is not callable from `python`.
