@@ -1,10 +1,18 @@
 #include "test.hpp"
 #include <pybind11/pybind11.h>
+// This headear allows automatic conversion
+// of many stl containers such as vector
+#include <pybind11/stl.h>
+#include <vector>
 
 namespace py = pybind11;
 
 int add(int i, int j) {
 	return i + j;
+}
+
+std::vector<int> getValues(int i, int j) {
+	return {i, j};
 }
 
 PYBIND11_MODULE(myModule, myModule) {
@@ -18,6 +26,12 @@ PYBIND11_MODULE(myModule, myModule) {
 	myModule.def("add",
 	             &add,
 	             "A function which adds two numbers",
+	             py::arg("i"),
+	             py::arg("j"));
+
+	myModule.def("getValues",
+	             &getValues,
+	             "Get the input as an array",
 	             py::arg("i"),
 	             py::arg("j"));
 
