@@ -54,20 +54,21 @@ add_test(
 set_tests_properties(ConfigureTestStage PROPERTIES FIXTURES_SETUP TestStage)
 
 foreach(test
+    Builders/classBuilder.cpp
+    Builders/functionBuilder.cpp
+    Builders/moduleFileBuilder.cpp
+    Helpers/Pybind/extractIncludes.cpp
+    Helpers/combine.cpp
+    PybindProxy/class.cpp
+    PybindProxy/function.cpp
+    PybindProxy/module.cpp
+    PybindProxy/moduleFile.cpp
     classes.cpp
+    containers.cpp
     functions.cpp
     memberVariables.cpp
     namespaces.cpp
     userDefined.cpp
-    PybindProxy/moduleFile.cpp
-    PybindProxy/function.cpp
-    PybindProxy/module.cpp
-    PybindProxy/class.cpp
-    Builders/classBuilder.cpp
-    Builders/functionBuilder.cpp
-    Builders/moduleFileBuilder.cpp
-    Helpers/combine.cpp
-    Helpers/Pybind/extractIncludes.cpp
 )
   # Ex: PybindProxy/moduleFile.cpp -> moduleFile
   get_filename_component(testName ${test} NAME_WLE)

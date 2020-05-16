@@ -81,6 +81,5 @@ self.assertEqual(nested.d, 4.3)
 	                                  fmt::arg("moduleName", moduleName));
 
 	auto errorCode = TestUtil::runPybindTest(stage, cppCode, pythonTestCode);
-	stage.keepAliveAfterTest();
 	REQUIRE(errorCode == 0);
 }
