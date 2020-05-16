@@ -20,6 +20,12 @@ It is highly likely that when converting a large library, you may want to tweak 
 
 In some cases these may need to be broken, but you should consider them a strict guideline.
 
+## Internal code design goals ##
+
+### Builders are smart, they are building dumb objects ###
+
+You should see a strong connection between the `Builders` and the `PybindProxy` objects they are building. You should consider the objects as data aggregations, with builders making decisions on how they are stored the best. **The `PybindProxy` classes should not make decisions.**
+
 ## What is supported ##
 
 ### Conversion table ###
