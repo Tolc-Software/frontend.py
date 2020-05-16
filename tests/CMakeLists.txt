@@ -64,7 +64,10 @@ foreach(test
     PybindProxy/module.cpp
     PybindProxy/class.cpp
     Builders/classBuilder.cpp
+    Builders/functionBuilder.cpp
     Builders/moduleFileBuilder.cpp
+    Helpers/combine.cpp
+    Helpers/Pybind/extractIncludes.cpp
 )
   # Ex: PybindProxy/moduleFile.cpp -> moduleFile
   get_filename_component(testName ${test} NAME_WLE)

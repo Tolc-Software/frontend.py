@@ -9,21 +9,17 @@ namespace PybindProxy {
 
 class ModuleFile {
 public:
-	explicit ModuleFile(Module const& rootModule)
-	    : m_rootModuleName(rootModule.getName()),
-	      m_includes({"<pybind11/pybind11.h>"}), m_modules({rootModule}) {}
+	explicit ModuleFile(Module const& rootModule);
 
 	/**
 	* Add a module to the file.
 	* NOTE: The order these are added is the order they will be put in the file
 	*/
-	void addModule(Module const& m) {
-		m_modules.push_back(m);
-	}
+	void addModule(Module const& m);
 
-	std::filesystem::path getFilepath() const {
-		return m_rootModuleName + ".cpp";
-	}
+	void addInclude(std::string const& i);
+
+	std::filesystem::path getFilepath() const;
 
 	std::string getPybind() const;
 

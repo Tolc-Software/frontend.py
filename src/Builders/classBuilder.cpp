@@ -1,10 +1,15 @@
 #include "Builders/classBuilder.hpp"
 #include "Builders/functionBuilder.hpp"
+#include "Helpers/Pybind/extractIncludes.hpp"
+#include "Helpers/combine.hpp"
+#include <set>
+#include <string>
 
 namespace Builders {
 
 PybindProxy::Class buildClass(IR::Struct const& s) {
 	PybindProxy::Class c(s.m_name, s.m_representation);
+	std::set<std::string> includes;
 
 	// TODO: Remove this when IR has support for constructors
 	auto addedConstructor = false;
@@ -18,6 +23,8 @@ PybindProxy::Class buildClass(IR::Struct const& s) {
 				std::vector<std::string> arguments;
 				for (auto const& arg : function.m_arguments) {
 					arguments.push_back(arg.m_type.m_representation);
+					includes.merge(
+					    Helpers::Pybind::extractIncludes(arg.m_type));
 				}
 				c.addConstructor(PybindProxy::Constructor(arguments));
 				addedConstructor = true;
@@ -25,7 +32,10 @@ PybindProxy::Class buildClass(IR::Struct const& s) {
 			}
 
 			// Normal function
-			c.addFunction(buildFunction(function));
+			auto pyFunction = buildFunction(function);
+
+			Helpers::combine(includes, pyFunction.getIncludes());
+			c.addFunction(pyFunction);
 		}
 	}
 
@@ -38,6 +48,10 @@ PybindProxy::Class buildClass(IR::Struct const& s) {
 	// No constructor -> add default constructor
 	if (!addedConstructor) {
 		c.addConstructor(PybindProxy::Constructor({}));
+	}
+
+	for (auto const& include : includes) {
+		c.addInclude(include);
 	}
 
 	return c;

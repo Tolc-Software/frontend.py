@@ -36,6 +36,14 @@ public:
 		return m_name;
 	}
 
+	void addInclude(std::string const& i) {
+		m_includes.push_back(i);
+	}
+
+	std::vector<std::string> const& getIncludes() const {
+		return m_includes;
+	}
+
 	std::string getPybind(std::string const& moduleName) const;
 
 private:
@@ -50,5 +58,7 @@ private:
 	std::vector<Constructor> m_constructors;
 	std::vector<Function> m_functions;
 	std::vector<MemberVariable> m_memberVariables;
+
+	std::vector<std::string> m_includes;
 };
 }    // namespace PybindProxy

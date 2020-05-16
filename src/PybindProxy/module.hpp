@@ -27,6 +27,14 @@ struct Module {
 		m_submodules.push_back(child);
 	}
 
+	void addInclude(std::string const& i) {
+		m_includes.push_back(i);
+	}
+
+	std::vector<std::string> const& getIncludes() const {
+		return m_includes;
+	}
+
 	std::string getPybind() const;
 
 private:
@@ -38,5 +46,6 @@ private:
 
 	std::vector<Function> m_functions;
 	std::vector<Class> m_classes;
+	std::vector<std::string> m_includes;
 };
 }

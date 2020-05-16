@@ -1,9 +1,11 @@
 #include "Builders/moduleFileBuilder.hpp"
-#include "Builders/functionBuilder.hpp"
 #include "Builders/moduleBuilder.hpp"
+#include "Helpers/combine.hpp"
 #include "PybindProxy/moduleFile.hpp"
 #include <IR/ir.hpp>
 #include <queue>
+#include <set>
+#include <string>
 
 namespace {
 struct ModulePair {
@@ -17,6 +19,8 @@ namespace Builders {
 PybindProxy::ModuleFile buildModuleFile(IR::Namespace const& rootNamespace) {
 	PybindProxy::Module rootModule = Builders::buildModule(rootNamespace);
 	PybindProxy::ModuleFile moduleFile(rootModule);
+	std::set<std::string> includes;
+	Helpers::combine(includes, rootModule.getIncludes());
 
 	std::queue<ModulePair> namespaces;
 	for (auto const& subNamespace : rootNamespace.m_namespaces) {
@@ -28,6 +32,8 @@ PybindProxy::ModuleFile buildModuleFile(IR::Namespace const& rootNamespace) {
 
 		moduleFile.addModule(currentModule);
 
+		Helpers::combine(includes, currentModule.getIncludes());
+
 		// Go deeper into the nested namespaces
 		for (auto const& subNamespace : currentNamespace.m_namespaces) {
 			namespaces.push(
@@ -36,6 +42,11 @@ PybindProxy::ModuleFile buildModuleFile(IR::Namespace const& rootNamespace) {
 
 		// Need currentNamespace and currentModule to live this far
 		namespaces.pop();
+	}
+
+	// All unique includes from each module
+	for (auto const& include : includes) {
+		moduleFile.addInclude(include);
 	}
 
 	return moduleFile;

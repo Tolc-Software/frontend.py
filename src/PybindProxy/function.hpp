@@ -25,6 +25,14 @@ public:
 	*/
 	void addArgument(std::string const& argument);
 
+	void addInclude(std::string const& i) {
+		m_includes.push_back(i);
+	}
+
+	std::vector<std::string> const& getIncludes() const {
+		return m_includes;
+	}
+
 	// These are all 1-to-1 with pybind11
 	enum class return_value_policy {
 		take_ownership,
@@ -51,5 +59,6 @@ private:
 	std::string m_fullyQualifiedName;
 	std::optional<return_value_policy> m_returnValuePolicy;
 	std::vector<std::string> m_arguments;
+	std::vector<std::string> m_includes;
 };
 }

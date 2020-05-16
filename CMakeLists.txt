@@ -45,6 +45,7 @@ add_library(Frontend.py
   src/PybindProxy/class.cpp
   src/PybindProxy/module.cpp
   src/PybindProxy/moduleFile.cpp
+  src/Helpers/Pybind/extractIncludes.cpp
 )
 
 target_link_libraries(

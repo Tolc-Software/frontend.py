@@ -1,7 +1,6 @@
 #pragma once
 
 #include "IR/ir.hpp"
-#include "Parser/Parse.h"
 
 namespace TestUtil {
 

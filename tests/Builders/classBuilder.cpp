@@ -144,3 +144,47 @@ TEST_CASE("Class with member variables", "[classBuilder]") {
 		REQUIRE(TestUtil::contains(pybind, expectedContains));
 	}
 }
+
+TEST_CASE("Class with vector in constructor gives the correct include",
+          "[classBuilder]") {
+	std::string moduleName = "MyModule";
+	IR::Struct s;
+	s.m_name = "MyStruct";
+	IR::Function constructor;
+	constructor.m_name = s.m_name;
+	IR::Type arg;
+	IR::Type::Container c;
+	c.m_container = IR::ContainerType::Vector;
+	arg.m_type = c;
+	constructor.m_arguments.push_back({"myVar", arg});
+	s.m_functions.push_back({IR::AccessModifier::Public, constructor});
+
+	auto myStruct = Builders::buildClass(s);
+	auto includes = myStruct.getIncludes();
+	REQUIRE(includes.size() == 1);
+	for (auto const& include : includes) {
+		REQUIRE(include == "<pybind11/stl.h>");
+	}
+}
+
+TEST_CASE("Class with vector in member function gives the correct include",
+          "[classBuilder]") {
+	std::string moduleName = "MyModule";
+	IR::Struct s;
+	s.m_name = "SomeFunction";
+	IR::Function constructor;
+	constructor.m_name = s.m_name;
+	IR::Type arg;
+	IR::Type::Container c;
+	c.m_container = IR::ContainerType::Vector;
+	arg.m_type = c;
+	constructor.m_arguments.push_back({"myVar", arg});
+	s.m_functions.push_back({IR::AccessModifier::Public, constructor});
+
+	auto myStruct = Builders::buildClass(s);
+	auto includes = myStruct.getIncludes();
+	REQUIRE(includes.size() == 1);
+	for (auto const& include : includes) {
+		REQUIRE(include == "<pybind11/stl.h>");
+	}
+}

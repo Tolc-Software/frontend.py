@@ -4,6 +4,22 @@
 
 namespace PybindProxy {
 
+ModuleFile::ModuleFile(Module const& rootModule)
+    : m_rootModuleName(rootModule.getName()),
+      m_includes({"<pybind11/pybind11.h>"}), m_modules({rootModule}) {}
+
+void ModuleFile::addModule(Module const& m) {
+	m_modules.push_back(m);
+}
+
+void ModuleFile::addInclude(std::string const& i) {
+	m_includes.push_back(i);
+}
+
+std::filesystem::path ModuleFile::getFilepath() const {
+	return m_rootModuleName + ".cpp";
+}
+
 std::string ModuleFile::getPybind() const {
 	std::string out;
 	for (auto const& include : m_includes) {
@@ -21,7 +37,7 @@ PYBIND11_MODULE({}, {}))",
 	for (auto const& m : m_modules) {
 		out += m.getPybind();
 	}
-	out += "}";
+	out += '}';
 
 	return out;
 }

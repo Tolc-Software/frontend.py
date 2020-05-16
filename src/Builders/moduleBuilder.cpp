@@ -1,24 +1,44 @@
 #include "Builders/moduleBuilder.hpp"
 #include "Builders/classBuilder.hpp"
 #include "Builders/functionBuilder.hpp"
+#include "Helpers/combine.hpp"
 #include "PybindProxy/module.hpp"
 #include <IR/ir.hpp>
+#include <set>
+#include <string>
 
 namespace Builders {
 
+namespace {
+template <typename PybindProxyType>
+void combineIncludes(std::set<std::string>& includes,
+                     PybindProxyType const& pyType) {
+	Helpers::combine(includes, pyType.getIncludes());
+}
+}    // namespace
+
 PybindProxy::Module buildModule(IR::Namespace const& ns) {
 	PybindProxy::Module builtModule(ns.m_name);
+	std::set<std::string> includes;
 
 	for (auto const& function : ns.m_functions) {
-		builtModule.addFunction(Builders::buildFunction(function));
+		auto f = Builders::buildFunction(function);
+		combineIncludes(includes, f);
+		builtModule.addFunction(f);
 	}
 
 	for (auto const& cls : ns.m_structs) {
-		builtModule.addClass(Builders::buildClass(cls));
+		auto c = Builders::buildClass(cls);
+		combineIncludes(includes, c);
+		builtModule.addClass(c);
 	}
 
 	for (auto const& subNamespace : ns.m_namespaces) {
 		builtModule.addSubmodule(subNamespace.m_name);
+	}
+
+	for (auto const& include : includes) {
+		builtModule.addInclude(include);
 	}
 
 	return builtModule;
