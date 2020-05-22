@@ -63,16 +63,19 @@ foreach(test
     PybindProxy/function.cpp
     PybindProxy/module.cpp
     PybindProxy/moduleFile.cpp
-    classes.cpp
-    vectors.cpp
     arrays.cpp
+    classes.cpp
     functions.cpp
-    memberVariables.cpp
     maps.cpp
-    unordered_maps.cpp
-    sets.cpp
+    memberVariables.cpp
     namespaces.cpp
+    pairs.cpp
+    tuples.cpp
+    sets.cpp
+    unordered_maps.cpp
+    unordered_sets.cpp
     userDefined.cpp
+    vectors.cpp
 )
   # Ex: PybindProxy/moduleFile.cpp -> moduleFile
   get_filename_component(testName ${test} NAME_WLE)
