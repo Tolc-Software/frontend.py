@@ -69,6 +69,7 @@ foreach(test
     functions.cpp
     memberVariables.cpp
     maps.cpp
+    sets.cpp
     namespaces.cpp
     userDefined.cpp
 )
