@@ -64,7 +64,8 @@ foreach(test
     PybindProxy/module.cpp
     PybindProxy/moduleFile.cpp
     classes.cpp
-    containers.cpp
+    vectors.cpp
+    arrays.cpp
     functions.cpp
     memberVariables.cpp
     namespaces.cpp

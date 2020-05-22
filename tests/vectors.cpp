@@ -5,7 +5,7 @@
 #include <catch2/catch.hpp>
 #include <fmt/format.h>
 
-TEST_CASE("Classes", "[classes]") {
+TEST_CASE("Using std::vectors", "[vectors]") {
 	std::string moduleName = "defaultModule";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);

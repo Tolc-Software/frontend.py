@@ -38,7 +38,13 @@ std::set<std::string> extractIncludes(IR::Type const& type) {
 			case IR::ContainerType::Vector:
 				includes.insert("<pybind11/stl.h>");
 				break;
-			case IR::ContainerType::Allocator: break;
+			case IR::ContainerType::Allocator:
+			case IR::ContainerType::Greater:
+			case IR::ContainerType::Hash:
+			case IR::ContainerType::Less:
+			case IR::ContainerType::Pair:
+			case IR::ContainerType::Tuple:
+			case IR::ContainerType::Equal_to: break;
 		}
 
 		for (auto const& containedType : current.m_containedTypes) {
