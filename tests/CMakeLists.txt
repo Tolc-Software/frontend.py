@@ -68,6 +68,7 @@ foreach(test
     arrays.cpp
     functions.cpp
     memberVariables.cpp
+    maps.cpp
     namespaces.cpp
     userDefined.cpp
 )
