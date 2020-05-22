@@ -26,6 +26,16 @@ private:
 MyClass buildMyClass(std::string const& s) {
 	return MyClass(s);
 }
+
+class Owner {
+public:
+	explicit Owner(MyClass m) : m_myClass(m) {};
+
+	MyClass getMyClass() const { return m_myClass; }
+
+private:
+	MyClass m_myClass;
+};
 )";
 
 	auto pythonTestCode = fmt::format(R"(
@@ -33,6 +43,9 @@ phrase = "Hello from py"
 myClass = {moduleName}.buildMyClass(phrase);
 
 self.assertEqual(myClass.getS(), phrase)
+
+owner = {moduleName}.Owner(myClass)
+self.assertEqual(owner.getMyClass().getS(), phrase)
 )",
 	                                  fmt::arg("moduleName", moduleName));
 
