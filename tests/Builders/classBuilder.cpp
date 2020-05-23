@@ -11,6 +11,7 @@ TEST_CASE("Class within namespace", "[classBuilder]") {
 	s.m_name = "MyStruct";
 	s.m_representation = fmt::format("MyNamespace::{className}",
 	                                 fmt::arg("className", s.m_name));
+	s.m_hasImplicitDefaultConstructor = true;
 
 	auto myStruct = Builders::buildClass(s);
 	auto pybind = myStruct.getPybind(moduleName);
@@ -30,6 +31,7 @@ TEST_CASE("Empty class gets default constructor", "[classBuilder]") {
 	IR::Struct s;
 	s.m_name = "MyStruct";
 	s.m_representation = s.m_name;
+	s.m_hasImplicitDefaultConstructor = true;
 
 	auto myStruct = Builders::buildClass(s);
 	auto pybind = myStruct.getPybind(moduleName);
@@ -45,6 +47,7 @@ TEST_CASE("Class with a constructor", "[classBuilder]") {
 	IR::Struct s;
 	s.m_name = "MyStruct";
 	s.m_representation = s.m_name;
+	s.m_hasImplicitDefaultConstructor = true;
 
 	IR::Function f;
 	f.m_name = s.m_name;
@@ -72,6 +75,7 @@ TEST_CASE("Class with functions", "[classBuilder]") {
 	IR::Struct s;
 	s.m_name = "MyStruct";
 	s.m_representation = s.m_name;
+	s.m_hasImplicitDefaultConstructor = true;
 
 	std::vector<std::pair<std::string, std::string>> functions = {
 	    std::make_pair("f", "int"),
@@ -118,6 +122,7 @@ TEST_CASE("Class with member variables", "[classBuilder]") {
 	IR::Struct s;
 	s.m_name = "MyStruct";
 	s.m_representation = s.m_name;
+	s.m_hasImplicitDefaultConstructor = true;
 
 	for (auto const& var : variables) {
 		IR::Variable v;
@@ -150,6 +155,7 @@ TEST_CASE("Class with vector in constructor gives the correct include",
 	std::string moduleName = "MyModule";
 	IR::Struct s;
 	s.m_name = "MyStruct";
+	s.m_hasImplicitDefaultConstructor = true;
 	IR::Function constructor;
 	constructor.m_name = s.m_name;
 	IR::Type arg;
@@ -172,6 +178,7 @@ TEST_CASE("Class with vector in member function gives the correct include",
 	std::string moduleName = "MyModule";
 	IR::Struct s;
 	s.m_name = "SomeFunction";
+	s.m_hasImplicitDefaultConstructor = true;
 	IR::Function constructor;
 	constructor.m_name = s.m_name;
 	IR::Type arg;

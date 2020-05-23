@@ -12,7 +12,6 @@ PybindProxy::Class buildClass(IR::Struct const& s) {
 	std::set<std::string> includes;
 
 	// TODO: Remove this when IR has support for constructors
-	auto addedConstructor = false;
 	for (auto const& [accessModifier, function] : s.m_functions) {
 		// Ignore private functions
 		if (accessModifier == IR::AccessModifier::Public) {
@@ -27,7 +26,6 @@ PybindProxy::Class buildClass(IR::Struct const& s) {
 					    Helpers::Pybind::extractIncludes(arg.m_type));
 				}
 				c.addConstructor(PybindProxy::Constructor(arguments));
-				addedConstructor = true;
 				continue;
 			}
 
@@ -45,8 +43,8 @@ PybindProxy::Class buildClass(IR::Struct const& s) {
 		}
 	}
 
-	// No constructor -> add default constructor
-	if (!addedConstructor) {
+	// Add default constructor
+	if (s.m_hasImplicitDefaultConstructor) {
 		c.addConstructor(PybindProxy::Constructor({}));
 	}
 
