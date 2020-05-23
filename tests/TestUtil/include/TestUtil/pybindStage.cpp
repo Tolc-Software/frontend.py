@@ -1,6 +1,7 @@
 #include "TestUtil/pybindStage.hpp"
 #include "TestStage/stage.hpp"
 #include "TestStage/temporaryStage.hpp"
+#include "TestUtil/parse.hpp"
 #include <IR/ir.hpp>
 #include <Parser/Parse.hpp>
 #include <filesystem>
@@ -16,7 +17,7 @@ void PybindStage::addModuleFile(std::filesystem::path const& file,
 
 IR::Namespace PybindStage::parseModuleFile(std::string const& content) {
 	auto testFile = m_stage.addSourceFile(m_moduleName + ".hpp", content);
-	auto globalNS = Parser::parseFile(testFile.generic_string());
+	auto globalNS = TestUtil::parseFile(testFile.generic_string());
 	// The root namespace that is sent into will be the module name
 	// In this case it is the global namespace (m_name = "")
 	globalNS.m_name = m_moduleName;

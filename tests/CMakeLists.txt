@@ -17,7 +17,7 @@ FetchContent_MakeAvailable(Parser)
 add_library(TestUtil TestUtil/include/TestUtil/pybindStage.cpp)
 target_include_directories(TestUtil PUBLIC TestUtil/include)
 target_link_libraries(TestUtil PRIVATE Tolc::Parser frontend.py_options
-                                       frontend.py_warnings)
+                                       frontend.py_warnings Catch2::Catch2)
 target_link_libraries(TestUtil PUBLIC IR::IR)
 
 # These are needed to use create_catch2_test
