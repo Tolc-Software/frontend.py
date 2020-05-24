@@ -10,7 +10,7 @@ int runPybindTest(TestUtil::PybindStage& stage,
                   std::string const& pythonUnittestCode) {
 	auto globalNS = stage.parseModuleFile(cppCode);
 
-	auto [file, content] = Frontend::Python::createModules(globalNS);
+	auto [file, content] = Frontend::Python::createModule(globalNS);
 
 	stage.addModuleFile(file, content);
 

@@ -8,7 +8,7 @@
 namespace Frontend::Python {
 
 std::pair<std::filesystem::path, std::string>
-createModules(IR::Namespace const& rootNamespace) {
+createModule(IR::Namespace const& rootNamespace) {
 	auto moduleFile = Builders::buildModuleFile(rootNamespace);
 
 	return std::make_pair(moduleFile.getFilepath(), moduleFile.getPybind());
