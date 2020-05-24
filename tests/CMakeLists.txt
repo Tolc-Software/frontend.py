@@ -60,6 +60,7 @@ foreach(test
     Helpers/Pybind/extractIncludes.cpp
     Helpers/combine.cpp
     PybindProxy/class.cpp
+    PybindProxy/enum.cpp
     PybindProxy/function.cpp
     PybindProxy/module.cpp
     PybindProxy/moduleFile.cpp
