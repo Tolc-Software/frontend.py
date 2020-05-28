@@ -1,4 +1,5 @@
 #include "Builders/classBuilder.hpp"
+#include "Builders/enumBuilder.hpp"
 #include "Builders/functionBuilder.hpp"
 #include "Helpers/Pybind/extractIncludes.hpp"
 #include "Helpers/combine.hpp"
@@ -46,6 +47,12 @@ PybindProxy::Class buildClass(IR::Struct const& s) {
 	// Add default constructor
 	if (s.m_hasImplicitDefaultConstructor) {
 		c.addConstructor(PybindProxy::Constructor({}));
+	}
+
+	for (auto const& [am, e] : s.m_enums) {
+		if (am == IR::AccessModifier::Public) {
+			c.addEnum(buildEnum(e));
+		}
 	}
 
 	for (auto const& include : includes) {

@@ -14,6 +14,10 @@ std::string Module::getPybind() const {
 		out += fmt::format("\t{};\n", cls.getPybind(m_name));
 	}
 
+	for (auto const& e : m_enums) {
+		out += fmt::format("\t{};\n", e.getPybind(m_name));
+	}
+
 	// Define all the children
 	for (auto const& submodule : m_submodules) {
 		out += fmt::format(

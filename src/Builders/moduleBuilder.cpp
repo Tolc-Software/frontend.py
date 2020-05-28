@@ -1,5 +1,6 @@
 #include "Builders/moduleBuilder.hpp"
 #include "Builders/classBuilder.hpp"
+#include "Builders/enumBuilder.hpp"
 #include "Builders/functionBuilder.hpp"
 #include "Helpers/combine.hpp"
 #include "PybindProxy/module.hpp"
@@ -31,6 +32,10 @@ PybindProxy::Module buildModule(IR::Namespace const& ns) {
 		auto c = Builders::buildClass(cls);
 		combineIncludes(includes, c);
 		builtModule.addClass(c);
+	}
+
+	for (auto const& e : ns.m_enums) {
+		builtModule.addEnum(Builders::buildEnum(e));
 	}
 
 	for (auto const& subNamespace : ns.m_namespaces) {

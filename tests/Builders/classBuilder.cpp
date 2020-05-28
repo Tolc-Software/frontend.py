@@ -195,3 +195,27 @@ TEST_CASE("Class with vector in member function gives the correct include",
 		REQUIRE(include == "<pybind11/stl.h>");
 	}
 }
+
+TEST_CASE("Class with enum", "[classBuilder]") {
+	std::string moduleName = "MyModule";
+	IR::Struct s;
+	s.m_name = "SomeFunction";
+	s.m_hasImplicitDefaultConstructor = true;
+	IR::Enum e;
+	e.m_isScoped = true;
+	e.m_name = "MyEnum";
+	e.m_representation = moduleName + "::" + e.m_name;
+	e.m_values.push_back("Hi");
+	s.m_enums.push_back({IR::AccessModifier::Public, e});
+
+	auto myStruct = Builders::buildClass(s);
+	auto pybind = myStruct.getPybind(moduleName);
+	auto expectedContains = fmt::format(
+	    R"(py::enum_<{representation}>({structureName}, "{enumName}")",
+	    fmt::arg("representation", e.m_representation),
+	    fmt::arg("enumName", e.m_name),
+	    fmt::arg("structureName", s.m_name));
+	CAPTURE(pybind);
+	CAPTURE(expectedContains);
+	REQUIRE(TestUtil::contains(pybind, expectedContains));
+}

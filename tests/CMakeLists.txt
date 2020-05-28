@@ -67,6 +67,7 @@ foreach(test
     PybindProxy/moduleFile.cpp
     arrays.cpp
     classes.cpp
+    enums.cpp
     functions.cpp
     maps.cpp
     memberVariables.cpp

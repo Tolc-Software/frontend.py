@@ -32,6 +32,21 @@ std::string Class::getPybind(std::string const& moduleName) const {
 		    fmt::arg("variableName", variable.m_name));
 	}
 
+	// To put the enums at the end of the class
+	// we have to do some trickery since we are not allowed to insert the last ';'
+	if (!m_enums.empty()) {
+		// End the class statement and put in a few newlines before enums
+		out += ";\n\n";
+
+		for (auto const& e : m_enums) {
+			out += fmt::format("{};\n", e.getPybind(m_name));
+		}
+		// The last endline
+		out.pop_back();
+		// The last ';'
+		out.pop_back();
+	}
+
 	return out;
 }
 }

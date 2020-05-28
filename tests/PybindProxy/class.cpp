@@ -43,6 +43,34 @@ TEST_CASE("Class with functions", "[class]") {
 	}
 }
 
+TEST_CASE("Class with enum", "[class]") {
+	std::string moduleName = "myModule";
+	std::string className = "myFreshClass";
+	PybindProxy::Class c(className, className);
+
+	std::string enumName = "MyEnum";
+	std::string fullyQualifiedName = moduleName + "::" + enumName;
+	PybindProxy::Enum e(enumName, fullyQualifiedName);
+	e.setScoped(false);
+	e.addValue("Hi");
+	c.addEnum(e);
+
+	using TestUtil::contains;
+	auto expectedContains = fmt::format(
+	    R"(py::enum_<{fullyQualifiedName}>({className}, "{enumName}")",
+	    fmt::arg("fullyQualifiedName", fullyQualifiedName),
+	    fmt::arg("enumName", enumName),
+	    fmt::arg("className", className));
+	auto pybind = c.getPybind(moduleName);
+	CAPTURE(pybind);
+	CAPTURE(expectedContains);
+	REQUIRE(TestUtil::contains(pybind, expectedContains));
+	// Require exporting since it is scoped
+	std::string exportValues = "\t.export_values()";
+	CAPTURE(exportValues);
+	REQUIRE(TestUtil::contains(pybind, exportValues));
+}
+
 TEST_CASE("Class with constructor", "[class]") {
 	std::string moduleName = "myModule";
 	std::string className = "myFreshClass";

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PybindProxy/class.hpp"
+#include "PybindProxy/enum.hpp"
 #include "PybindProxy/function.hpp"
 #include <string>
 #include <vector>
@@ -9,7 +10,8 @@ namespace PybindProxy {
 
 struct Module {
 	explicit Module(std::string const& name)
-	    : m_name(name), m_submodules({}), m_functions() {}
+	    : m_name(name), m_submodules({}), m_functions(), m_enums(),
+	      m_includes() {}
 
 	void addFunction(Function const& function) {
 		m_functions.push_back(function);
@@ -17,6 +19,10 @@ struct Module {
 
 	void addClass(Class const& c) {
 		m_classes.push_back(c);
+	}
+
+	void addEnum(Enum const& e) {
+		m_enums.push_back(e);
 	}
 
 	std::string const& getName() const {
@@ -46,6 +52,7 @@ private:
 
 	std::vector<Function> m_functions;
 	std::vector<Class> m_classes;
+	std::vector<Enum> m_enums;
 	std::vector<std::string> m_includes;
 };
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "PybindProxy/enum.hpp"
 #include "PybindProxy/function.hpp"
 #include <string>
 #include <vector>
@@ -18,7 +19,12 @@ public:
 	explicit Class(std::string const& name,
 	               std::string const& fullyQualifiedName)
 	    : m_name(name), m_fullyQualifiedName(fullyQualifiedName),
-	      m_constructors(), m_functions(), m_memberVariables() {}
+	      m_constructors(), m_functions(), m_memberVariables(), m_enums(),
+	      m_includes() {}
+
+	void addEnum(Enum const& e) {
+		m_enums.push_back(e);
+	}
 
 	void addFunction(Function const& function) {
 		m_functions.push_back(function);
@@ -58,6 +64,7 @@ private:
 	std::vector<Constructor> m_constructors;
 	std::vector<Function> m_functions;
 	std::vector<MemberVariable> m_memberVariables;
+	std::vector<Enum> m_enums;
 
 	std::vector<std::string> m_includes;
 };
