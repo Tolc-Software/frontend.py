@@ -56,6 +56,7 @@ set_tests_properties(ConfigureTestStage PROPERTIES FIXTURES_SETUP TestStage)
 foreach(test
     Builders/classBuilder.cpp
     Builders/functionBuilder.cpp
+    Builders/enumBuilder.cpp
     Builders/moduleFileBuilder.cpp
     Helpers/Pybind/extractIncludes.cpp
     Helpers/combine.cpp
