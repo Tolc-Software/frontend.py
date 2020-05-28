@@ -58,7 +58,7 @@ You should see a strong connection between the `Builders` and the `PybindProxy` 
 | std::set                   | set                     |
 | std::tuple                 | tuple                   |
 | std::unordered\_map        | dict                    |
-| std::unordered\_set        | dict                    |
+| std::unordered\_set        | set                     |
 | std::vector                | array                   |
 |                            |                         |
 
