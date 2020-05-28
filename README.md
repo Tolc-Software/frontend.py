@@ -28,7 +28,7 @@ You should see a strong connection between the `Builders` and the `PybindProxy` 
 
 ## What is supported ##
 
-### Conversion table ###
+### Conversion tables ###
 
 | C++ concept                | Python translation      |
 | --------------------------:|------------------------:|
@@ -43,11 +43,23 @@ You should see a strong connection between the `Builders` and the `PybindProxy` 
 | Private member variables   | Not converted           |
 | Free function              | Function in module      |
 | Overloaded function        | ???                     |
-| Enum                       | ???                     |
+| Enum                       | Python enum             |
 | Templated functions        | ???                     |
 | Specialized templates      | ???                     |
-| STL containers             | Default: ???            |
+| STL containers             | Default: See table      |
 | STL containers             | With mod: ???           |
+|                            |                         |
+
+| C++ STL container          | Python translation      |
+| --------------------------:|------------------------:|
+| std::array                 | array                   |
+| std::map                   | dict                    |
+| std::pair                  | tuple                   |
+| std::set                   | set                     |
+| std::tuple                 | tuple                   |
+| std::unordered\_map        | dict                    |
+| std::unordered\_set        | dict                    |
+| std::vector                | array                   |
 |                            |                         |
 
 **NOTE**: The term 'Not converted' means that the code can still be called from within `C++`, but is not callable from `python`.
