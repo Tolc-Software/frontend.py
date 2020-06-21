@@ -2,6 +2,7 @@ include_guard()
 # Requires other scripts
 include(${CMAKE_CURRENT_LIST_DIR}/Catch2Helpers.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/CodeCoverage.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/WarningsAndOptions.cmake)
 
 # Helper function to create a test
 function(setup_test)
@@ -25,9 +26,10 @@ function(setup_test)
     LINK_LIBRARIES
     Frontend.py
     CONAN_PKG::fmt
-    frontend.py_options
-    frontend.py_warnings
     ${ARG_LIBRARIES})
+
+  add_warnings(TARGET ${ARG_TEST_NAME})
+  add_options(TARGET ${ARG_TEST_NAME})
 
   # Assumes CodeCoverage.cmake is included Adds code coverage to the test and
   # adds it to the ccov-all target

@@ -16,9 +16,12 @@ FetchContent_MakeAvailable(Parser)
 # Everything put in TestUtil/include is available
 add_library(TestUtil TestUtil/include/TestUtil/pybindStage.cpp)
 target_include_directories(TestUtil PUBLIC TestUtil/include)
-target_link_libraries(TestUtil PRIVATE Tolc::Parser frontend.py_options
-                                       frontend.py_warnings Catch2::Catch2)
+target_link_libraries(TestUtil PRIVATE Tolc::Parser
+                                       Catch2::Catch2)
 target_link_libraries(TestUtil PUBLIC IR::IR)
+
+add_warnings(TARGET TestUtil)
+add_options(TARGET TestUtil)
 
 # These are needed to use create_catch2_test
 set(Catch2_FOUND TRUE)
@@ -31,8 +34,10 @@ include(${PROJECT_SOURCE_DIR}/cmake/SetupTest.cmake)
 
 add_library(TestStage TestUtil/include/TestStage/stage.cpp)
 target_include_directories(TestStage PUBLIC TestUtil/include)
-target_link_libraries(TestStage PRIVATE CONAN_PKG::fmt frontend.py_options
-                                        frontend.py_warnings)
+target_link_libraries(TestStage PRIVATE CONAN_PKG::fmt)
+
+add_warnings(TARGET TestStage)
+add_options(TARGET TestStage)
 
 # Use coverage of frontend
 target_code_coverage(Frontend.py)

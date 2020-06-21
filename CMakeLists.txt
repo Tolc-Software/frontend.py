@@ -12,15 +12,11 @@ enable_doxygen()
 include(cmake/ProjectSettings.cmake)
 
 include(cmake/WarningsAndOptions.cmake)
-add_warnings(TARGET frontend.py_warnings)
-add_options(TARGET frontend.py_options)
 
 # allow for static analysis options
 include(cmake/StaticAnalyzers.cmake)
 
 include(cmake/Sanitizers.cmake)
-# Set the sanitizer options on project_options
-enable_sanitizers(frontend.py_options)
 
 # Define run_conan
 include(cmake/ConanHelpers.cmake)
@@ -50,10 +46,16 @@ add_library(Frontend.py
   src/Helpers/Pybind/extractIncludes.cpp
 )
 
+add_warnings(TARGET Frontend.py)
+add_options(TARGET Frontend.py)
+
+# Set the sanitizer options on project_options
+enable_sanitizers(Frontend.py)
+
 target_link_libraries(
   Frontend.py
   PUBLIC IR::IR
-  PRIVATE CONAN_PKG::fmt frontend.py_options frontend.py_warnings)
+  PRIVATE CONAN_PKG::fmt)
 
 target_include_directories(
   Frontend.py
