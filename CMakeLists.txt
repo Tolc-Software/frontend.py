@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.15)
-
 project(
   Frontend.py
   VERSION 0.1
@@ -20,7 +19,10 @@ include(cmake/Sanitizers.cmake)
 
 # Define run_conan
 include(cmake/ConanHelpers.cmake)
-run_conan(REQUIRES fmt/6.1.2)
+# This helps with packaging
+set(FRONTEND.PY_CONAN_REQUIRES_PACKAGES fmt/6.1.2)
+find_conan_packages(REQUIRES
+  ${FRONTEND.PY_CONAN_REQUIRES_PACKAGES})
 
 include(FetchContent)
 FetchContent_Declare(
@@ -55,13 +57,12 @@ enable_sanitizers(Frontend.py)
 target_link_libraries(
   Frontend.py
   PUBLIC IR::IR
-  PRIVATE CONAN_PKG::fmt)
+  PRIVATE fmt::fmt)
 
-target_include_directories(
-  Frontend.py
-  PRIVATE src
-  PUBLIC include
-)
+target_include_directories(Frontend.py PRIVATE src)
+target_include_directories(Frontend.py PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
 
 set_target_properties(Frontend.py PROPERTIES CXX_STANDARD_REQUIRED ON
                                              CXX_EXTENSIONS OFF CXX_STANDARD 17)
@@ -80,5 +81,14 @@ if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   option(ENABLE_BENCHMARKS "Build the benchmarks" OFF)
   if(ENABLE_BENCHMARKS)
     # TODO: Add benchmarks
+  endif()
+
+  option(ENABLE_PACKAGING "Enables install and packaging via CPack" OFF)
+  if(ENABLE_PACKAGING)
+    if(BUILD_DEPENDENCIES_FROM_SOURCE)
+      message(FATAL_ERROR "It is not allowed to build a release package and build dependencies from source. Use a prebuilt library from CI.")
+    endif()
+
+    add_subdirectory(tools/packaging)
   endif()
 endif()

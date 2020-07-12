@@ -1,5 +1,42 @@
 include_guard()
 
+include(${PROJECT_SOURCE_DIR}/cmake/GetParser.cmake)
+
+option(BUILD_DEPENDENCIES_FROM_SOURCE "Building dependencies from source instead of downloading an asset" FALSE)
+set(parser_source_switch "")
+if(BUILD_DEPENDENCIES_FROM_SOURCE)
+  set(parser_source_switch "BUILD_FROM_SOURCE")
+endif()
+get_parser(ASSET_NAME Parser-${CMAKE_SYSTEM_NAME}-master.tar.gz ${parser_source_switch})
+
+# If we are not building from source we need to create some variables
+# containing the paths to the included system library
+if(NOT parser_source_switch)
+  # Defines get_system_include and format_includes
+  include(${parser_SOURCE_DIR}/lib/cmake/Parser/IncludePathHelpers.cmake)
+
+  # Set the include path for the system library in the variable
+  # We are using the standard library shipped
+  # with the downloaded llvm for include paths in the parsing
+  get_system_include(
+    VARIABLE
+      platform_include
+    LLVM_DIRECTORY
+      ${parser_SOURCE_DIR}/lib/Parser
+    LLVM_VERSION
+      ${PARSER_LLVM_VERSION})
+
+  format_includes(VARIABLE SYSTEM_INCLUDE_PATHS INCLUDES
+                  ${platform_include} SYSTEM)
+endif()
+
+# If Parser was built from source, the file should only be expanded with empty strings
+# and therefore use the default config from Parser.
+configure_file(
+  TestUtil/include/TestUtil/parserConfig.hpp.in
+  ${CMAKE_CURRENT_LIST_DIR}/TestUtil/include/TestUtil/parserConfig.hpp
+    @ONLY)
+
 include(FetchContent)
 FetchContent_Declare(
   Catch2
@@ -7,25 +44,18 @@ FetchContent_Declare(
   GIT_TAG v2.12.1)
 FetchContent_MakeAvailable(Catch2)
 
-FetchContent_Declare(
-  Parser
-  GIT_REPOSITORY git@github.com:srydell/Parser.git
-  GIT_TAG master)
-FetchContent_MakeAvailable(Parser)
+# These are needed to use create_catch2_test
+set(Catch2_FOUND TRUE)
+set(Catch2_INCLUDE_DIRS ${Catch2_SOURCE_DIR}/single_include)
 
 # Everything put in TestUtil/include is available
 add_library(TestUtil TestUtil/include/TestUtil/pybindStage.cpp)
 target_include_directories(TestUtil PUBLIC TestUtil/include)
-target_link_libraries(TestUtil PRIVATE Tolc::Parser
-                                       Catch2::Catch2)
+target_link_libraries(TestUtil PRIVATE Tolc::Parser Catch2::Catch2)
 target_link_libraries(TestUtil PUBLIC IR::IR)
 
 add_warnings(TARGET TestUtil)
 add_options(TARGET TestUtil)
-
-# These are needed to use create_catch2_test
-set(Catch2_FOUND TRUE)
-set(Catch2_INCLUDE_DIRS ${Catch2_SOURCE_DIR}/single_include)
 
 include(${PROJECT_SOURCE_DIR}/cmake/CodeCoverage.cmake)
 
@@ -34,7 +64,7 @@ include(${PROJECT_SOURCE_DIR}/cmake/SetupTest.cmake)
 
 add_library(TestStage TestUtil/include/TestStage/stage.cpp)
 target_include_directories(TestStage PUBLIC TestUtil/include)
-target_link_libraries(TestStage PRIVATE CONAN_PKG::fmt)
+target_link_libraries(TestStage PRIVATE fmt::fmt)
 
 add_warnings(TARGET TestStage)
 add_options(TARGET TestStage)
@@ -58,33 +88,33 @@ add_test(
   COMMAND ${CMAKE_COMMAND} -S. -Bbuild -GNinja)
 set_tests_properties(ConfigureTestStage PROPERTIES FIXTURES_SETUP TestStage)
 
-foreach(test
-    Builders/classBuilder.cpp
-    Builders/functionBuilder.cpp
-    Builders/enumBuilder.cpp
-    Builders/moduleFileBuilder.cpp
-    Helpers/Pybind/extractIncludes.cpp
-    Helpers/combine.cpp
-    PybindProxy/class.cpp
-    PybindProxy/enum.cpp
-    PybindProxy/function.cpp
-    PybindProxy/module.cpp
-    PybindProxy/moduleFile.cpp
-    arrays.cpp
-    classes.cpp
-    enums.cpp
-    functions.cpp
-    maps.cpp
-    memberVariables.cpp
-    namespaces.cpp
-    pairs.cpp
-    tuples.cpp
-    sets.cpp
-    unordered_maps.cpp
-    unordered_sets.cpp
-    userDefined.cpp
-    vectors.cpp
-)
+foreach(
+  test
+  Builders/classBuilder.cpp
+  Builders/functionBuilder.cpp
+  Builders/enumBuilder.cpp
+  Builders/moduleFileBuilder.cpp
+  Helpers/Pybind/extractIncludes.cpp
+  Helpers/combine.cpp
+  PybindProxy/class.cpp
+  PybindProxy/enum.cpp
+  PybindProxy/function.cpp
+  PybindProxy/module.cpp
+  PybindProxy/moduleFile.cpp
+  arrays.cpp
+  classes.cpp
+  enums.cpp
+  functions.cpp
+  maps.cpp
+  memberVariables.cpp
+  namespaces.cpp
+  pairs.cpp
+  tuples.cpp
+  sets.cpp
+  unordered_maps.cpp
+  unordered_sets.cpp
+  userDefined.cpp
+  vectors.cpp)
   # Ex: PybindProxy/moduleFile.cpp -> moduleFile
   get_filename_component(testName ${test} NAME_WLE)
 
@@ -103,7 +133,6 @@ foreach(test
 
     # Require that the dependencies are downloaded so they can be copied to a
     # temporary test stage
-    set_tests_properties(${testName} PROPERTIES FIXTURES_REQUIRED
-                                                       TestStage)
+    set_tests_properties(${testName} PROPERTIES FIXTURES_REQUIRED TestStage)
   endif()
 endforeach()

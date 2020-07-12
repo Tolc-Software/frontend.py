@@ -25,7 +25,7 @@ function(setup_test)
     ${project_dir}/src
     LINK_LIBRARIES
     Frontend.py
-    CONAN_PKG::fmt
+    fmt::fmt
     ${ARG_LIBRARIES})
 
   add_warnings(TARGET ${ARG_TEST_NAME})
