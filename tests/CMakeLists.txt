@@ -12,22 +12,18 @@ get_parser(ASSET_NAME Parser-${CMAKE_SYSTEM_NAME}-master.tar.gz ${parser_source_
 # If we are not building from source we need to create some variables
 # containing the paths to the included system library
 if(NOT parser_source_switch)
-  # Defines get_system_include and format_includes
-  include(${parser_SOURCE_DIR}/lib/cmake/Parser/IncludePathHelpers.cmake)
-
   # Set the include path for the system library in the variable
   # We are using the standard library shipped
   # with the downloaded llvm for include paths in the parsing
-  get_system_include(
+  get_parser_system_include(
     VARIABLE
-      platform_include
-    LLVM_DIRECTORY
+      SYSTEM_INCLUDE_PATHS
+    PARSER_SOURCE_DIR
+      ${parser_SOURCE_DIR}
+    LIBCPP_ROOT_DIR
       ${parser_SOURCE_DIR}/lib/Parser
     LLVM_VERSION
       ${PARSER_LLVM_VERSION})
-
-  format_includes(VARIABLE SYSTEM_INCLUDE_PATHS INCLUDES
-                  ${platform_include} SYSTEM)
 endif()
 
 # If Parser was built from source, the file should only be expanded with empty strings

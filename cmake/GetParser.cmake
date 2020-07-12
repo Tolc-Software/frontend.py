@@ -65,3 +65,37 @@ function(get_parser)
   set(parser_SOURCE_DIR ${parser_SOURCE_DIR} PARENT_SCOPE)
   set(PARSER_LLVM_VERSION ${PARSER_LLVM_VERSION} PARENT_SCOPE)
 endfunction()
+
+function(get_parser_system_include)
+  # Define the supported set of keywords
+  set(prefix ARG)
+  set(noValues)
+  set(singleValues LIBCPP_ROOT_DIR PARSER_SOURCE_DIR LLVM_VERSION VARIABLE)
+  set(multiValues)
+  # Process the arguments passed in
+  # can be used e.g. via ARG_TARGET
+  cmake_parse_arguments(${prefix}
+                        "${noValues}"
+                        "${singleValues}"
+                        "${multiValues}"
+                        ${ARGN})
+
+  # Defines get_system_include and format_includes
+  include(${ARG_PARSER_SOURCE_DIR}/lib/cmake/Parser/IncludePathHelpers.cmake)
+
+  # Set the include path for the system library in the variable
+  # We are using the standard library shipped
+  # with the downloaded llvm for include paths in the parsing
+  get_system_include(
+    VARIABLE
+      platform_include
+    LLVM_DIRECTORY
+      ${ARG_LIBCPP_ROOT_DIR}
+    LLVM_VERSION
+      ${ARG_LLVM_VERSION})
+
+  format_includes(VARIABLE ${ARG_VARIABLE} INCLUDES
+                  ${platform_include} SYSTEM)
+
+  set(${ARG_VARIABLE} ${${ARG_VARIABLE}} PARENT_SCOPE)
+endfunction()
