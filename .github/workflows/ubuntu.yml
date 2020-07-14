@@ -16,6 +16,12 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[ci skip]')"
 
     steps:
+    - name: Testing
+      env:
+        GITHUB_AUTH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      run: |
+        echo "Auth token: ${GITHUB_AUTH_TOKEN}"
+
     - uses: actions/checkout@v2
 
     - name: Install SSH key
