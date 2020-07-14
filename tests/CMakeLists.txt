@@ -53,8 +53,6 @@ target_link_libraries(TestUtil PUBLIC IR::IR)
 add_warnings(TARGET TestUtil)
 add_options(TARGET TestUtil)
 
-include(${PROJECT_SOURCE_DIR}/cmake/CodeCoverage.cmake)
-
 # Defines create_catch2_test
 include(${PROJECT_SOURCE_DIR}/cmake/SetupTest.cmake)
 
@@ -65,10 +63,14 @@ target_link_libraries(TestStage PRIVATE fmt::fmt)
 add_warnings(TARGET TestStage)
 add_options(TARGET TestStage)
 
-# Use coverage of frontend
-target_code_coverage(Frontend.py)
+if(ENABLE_COVERAGE)
+  include(${PROJECT_SOURCE_DIR}/cmake/CodeCoverage.cmake)
 
-add_code_coverage_all_targets()
+  # Use coverage of frontend
+  target_code_coverage(Frontend.py)
+
+  add_code_coverage_all_targets()
+endif()
 
 # Create a platform independent way of getting the path to the test stage
 set(test_stage ${CMAKE_CURRENT_LIST_DIR}/testStage)

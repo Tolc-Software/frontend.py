@@ -1,7 +1,6 @@
 include_guard()
 # Requires other scripts
 include(${CMAKE_CURRENT_LIST_DIR}/Catch2Helpers.cmake)
-include(${CMAKE_CURRENT_LIST_DIR}/CodeCoverage.cmake)
 include(${CMAKE_CURRENT_LIST_DIR}/WarningsAndOptions.cmake)
 
 # Helper function to create a test
@@ -31,9 +30,12 @@ function(setup_test)
   add_warnings(TARGET ${ARG_TEST_NAME})
   add_options(TARGET ${ARG_TEST_NAME})
 
-  # Assumes CodeCoverage.cmake is included Adds code coverage to the test and
-  # adds it to the ccov-all target
-  target_code_coverage(${ARG_TEST_NAME} ALL)
+  if(ENABLE_COVERAGE)
+    include(${CMAKE_CURRENT_LIST_DIR}/CodeCoverage.cmake)
+    # Assumes CodeCoverage.cmake is included Adds code coverage to the test and
+    # adds it to the ccov-all target
+    target_code_coverage(${ARG_TEST_NAME} ALL)
+  endif()
 
   add_test(NAME ${ARG_TEST_NAME} COMMAND ${ARG_TEST_NAME})
 endfunction()
