@@ -18,7 +18,7 @@ jobs:
     steps:
     - name: Testing
       env:
-        SOMETHING: ${{ secrets.ACCESS_TOKEN }}
+        SOMETHING: ${{ secrets.AUTH_TOKEN }}
       run: |
         echo "Auth token: ${SOMETHING}"
         echo "Auth token: ${#SOMETHING}"
@@ -61,7 +61,7 @@ jobs:
 
     - name: Configure
       env:
-        GITHUB_AUTH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        GITHUB_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
       run: |
         cmake -S. -Bbuild -G Ninja -DCMAKE_CXX_COMPILER="clang++" -DCMAKE_C_COMPILER="clang" -DCMAKE_BUILD_TYPE="Release" -DENABLE_TESTING=ON -DENABLE_PACKAGING=ON
 
