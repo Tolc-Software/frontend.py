@@ -41,7 +41,6 @@ function(fetch_asset_from_github)
       ${ARG_TAG}
       --asset-name
       ${ARG_ASSET_NAME})
-  message(STATUS "Running command: ${Python3_EXECUTABLE} ${python_args}")
   execute_process(
     COMMAND ${Python3_EXECUTABLE} ${python_args}
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}

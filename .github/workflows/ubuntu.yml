@@ -21,6 +21,7 @@ jobs:
         GITHUB_AUTH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       run: |
         echo "Auth token: ${GITHUB_AUTH_TOKEN}"
+        exit 1
 
     - uses: actions/checkout@v2
 
