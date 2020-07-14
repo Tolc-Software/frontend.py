@@ -20,6 +20,7 @@ tests/TestUtil/include/TestUtil/parserConfig.hpp
 !todo.md
 
 # Directories
+!.github
 !cmake
 !docs
 !include
