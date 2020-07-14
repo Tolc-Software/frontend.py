@@ -25,3 +25,4 @@ tests/TestUtil/include/TestUtil/parserConfig.hpp
 !include
 !src
 !tests
+!tools
