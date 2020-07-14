@@ -16,14 +16,6 @@ jobs:
     if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[ci skip]')"
 
     steps:
-    - name: Testing
-      env:
-        SOMETHING: ${{ secrets.AUTH_TOKEN }}
-      run: |
-        echo "Auth token: ${SOMETHING}"
-        echo "Auth token: ${#SOMETHING}"
-        exit 1
-
     - uses: actions/checkout@v2
 
     - name: Install SSH key
@@ -61,7 +53,7 @@ jobs:
 
     - name: Configure
       env:
-        GITHUB_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
+        GITHUB_AUTH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       run: |
         cmake -S. -Bbuild -G Ninja -DCMAKE_CXX_COMPILER="clang++" -DCMAKE_C_COMPILER="clang" -DCMAKE_BUILD_TYPE="Release" -DENABLE_TESTING=ON -DENABLE_PACKAGING=ON
 
