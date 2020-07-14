@@ -18,9 +18,10 @@ jobs:
     steps:
     - name: Testing
       env:
-        GITHUB_AUTH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        SOMETHING: ${{ secrets.ACCESS_TOKEN }}
       run: |
-        echo "Auth token: ${GITHUB_AUTH_TOKEN}"
+        echo "Auth token: ${SOMETHING}"
+        echo "Auth token: ${#SOMETHING}"
         exit 1
 
     - uses: actions/checkout@v2
