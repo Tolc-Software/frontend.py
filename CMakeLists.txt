@@ -20,7 +20,7 @@ include(cmake/Sanitizers.cmake)
 # Define run_conan
 include(cmake/ConanHelpers.cmake)
 # This helps with packaging
-set(FRONTEND.PY_CONAN_REQUIRES_PACKAGES fmt/6.1.2)
+set(FRONTEND.PY_CONAN_REQUIRES_PACKAGES fmt/7.0.1)
 find_conan_packages(REQUIRES
   ${FRONTEND.PY_CONAN_REQUIRES_PACKAGES})
 
