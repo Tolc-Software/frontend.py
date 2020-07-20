@@ -86,9 +86,9 @@ if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 
   option(ENABLE_PACKAGING "Enables install and packaging via CPack" OFF)
   if(ENABLE_PACKAGING)
-    if(BUILD_DEPENDENCIES_FROM_SOURCE)
-      message(FATAL_ERROR "It is not allowed to build a release package and build dependencies from source. Use a prebuilt library from CI.")
-    endif()
+    # if(BUILD_DEPENDENCIES_FROM_SOURCE)
+    #   message(FATAL_ERROR "It is not allowed to build a release package and build dependencies from source. Use a prebuilt library from CI.")
+    # endif()
 
     add_subdirectory(tools/packaging)
   endif()
