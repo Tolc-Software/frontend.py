@@ -55,7 +55,7 @@ jobs:
       env:
         GITHUB_AUTH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       run: |
-        cmake -S. -Bbuild -G Ninja -DCMAKE_CXX_COMPILER="clang++" -DCMAKE_C_COMPILER="clang" -DCMAKE_BUILD_TYPE="Release" -DENABLE_TESTING=ON -DENABLE_PACKAGING=ON
+        cmake -S. -Bbuild -G Ninja -DCMAKE_CXX_COMPILER="clang++" -DCMAKE_C_COMPILER="clang" -DCMAKE_BUILD_TYPE="Release" -DENABLE_TESTING=ON -DENABLE_PACKAGING=ON -DBUILD_DEPENDENCIES_FROM_SOURCE=ON
 
     - name: Build
       run: cmake --build build -j4
