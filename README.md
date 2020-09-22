@@ -1,4 +1,4 @@
-![Ubuntu](https://github.com/srydell/frontend.py/workflows/Ubuntu/badge.svg)
+![Ubuntu](https://github.com/srydell/frontend.py/workflows/Ubuntu/badge.svg) ![MacOS](https://github.com/srydell/frontend.py/workflows/MacOS/badge.svg)
 
 # frontend.py #
 
