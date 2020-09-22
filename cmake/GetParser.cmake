@@ -57,8 +57,7 @@ function(get_parser)
       CONFIG
       PATHS
       ${Parser_ROOT}
-      REQUIRED
-      NO_DEFAULT_PATH)
+      REQUIRED)
   endif()
 
   # Export the variables
