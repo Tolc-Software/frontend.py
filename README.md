@@ -1,3 +1,5 @@
+![Ubuntu](https://github.com/srydell/frontend.py/workflows/Ubuntu/badge.svg)
+
 # frontend.py #
 
 ## Design goals ##
