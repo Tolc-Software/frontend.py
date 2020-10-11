@@ -2,7 +2,11 @@ include(CMakeFindDependencyMacro)
 find_dependency(IR)
 
 include("${CMAKE_CURRENT_LIST_DIR}/ConanHelpers.cmake")
+setup_conan_profile(PROFILE_TO_CONFIGURE ${CMAKE_CURRENT_LIST_DIR}/clang.in)
+
 set(packages @FRONTEND.PY_CONAN_REQUIRES_PACKAGES@)
-find_conan_packages(REQUIRES ${packages})
+find_conan_packages(
+  REQUIRES ${packages} PROFILE
+  ${CMAKE_CURRENT_LIST_DIR}/clang)
 
 include("${CMAKE_CURRENT_LIST_DIR}/Frontend.pyTargets.cmake")

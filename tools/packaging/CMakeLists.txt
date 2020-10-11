@@ -9,8 +9,12 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/Frontend
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Need to be able to download conan packages
-install(FILES ${CMAKE_SOURCE_DIR}/cmake/ConanHelpers.cmake
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Frontend.py)
+install(
+  FILES
+    ${CMAKE_SOURCE_DIR}/cmake/ConanHelpers.cmake
+    ${CMAKE_SOURCE_DIR}/tools/conan_profiles/${CMAKE_SYSTEM_NAME}/clang.in
+  DESTINATION
+    ${CMAKE_INSTALL_LIBDIR}/cmake/Frontend.py)
 
 configure_file(${CMAKE_SOURCE_DIR}/cmake/packaging/Frontend.pyConfig.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/Frontend.pyConfig.cmake @ONLY)
