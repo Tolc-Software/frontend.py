@@ -9,41 +9,26 @@
 namespace PybindProxy {
 
 struct Module {
-	explicit Module(std::string const& name)
-	    : m_name(name), m_submodules({}), m_functions(), m_enums(),
-	      m_includes() {}
+	explicit Module(std::string const& name);
 
-	void addFunction(Function const& function) {
-		m_functions.push_back(function);
-	}
+	void addFunction(Function const& function);
 
-	void addClass(Class const& c) {
-		m_classes.push_back(c);
-	}
+	void addClass(Class const& c);
 
-	void addEnum(Enum const& e) {
-		m_enums.push_back(e);
-	}
+	void addEnum(Enum const& e);
 
-	std::string const& getName() const {
-		return m_name;
-	}
+	std::string const& getName() const;
 
-	void addSubmodule(std::string const& child) {
-		m_submodules.push_back(child);
-	}
+	void addSubmodule(std::string const& child);
 
-	void addInclude(std::string const& i) {
-		m_includes.push_back(i);
-	}
+	void addInclude(std::string const& i);
 
-	std::vector<std::string> const& getIncludes() const {
-		return m_includes;
-	}
+	std::vector<std::string> const& getIncludes() const;
 
 	std::string getPybind() const;
 
 private:
+	// User defined name of the module
 	std::string m_name;
 
 	// If this is non empty,

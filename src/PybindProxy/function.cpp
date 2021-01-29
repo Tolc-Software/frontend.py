@@ -34,4 +34,18 @@ std::string Function::getPybind() const {
 
 	return f;
 }
+
+Function::Function(std::string const& name,
+                   std::string const& fullyQualifiedName)
+    : m_name(name), m_fullyQualifiedName(fullyQualifiedName),
+      m_returnValuePolicy(std::nullopt), m_arguments({}) {}
+
+void Function::addInclude(std::string const& i) {
+	m_includes.push_back(i);
+}
+
+std::vector<std::string> const& Function::getIncludes() const {
+	return m_includes;
+}
+
 }    // namespace PybindProxy

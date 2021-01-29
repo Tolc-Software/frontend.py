@@ -28,4 +28,35 @@ std::string Module::getPybind() const {
 
 	return out;
 }
+
+Module::Module(std::string const& name)
+    : m_name(name), m_submodules({}), m_functions(), m_enums(), m_includes() {}
+
+void Module::addFunction(Function const& function) {
+	m_functions.push_back(function);
+}
+
+void Module::addClass(Class const& c) {
+	m_classes.push_back(c);
+}
+
+void Module::addEnum(Enum const& e) {
+	m_enums.push_back(e);
+}
+
+std::string const& Module::getName() const {
+	return m_name;
+}
+
+void Module::addSubmodule(std::string const& child) {
+	m_submodules.push_back(child);
+}
+
+void Module::addInclude(std::string const& i) {
+	m_includes.push_back(i);
+}
+
+std::vector<std::string> const& Module::getIncludes() const {
+	return m_includes;
+}
 }

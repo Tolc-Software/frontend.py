@@ -8,8 +8,7 @@
 namespace PybindProxy {
 
 struct Constructor {
-	explicit Constructor(std::vector<std::string> const& arguments)
-	    : m_arguments(arguments) {};
+	explicit Constructor(std::vector<std::string> const& arguments);
 
 	std::vector<std::string> m_arguments;
 };
@@ -17,47 +16,32 @@ struct Constructor {
 class Class {
 public:
 	explicit Class(std::string const& name,
-	               std::string const& fullyQualifiedName)
-	    : m_name(name), m_fullyQualifiedName(fullyQualifiedName),
-	      m_constructors(), m_functions(), m_memberVariables(), m_enums(),
-	      m_includes() {}
+	               std::string const& fullyQualifiedName);
 
-	void addEnum(Enum const& e) {
-		m_enums.push_back(e);
-	}
+	void addEnum(Enum const& e);
 
-	void addFunction(Function const& function) {
-		m_functions.push_back(function);
-	}
+	void addFunction(Function const& function);
 
-	void addConstructor(Constructor const& constructor) {
-		m_constructors.push_back(constructor);
-	}
+	void addConstructor(Constructor const& constructor);
 
-	void addMemberVariable(std::string const& variableName, bool isConst) {
-		m_memberVariables.push_back({variableName, isConst});
-	}
+	void addMemberVariable(std::string const& variableName, bool isConst);
 
-	std::string const& getName() const {
-		return m_name;
-	}
+	std::string const& getName() const;
 
-	void addInclude(std::string const& i) {
-		m_includes.push_back(i);
-	}
+	void addInclude(std::string const& i);
 
-	std::vector<std::string> const& getIncludes() const {
-		return m_includes;
-	}
+	std::vector<std::string> const& getIncludes() const;
 
 	std::string getPybind(std::string const& moduleName) const;
 
 private:
 	struct MemberVariable {
+		// User defined name of the member variable
 		std::string m_name;
 		bool m_isConst;
 	};
 
+	// User defined name of the class
 	std::string m_name;
 	std::string m_fullyQualifiedName;
 

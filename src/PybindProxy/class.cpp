@@ -4,6 +4,9 @@
 
 namespace PybindProxy {
 
+Constructor::Constructor(std::vector<std::string> const& arguments)
+    : m_arguments(arguments) {};
+
 std::string Class::getPybind(std::string const& moduleName) const {
 	std::string out = fmt::format(
 	    "py::class_<{fullyQualifiedName}>({moduleName}, \"{name}\")\n",
@@ -48,5 +51,37 @@ std::string Class::getPybind(std::string const& moduleName) const {
 	}
 
 	return out;
+}
+
+Class::Class(std::string const& name, std::string const& fullyQualifiedName)
+    : m_name(name), m_fullyQualifiedName(fullyQualifiedName), m_constructors(),
+      m_functions(), m_memberVariables(), m_enums(), m_includes() {}
+
+void Class::addEnum(Enum const& e) {
+	m_enums.push_back(e);
+}
+
+void Class::addFunction(Function const& function) {
+	m_functions.push_back(function);
+}
+
+void Class::addConstructor(Constructor const& constructor) {
+	m_constructors.push_back(constructor);
+}
+
+void Class::addMemberVariable(std::string const& variableName, bool isConst) {
+	m_memberVariables.push_back({variableName, isConst});
+}
+
+std::string const& Class::getName() const {
+	return m_name;
+}
+
+void Class::addInclude(std::string const& i) {
+	m_includes.push_back(i);
+}
+
+std::vector<std::string> const& Class::getIncludes() const {
+	return m_includes;
 }
 }
