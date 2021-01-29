@@ -1,4 +1,5 @@
 #include "PybindProxy/module.hpp"
+#include <algorithm>
 #include <fmt/format.h>
 #include <string>
 
@@ -29,8 +30,19 @@ std::string Module::getPybind() const {
 	return out;
 }
 
-Module::Module(std::string const& name)
-    : m_name(name), m_submodules({}), m_functions(), m_enums(), m_includes() {}
+Module::Module(std::string const& name, std::string const& fullyQualifiedName)
+    : m_name(name), m_fullyQualifiedName(fullyQualifiedName), m_submodules({}),
+      m_functions(), m_enums(), m_includes() {}
+
+std::string Module::getVariableName() const {
+	// MyNS::Math -> MyNs_Mathns
+	// This is to avoid naming conflicts when defining namespaces with the
+	// same name as the root module
+	// This happens if you call your module tensorflow and have a namespace with tensorflow
+	std::string variableName = m_fullyQualifiedName;
+	std::replace(variableName.begin(), variableName.end(), ':', '_');
+	return variableName + "__ns";
+}
 
 void Module::addFunction(Function const& function) {
 	m_functions.push_back(function);

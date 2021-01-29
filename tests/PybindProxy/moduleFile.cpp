@@ -5,7 +5,7 @@
 #include <catch2/catch.hpp>
 
 TEST_CASE("ModuleFile can take a module", "[moduleFile]") {
-	PybindProxy::Module m("myModule");
+	PybindProxy::Module m("myModule", "myModule");
 	PybindProxy::Function f("f", "f");
 	m.addFunction(f);
 	PybindProxy::ModuleFile mf(m);

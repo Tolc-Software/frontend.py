@@ -9,7 +9,8 @@
 namespace PybindProxy {
 
 struct Module {
-	explicit Module(std::string const& name);
+	explicit Module(std::string const& name,
+	                std::string const& fullyQualifiedName);
 
 	void addFunction(Function const& function);
 
@@ -23,6 +24,9 @@ struct Module {
 
 	void addInclude(std::string const& i);
 
+	// Return a unique variable name that can be used in the generated code for this module
+	std::string getVariableName() const;
+
 	std::vector<std::string> const& getIncludes() const;
 
 	std::string getPybind() const;
@@ -30,6 +34,8 @@ struct Module {
 private:
 	// User defined name of the module
 	std::string m_name;
+
+	std::string m_fullyQualifiedName;
 
 	// If this is non empty,
 	// then this module is a submodule

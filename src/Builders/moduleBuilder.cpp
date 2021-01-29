@@ -19,7 +19,7 @@ void combineIncludes(std::set<std::string>& includes,
 }    // namespace
 
 PybindProxy::Module buildModule(IR::Namespace const& ns) {
-	PybindProxy::Module builtModule(ns.m_name);
+	PybindProxy::Module builtModule(ns.m_name, ns.m_representation);
 	std::set<std::string> includes;
 
 	for (auto const& function : ns.m_functions) {
