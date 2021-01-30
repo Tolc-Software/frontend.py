@@ -108,6 +108,7 @@ foreach(
   maps.cpp
   memberVariables.cpp
   namespaces.cpp
+  namespaceSameAsModule.cpp
   pairs.cpp
   tuples.cpp
   sets.cpp
