@@ -9,7 +9,8 @@ namespace PybindProxy {
 
 class ModuleFile {
 public:
-	explicit ModuleFile(Module const& rootModule);
+	explicit ModuleFile(Module const& rootModule,
+	                    std::string const& libraryName);
 
 	/**
 	* Add a module to the file.
@@ -25,6 +26,7 @@ public:
 
 private:
 	std::string m_rootModuleName;
+	std::string m_libraryName;
 
 	// What will be included
 	// Ex: '<string>' for '#include <string>'

@@ -28,6 +28,7 @@ public:
 	void setScoped(bool isScoped);
 
 private:
+	// The user defined name of the enum
 	std::string m_name;
 	std::string m_fullyQualifiedName;
 	std::vector<std::string> m_values;

@@ -19,7 +19,7 @@ TEST_CASE("Modules defines their functions", "[module]") {
 	for (auto const& function : functions) {
 		auto expectedContains =
 		    fmt::format(R"({module}.def("{function}", &{function})",
-		                fmt::arg("module", moduleName),
+		                fmt::arg("module", m.getVariableName()),
 		                fmt::arg("function", function));
 		CAPTURE(function);
 		CAPTURE(expectedContains);
@@ -33,7 +33,7 @@ TEST_CASE("Modules defines their submodules", "[module]") {
 
 	std::vector<std::string> submodules = {"sub1", "mySub", "child"};
 	for (auto const& submodule : submodules) {
-		m.addSubmodule(submodule);
+		m.addSubmodule(submodule, moduleName + "__" + submodule);
 	}
 
 	auto pybindCode = m.getPybind();
@@ -42,8 +42,9 @@ TEST_CASE("Modules defines their submodules", "[module]") {
 	using TestUtil::contains;
 	for (auto const& submodule : submodules) {
 		auto expectedContains = fmt::format(
-		    R"(auto {submodule} = {module}.def_submodule("{submodule}");)",
-		    fmt::arg("module", moduleName),
+		    R"(auto {moduleName}__{submodule} = {module}.def_submodule("{submodule}");)",
+		    fmt::arg("moduleName", moduleName),
+		    fmt::arg("module", m.getVariableName()),
 		    fmt::arg("submodule", submodule));
 		CAPTURE(submodule);
 		CAPTURE(expectedContains);
@@ -69,9 +70,27 @@ TEST_CASE("Modules defines their classes", "[module]") {
 		auto expectedContains =
 		    fmt::format("\tpy::class_<{cls}>({moduleName}, \"{cls}\");\n",
 		                fmt::arg("cls", cls),
-		                fmt::arg("moduleName", moduleName));
+		                fmt::arg("moduleName", m.getVariableName()));
 		CAPTURE(cls);
 		CAPTURE(expectedContains);
 		REQUIRE(contains(pybindCode, expectedContains));
 	}
+}
+
+TEST_CASE("Modules gets a somewhat unique variable name", "[module]") {
+	std::string moduleName = "myTestModule";
+	std::string variableName = std::string("rootModule__") + moduleName;
+	PybindProxy::Module m(variableName);
+
+	using TestUtil::contains;
+	REQUIRE(variableName == "rootModule__myTestModule");
+}
+
+TEST_CASE("Module variable name", "[module]") {
+	std::string moduleName = "myTestModule";
+	std::string variableName = moduleName + "__ns";
+	PybindProxy::Module m(variableName);
+
+	using TestUtil::contains;
+	REQUIRE(m.getVariableName() == "myTestModule__ns");
 }

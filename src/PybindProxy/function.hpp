@@ -7,9 +7,7 @@
 namespace PybindProxy {
 class Function {
 public:
-	Function(std::string const& name, std::string const& fullyQualifiedName)
-	    : m_name(name), m_fullyQualifiedName(fullyQualifiedName),
-	      m_returnValuePolicy(std::nullopt), m_arguments({}) {}
+	Function(std::string const& name, std::string const& fullyQualifiedName);
 
 	/**
 	* Creates a string corresponding to the pybind11 conversion of this function.
@@ -25,13 +23,9 @@ public:
 	*/
 	void addArgument(std::string const& argument);
 
-	void addInclude(std::string const& i) {
-		m_includes.push_back(i);
-	}
+	void addInclude(std::string const& i);
 
-	std::vector<std::string> const& getIncludes() const {
-		return m_includes;
-	}
+	std::vector<std::string> const& getIncludes() const;
 
 	// These are all 1-to-1 with pybind11
 	enum class return_value_policy {
@@ -55,6 +49,7 @@ public:
 	void setReturnValuePolicy(return_value_policy policy);
 
 private:
+	// User defined name of the function
 	std::string m_name;
 	std::string m_fullyQualifiedName;
 	std::optional<return_value_policy> m_returnValuePolicy;

@@ -62,6 +62,7 @@ for incompatiblemap in [{{"key": "value"}}, {{5: 2}}]:
 )",
 	                                  fmt::arg("moduleName", moduleName));
 
-	auto errorCode = TestUtil::runPybindTest(stage, cppCode, pythonTestCode);
+	auto errorCode =
+	    TestUtil::runPybindTest(stage, cppCode, pythonTestCode, moduleName);
 	REQUIRE(errorCode == 0);
 }

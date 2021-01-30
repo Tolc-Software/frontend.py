@@ -47,6 +47,7 @@ self.assertAlmostEqual(withFunction.sum((1, 2, 3.3, 2.0)), 8.3, delta=0.0001)
 )",
 	                                  fmt::arg("moduleName", moduleName));
 
-	auto errorCode = TestUtil::runPybindTest(stage, cppCode, pythonTestCode);
+	auto errorCode =
+	    TestUtil::runPybindTest(stage, cppCode, pythonTestCode, moduleName);
 	REQUIRE(errorCode == 0);
 }

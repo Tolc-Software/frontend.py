@@ -1,6 +1,6 @@
 #include "TestStage/stage.hpp"
-#include <fmt/format.h>
 #include <fstream>
+#include <iostream>
 #include <limits>
 #include <optional>
 #include <random>
@@ -100,11 +100,8 @@ std::filesystem::path Stage::addFile(std::filesystem::path const& file,
 void Stage::runCMakeConfigure(std::string const& compiler,
                               std::string const& generator,
                               std::string const& buildType) {
-	runCommand(fmt::format(
-	    "cmake -S. -Bbuild -G {} -DCMAKE_CXX_COMPILER={} -DCMAKE_BUILD_TYPE={}",
-	    generator,
-	    compiler,
-	    buildType));
+	runCommand("cmake -S. -Bbuild -G " + generator + " -DCMAKE_CXX_COMPILER=" +
+	           compiler + " -DCMAKE_BUILD_TYPE=" + buildType);
 }
 
 void Stage::buildCMakeProject() {
@@ -123,7 +120,7 @@ int Stage::runCommand(std::string const& cmd,
 	}
 	std::filesystem::current_path(cwd);
 
-	fmt::print(cmd + '\n');
+	std::cout << cmd << '\n';
 	auto errorCode = std::system(cmd.c_str());
 
 	std::filesystem::current_path(originalDirectory);

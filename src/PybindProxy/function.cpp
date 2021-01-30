@@ -5,14 +5,6 @@
 
 namespace PybindProxy {
 
-void Function::addArgument(std::string const& argument) {
-	m_arguments.push_back(argument);
-};
-
-void Function::setReturnValuePolicy(return_value_policy policy) {
-	m_returnValuePolicy = policy;
-};
-
 std::string Function::getPybind() const {
 	std::string documentation = "";
 	auto f = fmt::format(
@@ -34,4 +26,26 @@ std::string Function::getPybind() const {
 
 	return f;
 }
+
+Function::Function(std::string const& name,
+                   std::string const& fullyQualifiedName)
+    : m_name(name), m_fullyQualifiedName(fullyQualifiedName),
+      m_returnValuePolicy(std::nullopt), m_arguments({}) {}
+
+void Function::addInclude(std::string const& i) {
+	m_includes.push_back(i);
+}
+
+std::vector<std::string> const& Function::getIncludes() const {
+	return m_includes;
+}
+
+void Function::addArgument(std::string const& argument) {
+	m_arguments.push_back(argument);
+};
+
+void Function::setReturnValuePolicy(return_value_policy policy) {
+	m_returnValuePolicy = policy;
+};
+
 }    // namespace PybindProxy

@@ -49,6 +49,7 @@ add_library(TestUtil TestUtil/include/TestUtil/pybindStage.cpp)
 target_include_directories(TestUtil PUBLIC TestUtil/include)
 target_link_libraries(TestUtil PRIVATE Tolc::Parser Catch2::Catch2)
 target_link_libraries(TestUtil PUBLIC IR::IR)
+find_package(fmt REQUIRED)
 
 add_warnings(TARGET TestUtil)
 add_options(TARGET TestUtil)
@@ -58,7 +59,8 @@ include(${PROJECT_SOURCE_DIR}/cmake/SetupTest.cmake)
 
 add_library(TestStage TestUtil/include/TestStage/stage.cpp)
 target_include_directories(TestStage PUBLIC TestUtil/include)
-target_link_libraries(TestStage PRIVATE fmt::fmt)
+# find_package(fmt)
+# target_link_libraries(TestStage PRIVATE fmt::fmt)
 
 add_warnings(TARGET TestStage)
 add_options(TARGET TestStage)
@@ -106,6 +108,7 @@ foreach(
   maps.cpp
   memberVariables.cpp
   namespaces.cpp
+  namespaceSameAsModule.cpp
   pairs.cpp
   tuples.cpp
   sets.cpp
@@ -123,7 +126,8 @@ foreach(
     ${test}
     LIBRARIES
     TestUtil
-    TestStage)
+    TestStage
+    fmt::fmt)
 
   string(FIND "${test}" "/" subdirectory)
   if(subdirectory EQUAL -1)

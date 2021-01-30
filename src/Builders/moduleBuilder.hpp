@@ -11,5 +11,6 @@ namespace Builders {
 * NOTE: Does not traverse the structure,
 *       but adds the children of ns as submodules
 */
-PybindProxy::Module buildModule(IR::Namespace const& ns);
+PybindProxy::Module buildModule(IR::Namespace const& ns,
+                                std::string const& rootModuleName);
 }    // namespace Builders
