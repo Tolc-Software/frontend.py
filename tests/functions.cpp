@@ -46,7 +46,8 @@ self.assertEqual(result, 5)
 )",
 	                                  fmt::arg("moduleName", moduleName));
 
-	auto errorCode = TestUtil::runPybindTest(stage, cppCode, pythonTestCode);
+	auto errorCode =
+	    TestUtil::runPybindTest(stage, cppCode, pythonTestCode, moduleName);
 	REQUIRE(errorCode == 0);
 }
 

@@ -58,7 +58,7 @@ self.assertNotEqual(deep, {moduleName}.NS.Deep.H)
 )",
 	                                  fmt::arg("moduleName", moduleName));
 
-	auto errorCode = TestUtil::runPybindTest(stage, cppCode, pythonTestCode);
-	stage.keepAliveAfterTest();
+	auto errorCode =
+	    TestUtil::runPybindTest(stage, cppCode, pythonTestCode, moduleName);
 	REQUIRE(errorCode == 0);
 }

@@ -9,8 +9,7 @@
 namespace PybindProxy {
 
 struct Module {
-	explicit Module(std::string const& name,
-	                std::string const& fullyQualifiedName);
+	explicit Module(std::string const& variableName);
 
 	void addFunction(Function const& function);
 
@@ -18,28 +17,25 @@ struct Module {
 
 	void addEnum(Enum const& e);
 
-	std::string const& getName() const;
+	std::string const& getVariableName() const;
 
-	void addSubmodule(std::string const& child);
+	void addSubmodule(std::string const& name, std::string const& variableName);
 
 	void addInclude(std::string const& i);
-
-	// Return a unique variable name that can be used in the generated code for this module
-	std::string getVariableName() const;
 
 	std::vector<std::string> const& getIncludes() const;
 
 	std::string getPybind() const;
 
 private:
-	// User defined name of the module
-	std::string m_name;
-
-	std::string m_fullyQualifiedName;
+	std::string m_variableName;
 
 	// If this is non empty,
 	// then this module is a submodule
-	std::vector<std::string> m_submodules;
+	// {Simple name, Variable name}
+	// E.g.
+	// {"Sub", "NS__Nested__Sub"}
+	std::vector<std::pair<std::string, std::string>> m_submodules;
 
 	std::vector<Function> m_functions;
 	std::vector<Class> m_classes;

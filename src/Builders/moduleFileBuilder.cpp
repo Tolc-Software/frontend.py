@@ -16,15 +16,18 @@ struct ModulePair {
 
 namespace Builders {
 
-PybindProxy::ModuleFile buildModuleFile(IR::Namespace const& rootNamespace) {
-	PybindProxy::Module rootModule = Builders::buildModule(rootNamespace);
-	PybindProxy::ModuleFile moduleFile(rootModule);
+PybindProxy::ModuleFile buildModuleFile(IR::Namespace const& rootNamespace,
+                                        std::string const& rootModuleName) {
+	PybindProxy::Module rootModule =
+	    Builders::buildModule(rootNamespace, rootModuleName);
+	PybindProxy::ModuleFile moduleFile(rootModule, rootModuleName);
 	std::set<std::string> includes;
 	Helpers::combine(includes, rootModule.getIncludes());
 
 	std::queue<ModulePair> namespaces;
 	for (auto const& subNamespace : rootNamespace.m_namespaces) {
-		namespaces.push({subNamespace, Builders::buildModule(subNamespace)});
+		namespaces.push({subNamespace,
+		                 Builders::buildModule(subNamespace, rootModuleName)});
 	}
 
 	while (!namespaces.empty()) {
@@ -37,7 +40,8 @@ PybindProxy::ModuleFile buildModuleFile(IR::Namespace const& rootNamespace) {
 		// Go deeper into the nested namespaces
 		for (auto const& subNamespace : currentNamespace.m_namespaces) {
 			namespaces.push(
-			    {subNamespace, Builders::buildModule(subNamespace)});
+			    {subNamespace,
+			     Builders::buildModule(subNamespace, rootModuleName)});
 		}
 
 		// Need currentNamespace and currentModule to live this far

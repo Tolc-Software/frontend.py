@@ -5,7 +5,7 @@
 
 TEST_CASE("Modules defines their functions", "[module]") {
 	std::string moduleName = "myModule";
-	PybindProxy::Module m(moduleName, moduleName);
+	PybindProxy::Module m(moduleName);
 
 	std::vector<std::string> functions = {"f", "calculate", "foo"};
 	for (auto const& function : functions) {
@@ -19,7 +19,7 @@ TEST_CASE("Modules defines their functions", "[module]") {
 	for (auto const& function : functions) {
 		auto expectedContains =
 		    fmt::format(R"({module}.def("{function}", &{function})",
-		                fmt::arg("module", moduleName),
+		                fmt::arg("module", m.getVariableName()),
 		                fmt::arg("function", function));
 		CAPTURE(function);
 		CAPTURE(expectedContains);
@@ -29,11 +29,11 @@ TEST_CASE("Modules defines their functions", "[module]") {
 
 TEST_CASE("Modules defines their submodules", "[module]") {
 	std::string moduleName = "myTestModule";
-	PybindProxy::Module m(moduleName, moduleName);
+	PybindProxy::Module m(moduleName);
 
 	std::vector<std::string> submodules = {"sub1", "mySub", "child"};
 	for (auto const& submodule : submodules) {
-		m.addSubmodule(submodule);
+		m.addSubmodule(submodule, moduleName + "__" + submodule);
 	}
 
 	auto pybindCode = m.getPybind();
@@ -42,8 +42,9 @@ TEST_CASE("Modules defines their submodules", "[module]") {
 	using TestUtil::contains;
 	for (auto const& submodule : submodules) {
 		auto expectedContains = fmt::format(
-		    R"(auto {submodule} = {module}.def_submodule("{submodule}");)",
-		    fmt::arg("module", moduleName),
+		    R"(auto {moduleName}__{submodule} = {module}.def_submodule("{submodule}");)",
+		    fmt::arg("moduleName", moduleName),
+		    fmt::arg("module", m.getVariableName()),
 		    fmt::arg("submodule", submodule));
 		CAPTURE(submodule);
 		CAPTURE(expectedContains);
@@ -53,7 +54,7 @@ TEST_CASE("Modules defines their submodules", "[module]") {
 
 TEST_CASE("Modules defines their classes", "[module]") {
 	std::string moduleName = "myTestModule";
-	PybindProxy::Module m(moduleName, moduleName);
+	PybindProxy::Module m(moduleName);
 
 	std::vector<std::string> classes = {"Cl", "MyClass", "OtherClass"};
 	for (auto const& cls : classes) {
@@ -69,7 +70,7 @@ TEST_CASE("Modules defines their classes", "[module]") {
 		auto expectedContains =
 		    fmt::format("\tpy::class_<{cls}>({moduleName}, \"{cls}\");\n",
 		                fmt::arg("cls", cls),
-		                fmt::arg("moduleName", moduleName));
+		                fmt::arg("moduleName", m.getVariableName()));
 		CAPTURE(cls);
 		CAPTURE(expectedContains);
 		REQUIRE(contains(pybindCode, expectedContains));
@@ -78,23 +79,18 @@ TEST_CASE("Modules defines their classes", "[module]") {
 
 TEST_CASE("Modules gets a somewhat unique variable name", "[module]") {
 	std::string moduleName = "myTestModule";
-	std::string qualifiedName = std::string("rootModule::") + moduleName;
-	PybindProxy::Module m(moduleName, qualifiedName);
+	std::string variableName = std::string("rootModule__") + moduleName;
+	PybindProxy::Module m(variableName);
 
 	using TestUtil::contains;
-	auto variableName = m.getVariableName();
-	CAPTURE(variableName);
-	REQUIRE(variableName == "rootModule__myTestModule__ns");
+	REQUIRE(variableName == "rootModule__myTestModule");
 }
 
-TEST_CASE("Module variable name, adds __ns to the end no matter what",
-          "[module]") {
+TEST_CASE("Module variable name", "[module]") {
 	std::string moduleName = "myTestModule";
-	std::string qualifiedName = moduleName;
-	PybindProxy::Module m(moduleName, qualifiedName);
+	std::string variableName = moduleName + "__ns";
+	PybindProxy::Module m(variableName);
 
 	using TestUtil::contains;
-	auto variableName = m.getVariableName();
-	CAPTURE(variableName);
-	REQUIRE(variableName == "myTestModule__ns");
+	REQUIRE(m.getVariableName() == "myTestModule__ns");
 }
