@@ -4,6 +4,7 @@
 #include <limits>
 #include <optional>
 #include <random>
+#include <algorithm>
 
 namespace {
 /**
