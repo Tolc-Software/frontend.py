@@ -7,10 +7,7 @@
 namespace TestUtil {
 struct PybindStage {
 	PybindStage(std::filesystem::path const& baseStage,
-	            std::string const& moduleName)
-	    : m_stage(baseStage), m_moduleName(moduleName) {
-		m_stage.setTargetName(m_moduleName);
-	}
+	            std::string const& moduleName);
 
 	/**
 	* Adds the source file moduleName.hpp to the stage with provided content
@@ -25,15 +22,17 @@ struct PybindStage {
 	                   std::string const& content);
 
 	/**
-	*
+	* Injects input python code testBody into a python unittest file.
+	* The content of testBody will be copied into a function and the unittest module can be used freely.
 	*/
 	int runPythonUnittest(std::string const& testBody);
 
-	void keepAliveAfterTest() {
-		m_stage.m_removeOnDestruction = false;
-	}
+	/**
+	* Run this to keep the stage on the filesystem after the test has completed
+	*/
+	void keepAliveAfterTest();
 
 	TestStage::Stage m_stage;
 	std::string m_moduleName;
 };
-}
+}    // namespace TestUtil

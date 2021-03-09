@@ -1,13 +1,25 @@
 #include "TestUtil/pybindStage.hpp"
 #include "TestStage/stage.hpp"
-#include "TestStage/temporaryStage.hpp"
+#include "TestStage/stageFunctions.hpp"
 #include "TestUtil/parse.hpp"
 #include <IR/ir.hpp>
 #include <Parser/Parse.hpp>
 #include <filesystem>
+#include <iostream>
 #include <string>
 
 namespace TestUtil {
+
+PybindStage::PybindStage(std::filesystem::path const& baseStage,
+                         std::string const& moduleName)
+    : m_stage(baseStage,
+              {"cmake",
+               "CMakeLists.txt",
+               "configureAndBuild.bat",
+               std::filesystem::path("build") / "_deps"}),
+      m_moduleName(moduleName) {
+	m_stage.setTargetName(m_moduleName);
+}
 
 void PybindStage::addModuleFile(std::filesystem::path const& file,
                                 std::string const& content) {
@@ -22,14 +34,15 @@ IR::Namespace PybindStage::parseModuleFile(std::string const& content) {
 
 int PybindStage::runPythonUnittest(std::string const& testBody) {
 	// Make sure the module is built
-	m_stage.runCMakeConfigure();
-	m_stage.buildCMakeProject();
+	if (auto setupError = m_stage.configureAndBuild(); setupError != 0) {
+		return setupError;
+	}
 
 	std::vector<std::string> includes = {m_moduleName};
 	std::string testName = "default";
 
+	// Store all the lines in the test
 	std::vector<std::string> body;
-
 	std::string::size_type pos = 0;
 	std::string::size_type prev = 0;
 	while ((pos = testBody.find('\n', prev)) != std::string::npos) {
@@ -45,5 +58,8 @@ int PybindStage::runPythonUnittest(std::string const& testBody) {
 
 	return TestStage::runPythonUnittest(m_stage.m_stage, m_moduleName);
 }
-}
 
+void PybindStage::keepAliveAfterTest() {
+	m_stage.m_removeOnDestruction = false;
+}
+}    // namespace TestUtil

@@ -6,7 +6,7 @@ project(
   LANGUAGES CXX)
 
 include(cmake/GetPybind11.cmake)
-get_pybind11(VERSION 2.4.3)
+get_pybind11(VERSION 2.6.2)
 
 # Get the variable 'target_name'
 # NOTE: This will be generated for each test

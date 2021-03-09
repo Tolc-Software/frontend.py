@@ -7,7 +7,11 @@ set(parser_source_switch "")
 if(BUILD_DEPENDENCIES_FROM_SOURCE)
   set(parser_source_switch "BUILD_FROM_SOURCE")
 endif()
-get_parser(ASSET_NAME Parser-${CMAKE_SYSTEM_NAME}-master.tar.gz ${parser_source_switch})
+set(parser_asset_name "Parser-${CMAKE_SYSTEM_NAME}-master")
+if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL Windows)
+  set(parser_asset_name "${parser_asset_name}-${CMAKE_BUILD_TYPE}")
+endif()
+get_parser(ASSET_NAME ${parser_asset_name}.tar.gz ${parser_source_switch})
 
 # If we are not building from source we need to create some variables
 # containing the paths to the included system library
@@ -76,6 +80,10 @@ endif()
 
 # Create a platform independent way of getting the path to the test stage
 set(test_stage ${CMAKE_CURRENT_LIST_DIR}/testStage)
+if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL Windows)
+  # This is to normalize strings relative to how they are used in std::filesystem
+  string(REPLACE "/" "\\\\" test_stage ${test_stage})
+endif()
 configure_file(
   TestUtil/include/TestStage/paths.hpp.in
   ${CMAKE_CURRENT_LIST_DIR}/TestUtil/include/TestStage/paths.hpp @ONLY)
