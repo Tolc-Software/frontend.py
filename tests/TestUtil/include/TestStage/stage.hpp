@@ -93,9 +93,7 @@ private:
 	* Provides reasonable defaults
 	* Returns the exit code of the command
 	*/
-	int runCMakeConfigure(std::string const& compiler = "clang++",
-	                      std::string const& generator = "Ninja",
-	                      std::string const& buildType = "Release");
+	int runCMakeConfigure(std::string const& compiler);
 
 	/**
 	* NOTE: This is not a cross platform function

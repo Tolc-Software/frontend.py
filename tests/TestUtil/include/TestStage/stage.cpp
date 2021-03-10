@@ -67,16 +67,23 @@ void Stage::setTargetName(std::string const& target) {
 }
 
 int Stage::configureAndBuild() {
-#ifdef _WIN32
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
 	// This has to be handled differently on Windows since it has to run the vcvars64.bat file to setup the environment
 	if (auto error = runCommand("configureAndBuild.bat"); error != 0) {
 		std::cerr << "Failed to run CMake configure or to build the project.\n";
 		return error;
 	}
 #else
-	// On Linux/MacOs
+	#if __APPLE__
+	std::string compiler = "/usr/local/opt/llvm/bin/clang++";
+	#else
+	// Linux
+	std::string compiler = "clang++";
+	#endif
 
-	if (auto configureError = runCMakeConfigure(); configureError != 0) {
+	// On Linux/MacOs
+	if (auto configureError = runCMakeConfigure(compiler);
+	    configureError != 0) {
 		std::cerr << "Failed to run CMake configure.\n";
 		return configureError;
 	}
@@ -85,7 +92,7 @@ int Stage::configureAndBuild() {
 		std::cerr << "Failed to build the project.\n";
 		return buildError;
 	}
-#endif
+    #endif
 
 	return 0;
 }
@@ -123,12 +130,10 @@ std::filesystem::path Stage::addFile(std::filesystem::path const& file,
 	return filepath;
 }
 
-int Stage::runCMakeConfigure(std::string const& compiler,
-                             std::string const& generator,
-                             std::string const& buildType) {
-	return runCommand("cmake -S. -Bbuild -G " + generator +
-	                  " -DCMAKE_CXX_COMPILER=" + compiler +
-	                  " -DCMAKE_BUILD_TYPE=" + buildType);
+int Stage::runCMakeConfigure(std::string const& compiler) {
+	return runCommand(
+	    "cmake -S. -Bbuild -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=\"" +
+	    compiler + "\"");
 }
 
 int Stage::buildCMakeProject() {
