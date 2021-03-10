@@ -20,7 +20,7 @@ enum class WorldlyThings { Money, Status, MeaningOfLife };
 enum ThingsIWant { BetterChair, Abs, WarmSocks };
 
 PYBIND11_MODULE(myModule, myModule) {
-	// NOTE:    ^-- This name needs to be the same as the CMake target
+	// NOTE:    ^-- This name needs to be the same as the CMake target output name
 
 	// optional module docstring
 	myModule.doc() = "pybind11 example plugin";

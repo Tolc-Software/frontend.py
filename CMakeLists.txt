@@ -20,12 +20,12 @@ include(cmake/Sanitizers.cmake)
 # Define run_conan
 include(cmake/ConanHelpers.cmake)
 # Create the profile from variables known during configure
-setup_conan_profile()
+setup_conan_profile(VARIABLE frontend_conan_profile)
 # This helps with packaging
 set(FRONTEND.PY_CONAN_REQUIRES_PACKAGES spdlog/1.8.0 fmt/7.1.3)
-find_conan_packages(REQUIRES ${FRONTEND.PY_CONAN_REQUIRES_PACKAGES}
-  PROFILE
-  ${CMAKE_CURRENT_LIST_DIR}/tools/conan_profiles/${CMAKE_SYSTEM_NAME}/clang)
+find_conan_packages(
+  REQUIRES ${FRONTEND.PY_CONAN_REQUIRES_PACKAGES} PROFILE
+  ${frontend_conan_profile})
 
 include(FetchContent)
 FetchContent_Declare(

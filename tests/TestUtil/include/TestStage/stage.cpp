@@ -4,14 +4,14 @@
 #include <limits>
 #include <optional>
 #include <random>
+#include <algorithm>
 
 namespace {
 /**
 * Create a unique stage in rootStage/stages
 * Returns the path to the newly created stage
 */
-std::filesystem::path
-createUniqueStage(std::filesystem::path const& rootStage) {
+std::filesystem::path createUniqueStage(std::filesystem::path rootStage) {
 	// Use to build a random string
 	std::random_device r;
 	std::default_random_engine rEngine(r());
@@ -32,7 +32,8 @@ createUniqueStage(std::filesystem::path const& rootStage) {
 }    // namespace
 
 namespace TestStage {
-Stage::Stage(std::filesystem::path const& baseStage)
+Stage::Stage(std::filesystem::path const& baseStage,
+             std::vector<std::filesystem::path> const& pathsToCopy)
     : m_stage(createUniqueStage(baseStage)) {
 	// Copy the inherited files from base to this stage
 	// Inherits the files:
@@ -40,8 +41,6 @@ Stage::Stage(std::filesystem::path const& baseStage)
 	//      * Anything in the cmake directory
 	//      * Anything in the build/_deps directory
 	namespace fs = std::filesystem;
-	std::vector<fs::path> pathsToCopy = {
-	    "cmake", "CMakeLists.txt", fs::path("build") / "_deps"};
 	for (auto const& p : pathsToCopy) {
 		if (fs::exists(baseStage / p)) {
 			if (fs::is_directory(baseStage / p)) {
@@ -67,6 +66,37 @@ void Stage::setTargetName(std::string const& target) {
 	file.close();
 }
 
+int Stage::configureAndBuild() {
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+	// This has to be handled differently on Windows since it has to run the vcvars64.bat file to setup the environment
+	if (auto error = runCommand("configureAndBuild.bat"); error != 0) {
+		std::cerr << "Failed to run CMake configure or to build the project.\n";
+		return error;
+	}
+#else
+	#if __APPLE__
+	std::string compiler = "/usr/local/opt/llvm/bin/clang++";
+	#else
+	// Linux
+	std::string compiler = "clang++";
+	#endif
+
+	// On Linux/MacOs
+	if (auto configureError = runCMakeConfigure(compiler);
+	    configureError != 0) {
+		std::cerr << "Failed to run CMake configure.\n";
+		return configureError;
+	}
+
+	if (auto buildError = buildCMakeProject(); buildError != 0) {
+		std::cerr << "Failed to build the project.\n";
+		return buildError;
+	}
+    #endif
+
+	return 0;
+}
+
 std::filesystem::path Stage::addSourceFile(std::filesystem::path const& file,
                                            std::string const& content) {
 	auto src = m_stage / "src";
@@ -80,7 +110,10 @@ std::filesystem::path Stage::addSourceFile(std::filesystem::path const& file,
 	std::ofstream cmakeFile(m_stage / "cmake" / "Sources.cmake");
 	cmakeFile << "set(sources ";
 	for (auto const& source : m_sources) {
-		cmakeFile << source.c_str() << '\n';
+		// This is to convers Windows strings (\) to CMake native ones (/)
+		std::string s = source.string();
+		std::replace(s.begin(), s.end(), '\\', '/');
+		cmakeFile << s << '\n';
 	}
 	cmakeFile << ")";
 	cmakeFile.close();
@@ -97,15 +130,14 @@ std::filesystem::path Stage::addFile(std::filesystem::path const& file,
 	return filepath;
 }
 
-void Stage::runCMakeConfigure(std::string const& compiler,
-                              std::string const& generator,
-                              std::string const& buildType) {
-	runCommand("cmake -S. -Bbuild -G " + generator + " -DCMAKE_CXX_COMPILER=" +
-	           compiler + " -DCMAKE_BUILD_TYPE=" + buildType);
+int Stage::runCMakeConfigure(std::string const& compiler) {
+	return runCommand(
+	    "cmake -S. -Bbuild -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=\"" +
+	    compiler + "\"");
 }
 
-void Stage::buildCMakeProject() {
-	runCommand("cmake --build build -j1");
+int Stage::buildCMakeProject() {
+	return runCommand("cmake --build build -j1");
 }
 
 int Stage::runCommand(std::string const& cmd,
@@ -126,5 +158,4 @@ int Stage::runCommand(std::string const& cmd,
 	std::filesystem::current_path(originalDirectory);
 	return errorCode;
 }
-}
-
+}    // namespace TestStage

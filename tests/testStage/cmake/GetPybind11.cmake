@@ -12,7 +12,7 @@ function(get_pybind11)
 
   if(NOT ARG_VERSION)
     message(
-      FATAL_ERROR "Must provide a version. e.g. getPybind11(VERSION 2.4.3)")
+      FATAL_ERROR "Must provide a version. e.g. getPybind11(VERSION 2.6.2)")
   endif()
 
   # All fetchcontent stuff uses lowercase names
@@ -26,9 +26,4 @@ function(get_pybind11)
 
   # Includes the necessary directories
   FetchContent_MakeAvailable(pybind11_entry)
-
-  # Needed for pybind11's overload of 'new' and 'delete'
-  if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-    target_compile_options(pybind11 INTERFACE -fsized-deallocation)
-  endif()
 endfunction()

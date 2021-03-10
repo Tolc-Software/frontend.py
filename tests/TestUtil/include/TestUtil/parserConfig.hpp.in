@@ -1,5 +1,6 @@
 #include <IR/ir.hpp>
 #include <Parser/Config.hpp>
+#include <Parser/Windows/systemIncludeHelper.hpp>
 
 
 namespace TestUtil {
@@ -7,7 +8,7 @@ namespace TestUtil {
 Parser::Config getParserConfig() {
 	auto config = Parser::Config();
 	// This is auto filled by CMake
-	config.m_systemIncludes = {@SYSTEM_INCLUDE_PATHS@};
+	config.m_systemIncludes = @SYSTEM_INCLUDE_PATHS@;
 	return config;
 }
 

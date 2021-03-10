@@ -25,13 +25,10 @@ namespace TestStage {
 struct Stage {
 	/**
 	* Create a unique stage in baseStage/stages
-	* Copy files from baseStage to stage
-	* Inherits the files:
-	*     CMakeLists.txt
-	*     Anything in the cmake directory
-	*     Anything in the build/_deps directory
+	* Copy files/directories in pathsToCopy from baseStage to stage
 	*/
-	Stage(std::filesystem::path const& baseStage);
+	Stage(std::filesystem::path const& baseStage,
+	      std::vector<std::filesystem::path> const& pathsToCopy);
 
 	/**
 	* Removes the stage and everything in it from the filesystem
@@ -64,23 +61,17 @@ struct Stage {
 	std::filesystem::path addFile(std::filesystem::path const& file,
 	                              std::string const& content);
 
-	/**
+	/*
 	* Configure CMake project in stage
-	* Provides reasonable defaults
+	* then build with reasonable defaults
+	* Returns the exit code of the first command that fails or 0
 	*/
-	void runCMakeConfigure(std::string const& compiler = "clang++",
-	                       std::string const& generator = "Ninja",
-	                       std::string const& buildType = "Release");
-
-	/**
-	* Build CMake target
-	*/
-	void buildCMakeProject();
+	int configureAndBuild();
 
 	/**
 	* Runs a command within the test stage
 	* workingDirectory is relative the stage root
-	* Returns the exit status of the command
+	* Returns the exit code of the command
 	*/
 	int runCommand(
 	    std::string const& cmd,
@@ -94,5 +85,21 @@ struct Stage {
 
 	// If the stage should be removed when this object is destroyed
 	bool m_removeOnDestruction = true;
+
+private:
+	/**
+	* NOTE: This is not a cross platform function
+	* Configure CMake project in stage
+	* Provides reasonable defaults
+	* Returns the exit code of the command
+	*/
+	int runCMakeConfigure(std::string const& compiler);
+
+	/**
+	* NOTE: This is not a cross platform function
+	* Build CMake target
+	* Returns the exit code of the command
+	*/
+	int buildCMakeProject();
 };
-}
+}    // namespace TestStage
