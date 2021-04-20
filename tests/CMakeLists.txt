@@ -11,7 +11,7 @@ set(parser_asset_name "Parser-${CMAKE_SYSTEM_NAME}-master")
 if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL Windows)
   set(parser_asset_name "${parser_asset_name}-${CMAKE_BUILD_TYPE}")
 endif()
-get_parser(ASSET_NAME ${parser_asset_name}.tar.gz ${parser_source_switch})
+get_parser(ASSET_NAME ${parser_asset_name}.tar.xz ${parser_source_switch})
 
 # If we are not building from source we need to create some variables
 # containing the paths to the included system library

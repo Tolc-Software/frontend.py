@@ -71,12 +71,12 @@ jobs:
         cd build
         ctest --cores 4 --output-on-failure
 
-    - name: Build the release tar.gzip package
+    - name: Build the release tar.xz package
       if: github.ref == 'refs/heads/master'
       shell: cmd
       run: |
         call "%VCVARS%"
-        cpack -G TGZ --config build/CPackConfig.cmake
+        cpack -G TXZ --config build/CPackConfig.cmake
 
     - name: Setup go
       if: github.ref == 'refs/heads/master'
@@ -102,5 +102,5 @@ jobs:
         echo "Checking if a new release is needed"
         github-release release --user srydell --repo frontend.py --tag master-release --name "Head release" --description "This release gets updated with each commit to master" || true
         echo "Pushing the release"
-        github-release upload --user srydell --repo frontend.py --tag master-release --name "Frontend.py-Windows-master-Release.tar.gz" --file frontend.tar.gz --replace
+        github-release upload --user srydell --repo frontend.py --tag master-release --name "Frontend.py-Windows-master-Release.tar.xz" --file frontend.tar.xz --replace
 
