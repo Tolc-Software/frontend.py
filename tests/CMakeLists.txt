@@ -98,9 +98,10 @@ set_tests_properties(ConfigureTestStage PROPERTIES FIXTURES_SETUP TestStage)
 
 foreach(
   test
+
   Builders/classBuilder.cpp
-  Builders/functionBuilder.cpp
   Builders/enumBuilder.cpp
+  Builders/functionBuilder.cpp
   Builders/moduleFileBuilder.cpp
   Helpers/Pybind/extractIncludes.cpp
   Helpers/combine.cpp
@@ -111,19 +112,23 @@ foreach(
   PybindProxy/moduleFile.cpp
   arrays.cpp
   classes.cpp
+  deques.cpp
   enums.cpp
   functions.cpp
+  lists.cpp
   maps.cpp
   memberVariables.cpp
-  namespaces.cpp
   namespaceSameAsModule.cpp
+  namespaces.cpp
   pairs.cpp
-  tuples.cpp
   sets.cpp
+  tuples.cpp
   unordered_maps.cpp
   unordered_sets.cpp
   userDefined.cpp
-  vectors.cpp)
+  vectors.cpp
+
+)
   # Ex: PybindProxy/moduleFile.cpp -> moduleFile
   get_filename_component(testName ${test} NAME_WLE)
 
