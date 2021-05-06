@@ -16,12 +16,12 @@ TEST_CASE("Using std::variants", "[variants]") {
 
 class WithMember {
 public:
-	explicit WithMember(std::variant<std::string, bool> s) : m_s(s) {}
+	explicit WithMember(std::variant<int, bool> s) : m_s(s) {}
 
 	auto getS() { return m_s; }
 
 private:
-	std::variant<std::string, bool> m_s;
+	std::variant<int, bool> m_s;
 };
 
 class WithFunction {
@@ -42,9 +42,9 @@ public:
 )";
 
 	auto pythonTestCode = fmt::format(R"(
-greeting = "hello"
-withString = {moduleName}.WithMember(greeting)
-self.assertEqual(withString.getS(), greeting)
+number = 6
+withNumber = {moduleName}.WithMember(number)
+self.assertEqual(withNumber.getS(), number)
 
 withBool = {moduleName}.WithMember(True)
 self.assertEqual(withBool.getS(), True)
