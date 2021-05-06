@@ -31,7 +31,7 @@ public:
 	}
 
 	std::variant<int, std::string, bool> getHello() {
-		return "Hello";
+		return std::string("Hello");
 	}
 
 	std::variant<int, std::string, bool> getTrue() {
