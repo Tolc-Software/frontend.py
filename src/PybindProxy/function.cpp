@@ -1,5 +1,6 @@
 #include "PybindProxy/function.hpp"
 #include "Helpers/enumsToString.hpp"
+#include <algorithm>
 #include <fmt/format.h>
 #include <string>
 
@@ -19,8 +20,13 @@ std::string Function::getPybind() const {
 
 	// Add named arguments
 	// Allows for myFun(i=5, j=2) in python
-	for (auto const& arg : m_arguments) {
-		f += fmt::format(R"(, py::arg("{}"))", arg);
+	// If all arguments names are specified in C++, we can let the python user see them
+	if (std::none_of(m_arguments.begin(),
+	                 m_arguments.end(),
+	                 [](const auto& arg) { return arg.empty(); })) {
+		for (auto const& arg : m_arguments) {
+			f += fmt::format(R"(, py::arg("{}"))", arg);
+		}
 	}
 	f += ')';
 

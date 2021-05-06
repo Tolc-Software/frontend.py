@@ -29,6 +29,10 @@ void addYourOwn(std::string content) {
 int calculate() {
 	return 5;
 }
+
+int weirdArgumentsNaming(int, int i) {
+	return i;
+}
 )";
 
 	auto pythonTestCode = fmt::format(R"(
@@ -43,6 +47,14 @@ with open("hello.txt", "r") as f:
 
 result = {moduleName}.calculate()
 self.assertEqual(result, 5)
+
+# Without naming variables is fine
+result = {moduleName}.weirdArgumentsNaming(2, 5)
+self.assertEqual(result, 5)
+
+# Not possible to name any variables since they are not all known
+with self.assertRaises(TypeError) as error_context:
+  result = {moduleName}.weirdArgumentsNaming(2, i=5)
 )",
 	                                  fmt::arg("moduleName", moduleName));
 
