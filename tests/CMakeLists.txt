@@ -120,12 +120,14 @@ foreach(
   memberVariables.cpp
   namespaceSameAsModule.cpp
   namespaces.cpp
+  optionals.cpp
   pairs.cpp
   sets.cpp
   tuples.cpp
   unordered_maps.cpp
   unordered_sets.cpp
   userDefined.cpp
+  variants.cpp
   vectors.cpp
 
 )
