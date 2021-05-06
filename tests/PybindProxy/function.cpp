@@ -34,6 +34,28 @@ TEST_CASE("Function with arguments", "[function]") {
 	}
 }
 
+TEST_CASE("Function with arguments that are not named", "[function]") {
+	PybindProxy::Function f("f", "f");
+	std::vector<std::string> args = {"i", "", "k"};
+	//                                    ^ anonymous argument
+	// Ex: int f(int i, int, int k);
+	for (auto const& arg : args) {
+		f.addArgument(arg);
+	}
+
+	auto pybindCode = f.getPybind();
+	CAPTURE(pybindCode);
+
+	using TestUtil::contains;
+	// The function bind
+	REQUIRE(contains(pybindCode, R"(def("f", &f)"));
+
+	for (auto const& arg : args) {
+		// Should not contain any of the arguments
+		REQUIRE(!contains(pybindCode, fmt::format(R"(py::arg("{}"))", arg)));
+	}
+}
+
 TEST_CASE("Return value policy", "[function]") {
 	using ReturnValue = PybindProxy::Function::return_value_policy;
 	std::vector<ReturnValue> policies = {ReturnValue::automatic,

@@ -33,15 +33,18 @@ std::set<std::string> extractIncludes(IR::Type const& type) {
 		// See https://pybind11.readthedocs.io/en/stable/advanced/cast/overview.html
 		switch (current.m_container) {
 			case IR::ContainerType::Array:
-			case IR::ContainerType::Vector:
 			case IR::ContainerType::Deque:
 			case IR::ContainerType::List:
 			case IR::ContainerType::Map:
-			case IR::ContainerType::UnorderedMap:
+			case IR::ContainerType::Optional:
 			case IR::ContainerType::Set:
+			case IR::ContainerType::UnorderedMap:
 			case IR::ContainerType::UnorderedSet:
+			case IR::ContainerType::Variant:
+			case IR::ContainerType::Vector:
 				includes.insert("<pybind11/stl.h>");
 				break;
+
 			case IR::ContainerType::ForwardList:
 			case IR::ContainerType::MultiMap:
 			case IR::ContainerType::MultiSet:

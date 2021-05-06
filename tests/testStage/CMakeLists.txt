@@ -19,3 +19,8 @@ include(cmake/Sources.cmake)
 # Create the python module
 pybind11_add_module(${target_name} ${sources} SYSTEM)
 target_include_directories(${target_name} PRIVATE src)
+
+# Use C++17 since the tests are using std::optional etc.
+set_target_properties(${target_name} PROPERTIES CXX_STANDARD_REQUIRED ON
+                                                CXX_EXTENSIONS OFF
+                                                CXX_STANDARD 17)
