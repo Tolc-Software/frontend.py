@@ -89,8 +89,7 @@ TEST_CASE("Class with constructor", "[class]") {
 
 	using TestUtil::contains;
 	auto expectedContains =
-	    fmt::format("\t.def(py::init<{arguments}>())",
-	                fmt::arg("arguments", fmt::join(arguments, ", ")));
+	    fmt::format("\t.def(py::init<{}>()", fmt::join(arguments, ", "));
 	CAPTURE(expectedContains);
 	REQUIRE(contains(pybindCode, expectedContains));
 }

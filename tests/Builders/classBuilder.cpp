@@ -37,7 +37,7 @@ TEST_CASE("Empty class gets default constructor", "[classBuilder]") {
 	auto pybind = myStruct.getPybind(moduleName);
 	CAPTURE(pybind);
 
-	auto expectedContains = "def(py::init<>())";
+	auto expectedContains = "def(py::init<>(), \"\")";
 	CAPTURE(expectedContains);
 	REQUIRE(TestUtil::contains(pybind, expectedContains));
 }
@@ -65,7 +65,7 @@ TEST_CASE("Class with a constructor", "[classBuilder]") {
 	CAPTURE(pybind);
 
 	auto expectedContains =
-	    fmt::format(R"(.def(py::init<{type}>(), py::arg("s"))",
+	    fmt::format(R"(.def(py::init<{type}>(), "", py::arg("s"))",
 	                fmt::arg("type", t.m_representation));
 	CAPTURE(expectedContains);
 	REQUIRE(TestUtil::contains(pybind, expectedContains));

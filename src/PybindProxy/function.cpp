@@ -19,8 +19,10 @@ std::string Function::getPybind() const {
 		}
 
 		// Results in
-		// def(py::init<std::string, int, double>
-		f = fmt::format(R"(def(py::init<{}>())", fmt::join(typeNames, ", "));
+		// def(py::init<std::string, int, double>), "This is a constructor"
+		f = fmt::format(R"(def(py::init<{}>(), "{}")",
+		                fmt::join(typeNames, ", "),
+		                documentation);
 	} else {
 		// Results in
 		// def("myFunction", &MyNamespace::myFunction, "This is a function"
