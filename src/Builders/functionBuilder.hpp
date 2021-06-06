@@ -8,5 +8,6 @@ namespace Builders {
 /**
 * Transforms a IR::Function to a PybindProxy::Function
 */
-PybindProxy::Function buildFunction(IR::Function const& fun);
+PybindProxy::Function buildFunction(IR::Function const& fun,
+                                    bool isConstructor = false);
 }    // namespace Builders

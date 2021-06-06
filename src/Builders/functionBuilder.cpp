@@ -4,13 +4,18 @@
 
 namespace Builders {
 
-PybindProxy::Function buildFunction(IR::Function const& fun) {
+PybindProxy::Function buildFunction(IR::Function const& fun,
+                                    bool isConstructor) {
 	PybindProxy::Function f(fun.m_name, fun.m_representation);
+
+	if (isConstructor) {
+		f.setAsConstructor();
+	}
 
 	std::set<std::string> includes;
 
 	for (auto const& arg : fun.m_arguments) {
-		f.addArgument(arg.m_name);
+		f.addArgument(arg.m_type.m_representation, arg.m_name);
 
 		includes.merge(Helpers::Pybind::extractIncludes(arg.m_type));
 	}

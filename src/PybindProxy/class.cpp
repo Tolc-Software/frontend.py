@@ -4,9 +4,6 @@
 
 namespace PybindProxy {
 
-Constructor::Constructor(std::vector<std::string> const& arguments)
-    : m_arguments(arguments) {};
-
 std::string Class::getPybind(std::string const& moduleName) const {
 	std::string out = fmt::format(
 	    "py::class_<{fullyQualifiedName}>({moduleName}, \"{name}\")\n",
@@ -15,8 +12,8 @@ std::string Class::getPybind(std::string const& moduleName) const {
 	    fmt::arg("moduleName", moduleName));
 
 	for (auto const& init : m_constructors) {
-		out += fmt::format("\t.def(py::init<{}>())\n",
-		                   fmt::join(init.m_arguments, ", "));
+		out += fmt::format("\t.{constructorPybind}\n",
+		                   fmt::arg("constructorPybind", init.getPybind()));
 	}
 
 	for (auto const& function : m_functions) {
@@ -65,7 +62,7 @@ void Class::addFunction(Function const& function) {
 	m_functions.push_back(function);
 }
 
-void Class::addConstructor(Constructor const& constructor) {
+void Class::addConstructor(Function const& constructor) {
 	m_constructors.push_back(constructor);
 }
 

@@ -51,6 +51,8 @@ namespace MyLib {
 	auto pythonTestCode = fmt::format(R"(
 withConstructor = {moduleName}.WithConstructor("Hello")
 self.assertEqual(withConstructor.getS(), "Hello")
+withConstructor = {moduleName}.WithConstructor(s="named argument")
+self.assertEqual(withConstructor.getS(), "named argument")
 
 withFunction = {moduleName}.WithFunction()
 self.assertEqual(withFunction.add(2, 5), 7)

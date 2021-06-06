@@ -19,11 +19,13 @@ public:
 	/**
 	* Adds an argument name.
 	* E.g.
-	*   f(int i) would require addArgument("i")
+	*   f(int i) would require addArgument("int", "i")
 	*/
-	void addArgument(std::string const& argument);
+	void addArgument(std::string const& typeName, std::string const& name = "");
 
 	void addInclude(std::string const& i);
+
+	void setAsConstructor();
 
 	std::vector<std::string> const& getIncludes() const;
 
@@ -49,11 +51,22 @@ public:
 	void setReturnValuePolicy(return_value_policy policy);
 
 private:
+	struct Argument {
+		// E.g.
+		//   f(int i)
+		// Would result in
+		//   typeName = "int"
+		//   name = "i"
+		std::string typeName;
+		std::string name;
+	};
+
 	// User defined name of the function
 	std::string m_name;
 	std::string m_fullyQualifiedName;
 	std::optional<return_value_policy> m_returnValuePolicy;
-	std::vector<std::string> m_arguments;
+	std::vector<Argument> m_arguments;
 	std::vector<std::string> m_includes;
+	bool m_isConstructor;
 };
 }

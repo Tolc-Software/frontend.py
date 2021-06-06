@@ -64,8 +64,9 @@ TEST_CASE("Class with a constructor", "[classBuilder]") {
 	auto pybind = myStruct.getPybind(moduleName);
 	CAPTURE(pybind);
 
-	auto expectedContains = fmt::format("\t.def(py::init<{type}>())",
-	                                    fmt::arg("type", t.m_representation));
+	auto expectedContains =
+	    fmt::format(R"(.def(py::init<{type}>(), py::arg("s"))",
+	                fmt::arg("type", t.m_representation));
 	CAPTURE(expectedContains);
 	REQUIRE(TestUtil::contains(pybind, expectedContains));
 }

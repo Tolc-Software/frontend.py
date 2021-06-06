@@ -77,7 +77,12 @@ TEST_CASE("Class with constructor", "[class]") {
 	PybindProxy::Class c(className, className);
 
 	std::vector<std::string> arguments = {"const std::string&", "int"};
-	c.addConstructor(PybindProxy::Constructor(arguments));
+	auto constructor = PybindProxy::Function(className, className);
+	for (auto const& argument : arguments) {
+		constructor.addArgument(argument);
+	}
+	constructor.setAsConstructor();
+	c.addConstructor(constructor);
 
 	auto pybindCode = c.getPybind(moduleName);
 	CAPTURE(pybindCode);
