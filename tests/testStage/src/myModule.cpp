@@ -1,8 +1,8 @@
-#include "test.hpp"
 #include <pybind11/pybind11.h>
 // This headear allows automatic conversion
 // of many stl containers such as vector
 #include <pybind11/stl.h>
+#include <string>
 #include <vector>
 
 namespace py = pybind11;
@@ -18,6 +18,19 @@ std::vector<int> getValues(int i, int j) {
 enum class WorldlyThings { Money, Status, MeaningOfLife };
 
 enum ThingsIWant { BetterChair, Abs, WarmSocks };
+
+class Stuff {
+public:
+	Stuff(std::string something) : m_something(something) {};
+
+	std::string m_something;
+};
+
+namespace MyNamespace {
+std::string sayHello() {
+	return "hello";
+}
+}    // namespace MyNamespace
 
 PYBIND11_MODULE(myModule, myModule) {
 	// NOTE:    ^-- This name needs to be the same as the CMake target output name
@@ -55,6 +68,11 @@ PYBIND11_MODULE(myModule, myModule) {
 	    .value("Abs", ThingsIWant::Abs)
 	    .value("WarmSocks", ThingsIWant::WarmSocks)
 	    .export_values();
+
+	// Class with named constructor arguments
+	py::class_<Stuff>(myModule, "Stuff")
+	    .def(py::init<std::string>(), py::arg("something"))
+	    .def_readwrite("m_something", &Stuff::m_something);
 
 	// Adding a submodule within this module
 	auto myNamespace = myModule.def_submodule("MyNamespace");

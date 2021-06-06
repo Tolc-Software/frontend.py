@@ -19,7 +19,7 @@ TEST_CASE("Function with arguments", "[function]") {
 	PybindProxy::Function f("f", "f");
 	std::vector<std::string> args = {"i", "j", "k"};
 	for (auto const& arg : args) {
-		f.addArgument(arg);
+		f.addArgument("int", arg);
 	}
 
 	auto pybindCode = f.getPybind();
@@ -40,7 +40,7 @@ TEST_CASE("Function with arguments that are not named", "[function]") {
 	//                                    ^ anonymous argument
 	// Ex: int f(int i, int, int k);
 	for (auto const& arg : args) {
-		f.addArgument(arg);
+		f.addArgument("int", arg);
 	}
 
 	auto pybindCode = f.getPybind();

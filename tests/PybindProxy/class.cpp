@@ -77,15 +77,19 @@ TEST_CASE("Class with constructor", "[class]") {
 	PybindProxy::Class c(className, className);
 
 	std::vector<std::string> arguments = {"const std::string&", "int"};
-	c.addConstructor(PybindProxy::Constructor(arguments));
+	auto constructor = PybindProxy::Function(className, className);
+	for (auto const& argument : arguments) {
+		constructor.addArgument(argument);
+	}
+	constructor.setAsConstructor();
+	c.addConstructor(constructor);
 
 	auto pybindCode = c.getPybind(moduleName);
 	CAPTURE(pybindCode);
 
 	using TestUtil::contains;
 	auto expectedContains =
-	    fmt::format("\t.def(py::init<{arguments}>())",
-	                fmt::arg("arguments", fmt::join(arguments, ", ")));
+	    fmt::format("\t.def(py::init<{}>()", fmt::join(arguments, ", "));
 	CAPTURE(expectedContains);
 	REQUIRE(contains(pybindCode, expectedContains));
 }

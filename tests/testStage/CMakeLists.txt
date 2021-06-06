@@ -5,6 +5,10 @@ project(
   VERSION 1.0
   LANGUAGES CXX)
 
+# Export compile flags to compile_commands.json database. Useful for linters and
+# autocompletion
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 include(cmake/GetPybind11.cmake)
 get_pybind11(VERSION 2.6.2)
 

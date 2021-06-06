@@ -7,12 +7,6 @@
 
 namespace PybindProxy {
 
-struct Constructor {
-	explicit Constructor(std::vector<std::string> const& arguments);
-
-	std::vector<std::string> m_arguments;
-};
-
 class Class {
 public:
 	explicit Class(std::string const& name,
@@ -22,7 +16,7 @@ public:
 
 	void addFunction(Function const& function);
 
-	void addConstructor(Constructor const& constructor);
+	void addConstructor(Function const& constructor);
 
 	void addMemberVariable(std::string const& variableName, bool isConst);
 
@@ -45,7 +39,7 @@ private:
 	std::string m_name;
 	std::string m_fullyQualifiedName;
 
-	std::vector<Constructor> m_constructors;
+	std::vector<Function> m_constructors;
 	std::vector<Function> m_functions;
 	std::vector<MemberVariable> m_memberVariables;
 	std::vector<Enum> m_enums;
