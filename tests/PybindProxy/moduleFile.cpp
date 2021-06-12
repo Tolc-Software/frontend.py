@@ -23,6 +23,6 @@ TEST_CASE("ModuleFile can take a module", "[moduleFile]") {
 	                                       moduleName,
 	                                       m.getVariableName())));
 	// The module contains the function
-	REQUIRE(TestUtil::contains(pybindCode,
-	                           m.getVariableName() + R"(.def("f", &f)"));
+	REQUIRE(
+	    TestUtil::contains(pybindCode, m.getVariableName() + R"(.def("f", )"));
 }

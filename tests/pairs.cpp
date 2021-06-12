@@ -17,7 +17,7 @@ class MyClass {
 public:
 	explicit MyClass(std::pair<std::string, int> s) : m_s(s) {}
 
-	auto getS() { return m_s; }
+	std::pair<std::string, int> getS() { return m_s; }
 
 private:
 	std::pair<std::string, int> m_s;

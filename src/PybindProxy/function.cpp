@@ -1,5 +1,6 @@
 #include "PybindProxy/function.hpp"
 #include "Helpers/enumsToString.hpp"
+#include "Helpers/string.hpp"
 #include <algorithm>
 #include <fmt/format.h>
 #include <string>
@@ -11,23 +12,16 @@ std::string Function::getPybind() const {
 
 	std::string f;
 	if (m_isConstructor) {
-		// Get the typenames of the arguments
-		std::vector<std::string> typeNames;
-		typeNames.reserve(m_arguments.size());
-		for (auto const& arg : m_arguments) {
-			typeNames.push_back(arg.typeName);
-		}
-
 		// Results in
 		// def(py::init<std::string, int, double>), "This is a constructor"
-		f = fmt::format(R"(def(py::init<{}>(), "{}")",
-		                fmt::join(typeNames, ", "),
-		                documentation);
+		f = fmt::format(
+		    R"(def(py::init<{}>(), "{}")", getArgumentTypes(), documentation);
 	} else {
 		// Results in
-		// def("myFunction", &MyNamespace::myFunction, "This is a function"
-		f = fmt::format(R"(def("{}", &{}, "{}")",
+		// def("myFunction", (void (*)(int, double))&MyNamespace::myFunction, "This is a function"
+		f = fmt::format(R"(def("{}", {}&{}, "{}")",
 		                m_name,
+		                m_isOverloaded ? getSignature() : "",
 		                m_fullyQualifiedName,
 		                documentation);
 
@@ -57,8 +51,8 @@ std::string Function::getPybind() const {
 Function::Function(std::string const& name,
                    std::string const& fullyQualifiedName)
     : m_name(name), m_fullyQualifiedName(fullyQualifiedName),
-      m_returnValuePolicy(std::nullopt), m_arguments({}),
-      m_isConstructor(false) {}
+      m_returnType("void"), m_returnValuePolicy(std::nullopt), m_arguments({}),
+      m_isConstructor(false), m_isOverloaded(false) {}
 
 void Function::addInclude(std::string const& i) {
 	m_includes.push_back(i);
@@ -73,6 +67,10 @@ void Function::addArgument(std::string const& typeName,
 	m_arguments.push_back({typeName, name});
 };
 
+void Function::setReturnType(std::string const& typeName) {
+	m_returnType = typeName;
+}
+
 void Function::setReturnValuePolicy(return_value_policy policy) {
 	m_returnValuePolicy = policy;
 };
@@ -80,5 +78,28 @@ void Function::setReturnValuePolicy(return_value_policy policy) {
 void Function::setAsConstructor() {
 	m_isConstructor = true;
 };
+
+void Function::setAsOverloaded() {
+	m_isOverloaded = true;
+};
+
+std::string Function::getArgumentTypes() const {
+	// Get the typenames of the arguments
+	std::vector<std::string> typeNames;
+	std::transform(m_arguments.begin(),
+	               m_arguments.end(),
+	               std::back_inserter(typeNames),
+	               [](auto const& argument) { return argument.typeName; });
+	return fmt::format("{}", fmt::join(typeNames, ", "));
+}
+
+std::string Function::getSignature() const {
+	return fmt::format(
+	    R"(({returnType}({namespace}*)({arguments})))",
+	    fmt::arg("returnType", m_returnType),
+	    fmt::arg("namespace",
+	             Helpers::removeSubString(m_fullyQualifiedName, m_name)),
+	    fmt::arg("arguments", getArgumentTypes()));
+}
 
 }    // namespace PybindProxy

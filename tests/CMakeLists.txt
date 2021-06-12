@@ -121,6 +121,7 @@ foreach(
   namespaceSameAsModule.cpp
   namespaces.cpp
   optionals.cpp
+  overloadedFunctions.cpp
   pairs.cpp
   sets.cpp
   tuples.cpp

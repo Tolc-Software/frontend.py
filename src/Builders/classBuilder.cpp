@@ -3,28 +3,47 @@
 #include "Builders/functionBuilder.hpp"
 #include "Helpers/Pybind/extractIncludes.hpp"
 #include "Helpers/combine.hpp"
+#include "Helpers/getOverloadedFunctions.hpp"
+#include <IR/ir.hpp>
 #include <set>
 #include <string>
 
 namespace Builders {
 
+namespace {
+std::vector<IR::Function> getPublicFunctions(
+    std::vector<std::pair<IR::AccessModifier, IR::Function>> const& functions) {
+	std::vector<IR::Function> publicFunctions;
+	for (auto const& [am, function] : functions) {
+		if (am == IR::AccessModifier::Public) {
+			publicFunctions.push_back(function);
+		}
+	}
+	return publicFunctions;
+}
+}    // namespace
+
 PybindProxy::Class buildClass(IR::Struct const& cppClass) {
 	PybindProxy::Class pyClass(cppClass.m_name, cppClass.m_representation);
 	std::set<std::string> includes;
 
-	// TODO: Remove this when IR has support for constructors
-	for (auto const& [accessModifier, function] : cppClass.m_functions) {
+	auto publicFunctions = getPublicFunctions(cppClass.m_functions);
+	auto overloadedFunctions = Helpers::getOverloadedFunctions(publicFunctions);
+	for (auto const& function : publicFunctions) {
 		// Ignore private functions
-		if (accessModifier == IR::AccessModifier::Public) {
-			auto pyFunction = buildFunction(function);
-			Helpers::combine(includes, pyFunction.getIncludes());
+		auto pyFunction = buildFunction(function);
+		Helpers::combine(includes, pyFunction.getIncludes());
 
-			if (function.m_name == cppClass.m_name) {
-				pyFunction.setAsConstructor();
-				pyClass.addConstructor(pyFunction);
-			} else {
-				pyClass.addFunction(pyFunction);
-			}
+		if (overloadedFunctions.find(function.m_representation) !=
+		    overloadedFunctions.end()) {
+			pyFunction.setAsOverloaded();
+		}
+
+		if (function.m_name == cppClass.m_name) {
+			pyFunction.setAsConstructor();
+			pyClass.addConstructor(pyFunction);
+		} else {
+			pyClass.addFunction(pyFunction);
 		}
 	}
 

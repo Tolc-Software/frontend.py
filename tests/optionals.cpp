@@ -18,7 +18,7 @@ class WithMember {
 public:
 	explicit WithMember(std::optional<std::string> s) : m_s(s) {}
 
-	auto getS() { return m_s; }
+	std::optional<std::string> getS() { return m_s; }
 
 private:
 	std::optional<std::string> m_s;

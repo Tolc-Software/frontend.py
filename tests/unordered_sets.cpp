@@ -18,7 +18,7 @@ class MyClass {
 public:
 	explicit MyClass(std::unordered_set<std::string> s) : m_s(s) {}
 
-	auto getS() { return m_s; }
+	std::unordered_set<std::string> getS() { return m_s; }
 
 	int getValue(std::unordered_set<int> const& m, int key) {
 		auto it = m.find(key);

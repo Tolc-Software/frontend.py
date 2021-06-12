@@ -3,6 +3,7 @@
 #include "Builders/enumBuilder.hpp"
 #include "Builders/functionBuilder.hpp"
 #include "Helpers/combine.hpp"
+#include "Helpers/getOverloadedFunctions.hpp"
 #include "PybindProxy/module.hpp"
 #include <IR/ir.hpp>
 #include <algorithm>
@@ -34,15 +35,17 @@ std::string getVariableName(std::string qualifiedName,
 
 PybindProxy::Module buildModule(IR::Namespace const& ns,
                                 std::string const& rootModuleName) {
-	// Check if trying to build from the global namespace or a subnamespace
-	auto moduleName = ns.m_name.empty() ? rootModuleName : ns.m_name;
-
 	PybindProxy::Module builtModule(
 	    getVariableName(ns.m_representation, rootModuleName));
 	std::set<std::string> includes;
 
+	auto overloadedFunctions = Helpers::getOverloadedFunctions(ns.m_functions);
 	for (auto const& function : ns.m_functions) {
 		auto f = Builders::buildFunction(function);
+		if (overloadedFunctions.find(function.m_representation) !=
+		    overloadedFunctions.end()) {
+			f.setAsOverloaded();
+		}
 		combineIncludes(includes, f);
 		builtModule.addFunction(f);
 	}

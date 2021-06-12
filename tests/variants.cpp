@@ -18,7 +18,7 @@ class WithMember {
 public:
 	explicit WithMember(std::variant<int, bool> s) : m_s(s) {}
 
-	auto getS() { return m_s; }
+	std::variant<int, bool> getS() { return m_s; }
 
 private:
 	std::variant<int, bool> m_s;

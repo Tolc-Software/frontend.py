@@ -18,7 +18,7 @@ class WithMember {
 public:
 	explicit WithMember(std::deque<std::string> s) : m_s(s) {}
 
-	auto getS() { return m_s; }
+	std::deque<std::string> getS() { return m_s; }
 
 private:
 	std::deque<std::string> m_s;

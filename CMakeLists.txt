@@ -42,14 +42,16 @@ add_library(
   src/Builders/functionBuilder.cpp
   src/Builders/moduleBuilder.cpp
   src/Builders/moduleFileBuilder.cpp
-  src/Helpers/enumsToString.cpp
   src/Frontend/Python/frontend.cpp
+  src/Helpers/Pybind/extractIncludes.cpp
+  src/Helpers/enumsToString.cpp
+  src/Helpers/getOverloadedFunctions.cpp
+  src/Helpers/string.cpp
+  src/PybindProxy/class.cpp
   src/PybindProxy/enum.cpp
   src/PybindProxy/function.cpp
-  src/PybindProxy/class.cpp
   src/PybindProxy/module.cpp
-  src/PybindProxy/moduleFile.cpp
-  src/Helpers/Pybind/extractIncludes.cpp)
+  src/PybindProxy/moduleFile.cpp)
 
 add_warnings(TARGET Frontend.py)
 add_options(TARGET Frontend.py)

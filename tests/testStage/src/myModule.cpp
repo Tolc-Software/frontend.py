@@ -7,9 +7,19 @@
 
 namespace py = pybind11;
 
+int add() {
+	return 0;
+}
+
 int add(int i, int j) {
 	return i + j;
 }
+
+int add(int i, int j, int k) {
+	return add(add(i, j), k);
+}
+
+void nothing() {}
 
 std::vector<int> getValues(int i, int j) {
 	return {i, j};
@@ -41,10 +51,25 @@ PYBIND11_MODULE(myModule, myModule) {
 	// Adding a simple function with optional help text
 	// and named variables (allows python to use add(i = 5, j = 3))
 	myModule.def("add",
-	             &add,
+	             (int (*)(int, int)) & add,
 	             "A function which adds two numbers",
 	             py::arg("i"),
 	             py::arg("j"));
+
+	// Overloaded function
+	myModule.def("add",
+	             (int (*)(int, int, int)) & add,
+	             "A function which adds three numbers",
+	             py::arg("i"),
+	             py::arg("j"),
+	             py::arg("k"));
+
+	// Overloaded function
+	myModule.def("add", (int (*)()) & add, "A function which adds no numbers");
+
+	// Testing void in function signature
+	myModule.def(
+	    "nothing", (void (*)()) & nothing, "A function which does nothing");
 
 	myModule.def("getValues",
 	             &getValues,

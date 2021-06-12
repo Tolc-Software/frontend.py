@@ -27,6 +27,13 @@ public:
 
 	void setAsConstructor();
 
+	// Is there another function with the same name but with different arguments?
+	void setAsOverloaded();
+
+	// E.g. std::string f();
+	// should call setReturnType("std::string")
+	void setReturnType(std::string const& typeName);
+
 	std::vector<std::string> const& getIncludes() const;
 
 	// These are all 1-to-1 with pybind11
@@ -51,6 +58,9 @@ public:
 	void setReturnValuePolicy(return_value_policy policy);
 
 private:
+	std::string getSignature() const;
+	std::string getArgumentTypes() const;
+
 	struct Argument {
 		// E.g.
 		//   f(int i)
@@ -64,9 +74,12 @@ private:
 	// User defined name of the function
 	std::string m_name;
 	std::string m_fullyQualifiedName;
+	// Defaults to void
+	std::string m_returnType;
 	std::optional<return_value_policy> m_returnValuePolicy;
 	std::vector<Argument> m_arguments;
 	std::vector<std::string> m_includes;
 	bool m_isConstructor;
+	bool m_isOverloaded;
 };
 }
