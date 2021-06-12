@@ -18,7 +18,7 @@ class MyClass {
 public:
 	explicit MyClass(std::tuple<std::string, int> s) : m_s(s) {}
 
-	auto getS() { return m_s; }
+	std::tuple<std::string, int> getS() { return m_s; }
 
 	std::tuple<std::string, int> m_s;
 };

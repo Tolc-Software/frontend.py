@@ -4,6 +4,37 @@
 #include <catch2/catch.hpp>
 #include <fmt/format.h>
 
+TEST_CASE("Test signature if no overloads", "[function]") {
+	PybindProxy::Function f("f", "f");
+	std::vector<std::string> args = {"i", "j", "k"};
+	for (auto const& arg : args) {
+		f.addArgument("int", arg);
+	}
+
+	auto pybindCode = f.getPybind();
+	CAPTURE(pybindCode);
+
+	using TestUtil::contains;
+	// The function bind does not contain the signature since it is not overloaded
+	REQUIRE(contains(pybindCode, R"(def("f", &f,)"));
+}
+
+TEST_CASE("Test signature of overloaded function", "[function]") {
+	PybindProxy::Function f("f", "f");
+	std::vector<std::string> args = {"i", "j", "k"};
+	for (auto const& arg : args) {
+		f.addArgument("int", arg);
+	}
+	f.setAsOverloaded();
+
+	auto pybindCode = f.getPybind();
+	CAPTURE(pybindCode);
+
+	using TestUtil::contains;
+	// The function bind contains the signature since it is overloaded (artificially)
+	REQUIRE(contains(pybindCode, R"((void(*)(int, int, int))"));
+}
+
 TEST_CASE("Simple function within a namespace", "[function]") {
 	PybindProxy::Function f("f", "MyNamespace::f");
 

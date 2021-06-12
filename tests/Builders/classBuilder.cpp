@@ -87,12 +87,19 @@ TEST_CASE("Class with functions", "[classBuilder]") {
 
 		f.m_name = function;
 		f.m_representation = f.m_name;
+
 		IR::Variable v;
 		v.m_name = "myVar";
-		IR::Type t;
-		t.m_representation = type;
-		v.m_type = t;
+
+		IR::Type arg;
+		arg.m_representation = type;
+		v.m_type = arg;
 		f.m_arguments.push_back(v);
+
+		IR::Type returnType;
+		returnType.m_representation = "void";
+		f.m_returnType = returnType;
+
 		s.m_functions.push_back({IR::AccessModifier::Public, f});
 	}
 
@@ -100,7 +107,7 @@ TEST_CASE("Class with functions", "[classBuilder]") {
 	auto pybind = myStruct.getPybind(moduleName);
 	CAPTURE(pybind);
 
-	for (auto const& [function, type] : functions) {
+	for (auto const& [function, argument] : functions) {
 		auto expectedContains =
 		    fmt::format("\t.def(\"{function}\", &{function}",
 		                fmt::arg("function", function));

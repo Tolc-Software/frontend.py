@@ -18,7 +18,7 @@ class MyClass {
 public:
 	explicit MyClass(std::set<std::string> s) : m_s(s) {}
 
-	auto getS() { return m_s; }
+	std::set<std::string> getS() { return m_s; }
 
 	int getValue(std::set<int> const& m, int key) {
 		auto it = m.find(key);

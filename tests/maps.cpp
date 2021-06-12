@@ -18,7 +18,7 @@ class MyClass {
 public:
 	explicit MyClass(std::map<std::string, int> s) : m_s(s) {}
 
-	auto getS() { return m_s; }
+	std::map<std::string, int> getS() { return m_s; }
 
 	std::string getValue(std::map<int, std::string> const& m, int key) {
 		auto it = m.find(key);

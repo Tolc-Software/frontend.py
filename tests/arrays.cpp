@@ -18,7 +18,7 @@ class WithMember {
 public:
 	explicit WithMember(std::array<std::string, 2> s) : m_s(s) {}
 
-	auto getS() { return m_s; }
+	std::array<std::string, 2> getS() { return m_s; }
 
 private:
 	std::array<std::string, 2> m_s;

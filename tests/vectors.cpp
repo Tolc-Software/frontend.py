@@ -18,7 +18,7 @@ class WithMember {
 public:
 	explicit WithMember(std::vector<std::string> s) : m_s(s) {}
 
-	auto getS() { return m_s; }
+	std::vector<std::string> getS() { return m_s; }
 
 private:
 	std::vector<std::string> m_s;
