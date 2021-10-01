@@ -22,6 +22,7 @@ std::vector<IR::BaseType> getTypes() {
 	    BaseType::Int,
 	    BaseType::Long,
 	    BaseType::String,
+	    BaseType::StringView,
 	    BaseType::Void,
 	};
 }
@@ -45,6 +46,7 @@ std::string getAsString(IR::BaseType type) {
 		case BaseType::Int: return "int";
 		case BaseType::Long: return "long";
 		case BaseType::String: return "std::string";
+		case BaseType::StringView: return "std::string_view";
 		case BaseType::Void: return "void";
 	}
 	return "";
@@ -55,6 +57,7 @@ std::string getIncludesIfNeeded(IR::BaseType type) {
 	using IR::BaseType;
 	switch (type) {
 		case BaseType::String: include = "#include <string>\n";
+		case BaseType::StringView: include = "#include <string_view>\n";
 		default: break;
 	}
 	return include;
@@ -69,7 +72,8 @@ std::string getValidReturnForType(IR::BaseType type) {
 		case BaseType::Float: return "1.0";
 		case BaseType::Int: return "1";
 		case BaseType::Long: return "1";
-		case BaseType::String: return "\"HelloWorld\"";
+		case BaseType::String:
+		case BaseType::StringView: return "\"HelloWorld\"";
 		case BaseType::Void: return "";
 	}
 	return "";
