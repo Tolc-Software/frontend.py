@@ -33,6 +33,10 @@ int calculate() {
 int weirdArgumentsNaming(int, int i) {
 	return i;
 }
+
+char firstLetter(std::string_view s) {
+	return s[0];
+}
 )";
 
 	auto pythonTestCode = fmt::format(R"(
@@ -55,6 +59,10 @@ self.assertEqual(result, 5)
 # Not possible to name any variables since they are not all known
 with self.assertRaises(TypeError) as error_context:
   result = {moduleName}.weirdArgumentsNaming(2, i=5)
+
+# Getting the first letter from a string_view
+result = {moduleName}.firstLetter("Hello")
+self.assertEqual(result, "H")
 )",
 	                                  fmt::arg("moduleName", moduleName));
 

@@ -12,12 +12,14 @@ TEST_CASE("Classes", "[classes]") {
 
 	auto cppCode = R"(
 #include <string>
+#include <string_view>
 
 class WithConstructor {
 public:
 	explicit WithConstructor(std::string s) : m_s(s) {}
 
 	std::string getS() { return m_s; }
+	std::string_view getSView() { return m_s; }
 
 private:
 	std::string m_s;
@@ -53,6 +55,7 @@ withConstructor = {moduleName}.WithConstructor("Hello")
 self.assertEqual(withConstructor.getS(), "Hello")
 withConstructor = {moduleName}.WithConstructor(s="named argument")
 self.assertEqual(withConstructor.getS(), "named argument")
+self.assertEqual(withConstructor.getSView(), "named argument")
 
 withFunction = {moduleName}.WithFunction()
 self.assertEqual(withFunction.add(2, 5), 7)
