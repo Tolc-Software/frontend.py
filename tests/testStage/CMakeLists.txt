@@ -10,7 +10,7 @@ project(
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(cmake/GetPybind11.cmake)
-get_pybind11(VERSION 2.6.2)
+get_pybind11(VERSION 2.7.1)
 
 # Get the variable 'target_name'
 # NOTE: This will be generated for each test
