@@ -81,7 +81,7 @@ std::set<std::string> extractIncludes(IR::Type const& type) {
 		for (auto const& containedType : current.m_containedTypes) {
 			if (auto container = getContainer(containedType)) {
 				containersToCheck.push(*container);
-			} else if (isFunctionType(type)) {
+			} else if (isFunctionType(containedType)) {
 				// The type is std::function
 				includes.insert("<pybind11/functional.h>");
 			}

@@ -5,22 +5,31 @@
 #include <catch2/catch.hpp>
 #include <fmt/format.h>
 
-TEST_CASE("Write to file functions", "[functions]") {
+TEST_CASE("Taking functions as arguments", "[functions]") {
 	std::string moduleName = "defaultModule";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
 	auto cppCode = R"(
 #include <functional>
+#include <vector>
 
 double takingFunction(std::function<double(int)> callMe) {
 	return callMe(5);
 }
 
-std::function<int(int)> func_ret(const std::function<int(int)> &f) {
+std::function<int(int)> returnFunction(const std::function<int(int)> &f) {
 	return [f](int i) {
 		return f(i) + 1;
 	};
+}
+
+int accumulateArrayOfFunctions(std::vector<std::function<int()>> arrayToSum) {
+	int sum = 0;
+	for (auto f : arrayToSum) {
+		sum += f();
+	}
+	return sum;
 }
 )";
 
@@ -31,8 +40,14 @@ def callback(i):
 result0 = {moduleName}.takingFunction(callback)
 self.assertEqual(result0, 5.0)
 
-inc_by_one = {moduleName}.func_ret(callback)
+inc_by_one = {moduleName}.returnFunction(callback)
 self.assertEqual(inc_by_one(5), 6)
+
+def fiver():
+  return 5
+
+result1 = {moduleName}.accumulateArrayOfFunctions([fiver, fiver])
+self.assertEqual(result1, 10)
 )",
 	                                  fmt::arg("moduleName", moduleName));
 
