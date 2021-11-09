@@ -114,6 +114,7 @@ foreach(
   classes.cpp
   deques.cpp
   enums.cpp
+  functional.cpp
   functions.cpp
   lists.cpp
   maps.cpp

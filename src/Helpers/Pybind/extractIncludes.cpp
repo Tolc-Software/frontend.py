@@ -4,6 +4,7 @@
 #include <set>
 #include <spdlog/spdlog.h>
 #include <string>
+#include <variant>
 
 namespace {
 /**
@@ -15,6 +16,13 @@ IR::Type::Container const* getContainer(IR::Type const& type) {
 	}
 	return nullptr;
 }
+
+/**
+* Return true iff type is a function
+*/
+constexpr bool isFunctionType(IR::Type const& type) {
+	return std::holds_alternative<IR::Type::Function>(type.m_type);
+}
 }    // namespace
 
 namespace Helpers::Pybind {
@@ -25,6 +33,9 @@ std::set<std::string> extractIncludes(IR::Type const& type) {
 	std::queue<IR::Type::Container> containersToCheck;
 	if (auto container = getContainer(type)) {
 		containersToCheck.push(*container);
+	} else if (isFunctionType(type)) {
+		// The type is std::function
+		includes.insert("<pybind11/functional.h>");
 	}
 
 	while (!containersToCheck.empty()) {
@@ -70,6 +81,9 @@ std::set<std::string> extractIncludes(IR::Type const& type) {
 		for (auto const& containedType : current.m_containedTypes) {
 			if (auto container = getContainer(containedType)) {
 				containersToCheck.push(*container);
+			} else if (isFunctionType(containedType)) {
+				// The type is std::function
+				includes.insert("<pybind11/functional.h>");
 			}
 		}
 
