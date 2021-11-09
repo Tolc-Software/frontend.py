@@ -1,5 +1,9 @@
+#include <functional>
+// This header allows automatic conversion
+// of std::function objects
+#include <pybind11/functional.h>
 #include <pybind11/pybind11.h>
-// This headear allows automatic conversion
+// This header allows automatic conversion
 // of many stl containers such as vector
 #include <pybind11/stl.h>
 #include <string>
@@ -23,6 +27,15 @@ void nothing() {}
 
 std::vector<int> getValues(int i, int j) {
 	return {i, j};
+}
+
+double functionTakingFunction(std::function<double(int)> funcArg) {
+	return funcArg(5);
+}
+
+// Not supported as of yet
+double cFunctionArg(double (*argumentFunction)(int)) {
+	return argumentFunction(5);
 }
 
 enum class WorldlyThings { Money, Status, MeaningOfLife };
@@ -76,6 +89,19 @@ PYBIND11_MODULE(myModule, myModule) {
 	             "Get the input as an array",
 	             py::arg("i"),
 	             py::arg("j"));
+
+	// Function callbacks
+	myModule.def("functionTakingFunction",
+	             &functionTakingFunction,
+	             "A function that takes a function and calls it");
+
+	// C-Style function pointers are not supported as of yet
+	// myModule.def(
+	//     "cFunctionArg",
+	//     [](std::function<double(int)> argumentFunction) {
+	// 	    cFunctionArg(argumentFunction);
+	//     },
+	//     "A function that takes a C-style function and calls it");
 
 	// NOTE: Scoped enums have 'py::arithmetic()'
 	//       This adds additional convenience functions such as
