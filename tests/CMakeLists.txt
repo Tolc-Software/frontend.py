@@ -125,6 +125,7 @@ foreach(
   overloadedFunctions.cpp
   pairs.cpp
   sets.cpp
+  # templates.cpp NOTE: Not supported by Parser yet
   tuples.cpp
   unordered_maps.cpp
   unordered_sets.cpp
