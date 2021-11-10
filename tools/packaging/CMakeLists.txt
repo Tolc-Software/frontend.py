@@ -8,6 +8,10 @@ install(EXPORT Frontend.pyTargets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Fron
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/Frontend
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
+# Documentation
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/docs/public
+  DESTINATION ${CMAKE_INSTALL_DOCDIR})
+
 # Need to be able to download conan packages
 install(
   FILES
