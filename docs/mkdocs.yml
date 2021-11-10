@@ -1,0 +1,24 @@
+site_name: frontend-py
+site_description: 'Frontend.py: A test site to see how this will look in production'
+site_author: 'Simon Rydell'
+site_url: 'https://srydell.github.io/tolc/'
+docs_dir: 'public'
+strict: true
+nav:
+  - python:
+    - Conversions: 'conversions.md'
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - tables
+theme:
+  name: material
+  font:
+    text: IBM Plex
+    code: IBM Plex mono
+  palette:
+    primary: black
+    accent: deep purple
+extra:
+  generator: false
