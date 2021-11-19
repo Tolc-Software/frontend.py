@@ -103,6 +103,7 @@ foreach(
   Builders/enumBuilder.cpp
   Builders/functionBuilder.cpp
   Builders/moduleFileBuilder.cpp
+  Builders/typeToStringBuilder.cpp
   Helpers/Pybind/extractIncludes.cpp
   Helpers/combine.cpp
   PybindProxy/class.cpp
@@ -125,7 +126,7 @@ foreach(
   overloadedFunctions.cpp
   pairs.cpp
   sets.cpp
-  # templates.cpp NOTE: Not supported by Parser yet
+  templates.cpp
   tuples.cpp
   unordered_maps.cpp
   unordered_sets.cpp

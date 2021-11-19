@@ -13,7 +13,10 @@ jobs:
       VCVARS: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Pull down to C disk
+      shell: cmd
+      run: |
+        git clone https://srydell:${{ secrets.ACCESS_TOKEN }}@github.com/srydell/frontend.py.git C:\Repo
 
     - name: Install SSH key
       uses: shimataro/ssh-key-action@v2
@@ -35,6 +38,7 @@ jobs:
           ${{ runner.os }}-pip-
 
     - name: Download python dependencies
+      working-directory: C:\Repo
       run: |
         python -m pip install setuptools wheel
         python -m pip install conan ninja
@@ -48,6 +52,7 @@ jobs:
           ${{ runner.os }}-conan-
 
     - name: Configure
+      working-directory: C:\Repo
       shell: cmd
       env:
         GITHUB_AUTH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
@@ -56,6 +61,7 @@ jobs:
         cmake -S. -Bbuild -DCMAKE_CXX_COMPILER=clang-cl -DCMAKE_C_COMPILER=clang-cl -DENABLE_PACKAGING=ON -DCMAKE_BUILD_TYPE=Debug -DCPACK_PACKAGE_FILE_NAME=frontend -G Ninja
 
     - name: Build
+      working-directory: C:\Repo
       shell: cmd
       run: |
         call "%VCVARS%"
@@ -63,6 +69,7 @@ jobs:
 
     - name: Build the release tar.xz package
       if: github.ref == 'refs/heads/master'
+      working-directory: C:\Repo
       shell: cmd
       run: |
         call "%VCVARS%"
@@ -85,6 +92,7 @@ jobs:
 
     - name: Push master release
       if: github.ref == 'refs/heads/master'
+      working-directory: C:\Repo
       env:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       run: |

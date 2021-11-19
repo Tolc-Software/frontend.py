@@ -5,6 +5,35 @@
 #include <catch2/catch.hpp>
 #include <fmt/format.h>
 
+TEST_CASE("Templated class", "[classBuilder]") {
+	std::string moduleName = "MyModule";
+	IR::Struct s;
+	std::string removedTemplatePars = "SomeClass_int";
+	s.m_name = "SomeClass<int>";
+	s.m_representation = s.m_name;
+	s.m_hasImplicitDefaultConstructor = true;
+	IR::Type t;
+	t.m_isConst = false;
+	t.m_isReference = false;
+	t.m_numPointers = 0;
+	t.m_representation = "int";
+	auto v = IR::Type::Value();
+	v.m_base = IR::BaseType::Int;
+	t.m_type = v;
+	s.m_templateArguments.push_back(t);
+
+	auto myStruct = Builders::buildClass(s);
+	auto pybind = myStruct.getPybind(moduleName);
+	auto expectedContains = fmt::format(
+	    R"(py::class_<{fullyQualifiedClassName}>({moduleName}, "{className}"))",
+	    fmt::arg("fullyQualifiedClassName", s.m_representation),
+	    fmt::arg("moduleName", moduleName),
+	    fmt::arg("className", removedTemplatePars));
+	CAPTURE(pybind);
+	CAPTURE(expectedContains);
+	REQUIRE(TestUtil::contains(pybind, expectedContains));
+}
+
 TEST_CASE("Class within namespace", "[classBuilder]") {
 	std::string moduleName = "MyModule";
 	IR::Struct s;
@@ -185,7 +214,7 @@ TEST_CASE("Class with vector in member function gives the correct include",
           "[classBuilder]") {
 	std::string moduleName = "MyModule";
 	IR::Struct s;
-	s.m_name = "SomeFunction";
+	s.m_name = "SomeClass";
 	s.m_hasImplicitDefaultConstructor = true;
 	IR::Function constructor;
 	constructor.m_name = s.m_name;
@@ -207,7 +236,7 @@ TEST_CASE("Class with vector in member function gives the correct include",
 TEST_CASE("Class with enum", "[classBuilder]") {
 	std::string moduleName = "MyModule";
 	IR::Struct s;
-	s.m_name = "SomeFunction";
+	s.m_name = "SomeClass";
 	s.m_hasImplicitDefaultConstructor = true;
 	IR::Enum e;
 	e.m_isScoped = true;

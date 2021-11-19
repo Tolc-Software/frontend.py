@@ -1,4 +1,5 @@
 #include "Helpers/Pybind/extractIncludes.hpp"
+#include "Helpers/types.hpp"
 #include <IR/ir.hpp>
 #include <queue>
 #include <set>
@@ -6,34 +7,15 @@
 #include <string>
 #include <variant>
 
-namespace {
-/**
-* Return container if type is a container, otherwise nullptr
-*/
-IR::Type::Container const* getContainer(IR::Type const& type) {
-	if (auto container = std::get_if<IR::Type::Container>(&type.m_type)) {
-		return container;
-	}
-	return nullptr;
-}
-
-/**
-* Return true iff type is a function
-*/
-constexpr bool isFunctionType(IR::Type const& type) {
-	return std::holds_alternative<IR::Type::Function>(type.m_type);
-}
-}    // namespace
-
 namespace Helpers::Pybind {
 
 std::set<std::string> extractIncludes(IR::Type const& type) {
 	std::set<std::string> includes;
 
 	std::queue<IR::Type::Container> containersToCheck;
-	if (auto container = getContainer(type)) {
+	if (auto container = Helpers::getContainer(type)) {
 		containersToCheck.push(*container);
-	} else if (isFunctionType(type)) {
+	} else if (Helpers::isFunctionType(type)) {
 		// The type is std::function
 		includes.insert("<pybind11/functional.h>");
 	}
@@ -79,9 +61,9 @@ std::set<std::string> extractIncludes(IR::Type const& type) {
 		}
 
 		for (auto const& containedType : current.m_containedTypes) {
-			if (auto container = getContainer(containedType)) {
+			if (auto container = Helpers::getContainer(containedType)) {
 				containersToCheck.push(*container);
-			} else if (isFunctionType(containedType)) {
+			} else if (Helpers::isFunctionType(containedType)) {
 				// The type is std::function
 				includes.insert("<pybind11/functional.h>");
 			}

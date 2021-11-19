@@ -1,24 +1,23 @@
 #pragma once
 
 #include <IR/ir.hpp>
-#include <optional>
-#include <variant>
 
 namespace Helpers {
-IR::Type::Container const* getContainer(IR::Type const& type) {
-	return std::get_if<IR::Type::Container>(&type.m_type);
-}
+/**
+* Return container if type is a container, otherwise nullptr
+*/
+IR::Type::Container const* getContainer(IR::Type const& type);
 
-bool requiresPybind11STLHeader(IR::Type::Container const& container) {
-	using IR::ContainerType;
-	switch (container.m_container) {
-		case ContainerType::Array:
-		case ContainerType::Allocator:
-		case ContainerType::Map:
-		case ContainerType::Set:
-		case ContainerType::Unordered_map:
-		case ContainerType::Unordered_set:
-		case ContainerType::Vector: return true; return false;
-	};
-}
+/**
+* Return true iff type is a function
+*/
+bool isFunctionType(IR::Type const& type);
+
+/**
+* Return substring without the template parameters
+* Ex:
+*   MyClass<int> -> MyClass
+*   myFunction<int> -> myFunction
+*/
+std::string removeCppTemplate(std::string const& name);
 }    // namespace Helpers

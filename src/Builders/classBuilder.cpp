@@ -1,10 +1,13 @@
 #include "Builders/classBuilder.hpp"
 #include "Builders/enumBuilder.hpp"
 #include "Builders/functionBuilder.hpp"
+#include "Builders/typeToStringBuilder.hpp"
 #include "Helpers/Pybind/extractIncludes.hpp"
 #include "Helpers/combine.hpp"
 #include "Helpers/getOverloadedFunctions.hpp"
+#include "Helpers/types.hpp"
 #include <IR/ir.hpp>
+#include <numeric>
 #include <set>
 #include <string>
 
@@ -21,10 +24,25 @@ std::vector<IR::Function> getPublicFunctions(
 	}
 	return publicFunctions;
 }
+
+std::string
+getTemplateParameterString(std::vector<IR::Type> const& parameters) {
+	return std::accumulate(parameters.begin(),
+	                       parameters.end(),
+	                       std::string() /* Start with empty string */,
+	                       [](std::string soFar, IR::Type const& current) {
+		                       return std::move(soFar) + "_" +
+		                              buildTypeString(current);
+	                       });
+}
+
 }    // namespace
 
 PybindProxy::Class buildClass(IR::Struct const& cppClass) {
-	PybindProxy::Class pyClass(cppClass.m_name, cppClass.m_representation);
+	PybindProxy::Class pyClass(
+	    Helpers::removeCppTemplate(cppClass.m_name) +
+	        getTemplateParameterString(cppClass.m_templateArguments),
+	    cppClass.m_representation);
 	std::set<std::string> includes;
 
 	auto publicFunctions = getPublicFunctions(cppClass.m_functions);

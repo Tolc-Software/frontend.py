@@ -1,28 +1,33 @@
-### Conversion tables ###
-
 This page shows what is automatically translated and to what. On the left is the `C++` and to the right what the corresponding interface in `python` will be. Not converted means there will be no automatic translation to a corresponding `python` object (for example `std::queue` does not automatically translate to `queue.Queue`).
 
-| C++                        | Python translation       |
-|:-------------------------- |:------------------------ |
-| Namespace                  | Module                   |
-| Nested namespace           | Submodule                |
-| Class                      | Class                    |
-| Nested class               | ???                      |
-| Public Function            | Class function           |
-| Private Function           | Not converted            |
-| Public const member        | Read only property       |
-| Public non const member    | Read write property      |
-| Private member variables   | Not converted            |
-| Free function              | Module function          |
-| Overloaded function        | Module function*         |
-| Enum                       | Enum                     |
-| Templated functions        | Not converted**          |
-| Specialized templates      | ???                      |
+## Conversion tables ##
 
-\* Will try to match arguments to types provided
+| C++                                 | Python translation             |
+|:----------------------------------- |:------------------------------ |
+| Namespace                           | Module                         |
+| Nested namespace                    | Submodule                      |
+| Class                               | Class                          |
+| Nested class                        | ???                            |
+| Public Function                     | Class function                 |
+| Private Function                    | Not converted                  |
+| Public const member                 | Read only property             |
+| Public non const member             | Read write property            |
+| Private member variables            | Not converted                  |
+| Free function                       | Module function                |
+| Overloaded function                 | Module function*               |
+| Enum                                | Enum                           |
+| Scoped enum                         | Enum                           |
+| Templated classes/functions         | Not converted**                |
+| Specialized class templates         | Class***                       |
+| Specialized function templates      | Function****                   |
+
+\* Will try to match arguments to types provided.
 
 \*\* No direct translation to `python`. Will not emit warning.
 
+\*\*\* The naming convention for these classes can be found under the [Template Naming Convention page](template_naming_convention.md).
+
+\*\*\*\* Functions with different template arguments will behave as overloaded functions.
 
 | C++ Standard library class      | Python translation       |
 |:------------------------------- |:------------------------ |

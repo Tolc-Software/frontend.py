@@ -1,12 +1,14 @@
 #include "Builders/functionBuilder.hpp"
 #include "Helpers/Pybind/extractIncludes.hpp"
+#include "Helpers/types.hpp"
 #include "PybindProxy/function.hpp"
 
 namespace Builders {
 
 PybindProxy::Function buildFunction(IR::Function const& cppFunction) {
-	PybindProxy::Function pyFunction(cppFunction.m_name,
-	                                 cppFunction.m_representation);
+	PybindProxy::Function pyFunction(
+	    Helpers::removeCppTemplate(cppFunction.m_name),
+	    cppFunction.m_representation);
 
 	std::set<std::string> includes;
 

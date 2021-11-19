@@ -42,11 +42,13 @@ add_library(
   src/Builders/functionBuilder.cpp
   src/Builders/moduleBuilder.cpp
   src/Builders/moduleFileBuilder.cpp
+  src/Builders/typeToStringBuilder.cpp
   src/Frontend/Python/frontend.cpp
   src/Helpers/Pybind/extractIncludes.cpp
   src/Helpers/enumsToString.cpp
   src/Helpers/getOverloadedFunctions.cpp
   src/Helpers/string.cpp
+  src/Helpers/types.cpp
   src/PybindProxy/class.cpp
   src/PybindProxy/enum.cpp
   src/PybindProxy/function.cpp
