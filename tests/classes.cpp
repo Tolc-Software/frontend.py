@@ -18,6 +18,8 @@ class WithConstructor {
 public:
 	explicit WithConstructor(std::string s) : m_s(s) {}
 
+	static int const i = 10;
+
 	std::string getS() { return m_s; }
 	std::string_view getSView() { return m_s; }
 
@@ -51,6 +53,9 @@ namespace MyLib {
 )";
 
 	auto pythonTestCode = fmt::format(R"(
+# You can access static variables without instantiating class
+self.assertEqual({moduleName}.WithConstructor.i, 10)
+
 withConstructor = {moduleName}.WithConstructor("Hello")
 self.assertEqual(withConstructor.getS(), "Hello")
 withConstructor = {moduleName}.WithConstructor(s="named argument")

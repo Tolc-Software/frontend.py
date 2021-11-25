@@ -90,10 +90,12 @@ std::string getAsString(IR::BaseType type) {
 	using IR::BaseType;
 	switch (type) {
 		case BaseType::Bool: return "bool";
-		case BaseType::Char: return "char";
 		case BaseType::Char16_t: return "char16_t";
 		case BaseType::Char32_t: return "char32_t";
+		case BaseType::Char: return "char";
+		case BaseType::Complex: return "std::complex<double>";
 		case BaseType::Double: return "double";
+		case BaseType::FilesystemPath: return "std::filesystem::path";
 		case BaseType::Float: return "float";
 		case BaseType::Int: return "int";
 		case BaseType::LongDouble: return "long double";
@@ -130,10 +132,12 @@ std::string getValidReturnForType(IR::BaseType type) {
 	using IR::BaseType;
 	switch (type) {
 		case BaseType::Bool: return "true";
-		case BaseType::Char: return "'c'";
 		case BaseType::Char16_t: return "'c'";
 		case BaseType::Char32_t: return "'c'";
+		case BaseType::Char: return "'c'";
+		case BaseType::Complex: return "0";
 		case BaseType::Double: return "0";
+		case BaseType::FilesystemPath: return "\"path\"";
 		case BaseType::Float: return "0";
 		case BaseType::Int: return "0";
 		case BaseType::LongDouble: return "0";

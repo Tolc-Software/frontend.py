@@ -3,16 +3,20 @@
 #include "PybindProxy/moduleFile.hpp"
 #include <IR/ir.hpp>
 #include <filesystem>
+#include <optional>
 #include <string>
 
 namespace Frontend::Python {
 
-std::pair<std::filesystem::path, std::string>
+std::optional<std::pair<std::filesystem::path, std::string>>
 createModule(IR::Namespace const& rootNamespace,
              std::string const& moduleName) {
-	auto moduleFile = Builders::buildModuleFile(rootNamespace, moduleName);
-
-	return std::make_pair(moduleFile.getFilepath(), moduleFile.getPybind());
+	if (auto moduleFile =
+	        Builders::buildModuleFile(rootNamespace, moduleName)) {
+		return std::make_pair(moduleFile.value().getFilepath(),
+		                      moduleFile.value().getPybind());
+	}
+	return std::nullopt;
 }
 
 }    // namespace Frontend::Python

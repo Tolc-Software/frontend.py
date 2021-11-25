@@ -5,7 +5,7 @@
 #include <catch2/catch.hpp>
 #include <fmt/format.h>
 
-TEST_CASE("Taking functions as arguments", "[functions]") {
+TEST_CASE("Taking functions as arguments", "[functional]") {
 	std::string moduleName = "defaultModule";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);

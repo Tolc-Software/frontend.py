@@ -19,6 +19,10 @@ std::string Module::getPybind() const {
 		out += fmt::format("\t{};\n", e.getPybind(m_variableName));
 	}
 
+	for (auto const& attribute : m_attributes) {
+		out += fmt::format("\t{}.{};\n", m_variableName, attribute.getPybind());
+	}
+
 	// Define all the children
 	for (auto const& [submoduleName, submoduleVariable] : m_submodules) {
 		out += fmt::format(
@@ -33,7 +37,7 @@ std::string Module::getPybind() const {
 
 Module::Module(std::string const& variableName)
     : m_variableName(variableName), m_submodules({}), m_functions(), m_enums(),
-      m_includes() {}
+      m_attributes(), m_includes() {}
 
 void Module::addFunction(Function const& function) {
 	m_functions.push_back(function);
@@ -45,6 +49,10 @@ void Module::addClass(Class const& c) {
 
 void Module::addEnum(Enum const& e) {
 	m_enums.push_back(e);
+}
+
+void Module::addAttribute(Attribute const& a) {
+	m_attributes.push_back(a);
 }
 
 std::string const& Module::getVariableName() const {
@@ -63,4 +71,4 @@ void Module::addInclude(std::string const& i) {
 std::vector<std::string> const& Module::getIncludes() const {
 	return m_includes;
 }
-}
+}    // namespace PybindProxy

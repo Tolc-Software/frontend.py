@@ -8,6 +8,7 @@
 #include "Helpers/types.hpp"
 #include <IR/ir.hpp>
 #include <numeric>
+#include <optional>
 #include <set>
 #include <string>
 
@@ -38,7 +39,7 @@ getTemplateParameterString(std::vector<IR::Type> const& parameters) {
 
 }    // namespace
 
-PybindProxy::Class buildClass(IR::Struct const& cppClass) {
+std::optional<PybindProxy::Class> buildClass(IR::Struct const& cppClass) {
 	PybindProxy::Class pyClass(
 	    Helpers::removeCppTemplate(cppClass.m_name) +
 	        getTemplateParameterString(cppClass.m_templateArguments),
@@ -47,28 +48,37 @@ PybindProxy::Class buildClass(IR::Struct const& cppClass) {
 
 	auto publicFunctions = getPublicFunctions(cppClass.m_functions);
 	auto overloadedFunctions = Helpers::getOverloadedFunctions(publicFunctions);
+	// Ignore private functions
 	for (auto const& function : publicFunctions) {
-		// Ignore private functions
-		auto pyFunction = buildFunction(function);
-		Helpers::combine(includes, pyFunction.getIncludes());
+		if (auto maybePyFunction = buildFunction(function)) {
+			auto pyFunction = maybePyFunction.value();
+			Helpers::combine(includes, pyFunction.getIncludes());
 
-		if (overloadedFunctions.find(function.m_representation) !=
-		    overloadedFunctions.end()) {
-			pyFunction.setAsOverloaded();
-		}
+			if (function.m_isStatic) {
+				pyFunction.setAsStatic();
+			}
 
-		if (function.m_name == cppClass.m_name) {
-			pyFunction.setAsConstructor();
-			pyClass.addConstructor(pyFunction);
+			if (overloadedFunctions.find(function.m_representation) !=
+			    overloadedFunctions.end()) {
+				pyFunction.setAsOverloaded();
+			}
+
+			if (function.m_name == cppClass.m_name) {
+				pyFunction.setAsConstructor();
+				pyClass.addConstructor(pyFunction);
+			} else {
+				pyClass.addFunction(pyFunction);
+			}
 		} else {
-			pyClass.addFunction(pyFunction);
+			return std::nullopt;
 		}
 	}
 
 	for (auto const& [accessModifier, variable] : cppClass.m_memberVariables) {
 		if (accessModifier == IR::AccessModifier::Public) {
 			pyClass.addMemberVariable(variable.m_name,
-			                          variable.m_type.m_isConst);
+			                          variable.m_type.m_isConst,
+			                          variable.m_type.m_isStatic);
 		}
 	}
 

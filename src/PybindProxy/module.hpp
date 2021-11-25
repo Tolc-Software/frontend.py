@@ -1,5 +1,6 @@
 #pragma once
 
+#include "PybindProxy/attribute.hpp"
 #include "PybindProxy/class.hpp"
 #include "PybindProxy/enum.hpp"
 #include "PybindProxy/function.hpp"
@@ -16,6 +17,8 @@ struct Module {
 	void addClass(Class const& c);
 
 	void addEnum(Enum const& e);
+
+	void addAttribute(Attribute const& a);
 
 	std::string const& getVariableName() const;
 
@@ -34,12 +37,13 @@ private:
 	// then this module is a submodule
 	// {Simple name, Variable name}
 	// E.g.
-	// {"Sub", "NS__Nested__Sub"}
+	// {"Sub", "NS_Nested_Sub"}
 	std::vector<std::pair<std::string, std::string>> m_submodules;
 
 	std::vector<Function> m_functions;
 	std::vector<Class> m_classes;
 	std::vector<Enum> m_enums;
+	std::vector<Attribute> m_attributes;
 	std::vector<std::string> m_includes;
 };
 }

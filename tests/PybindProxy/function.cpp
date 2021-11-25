@@ -4,6 +4,17 @@
 #include <catch2/catch.hpp>
 #include <fmt/format.h>
 
+TEST_CASE("Static global function", "[function]") {
+	PybindProxy::Function f("f", "MyNamespace::f");
+	f.setAsStatic();
+
+	auto pybindCode = f.getPybind();
+	CAPTURE(pybindCode);
+
+	REQUIRE(
+	    TestUtil::contains(pybindCode, R"(def_static("f", &MyNamespace::f)"));
+}
+
 TEST_CASE("Test signature if no overloads", "[function]") {
 	PybindProxy::Function f("f", "f");
 	std::vector<std::string> args = {"i", "j", "k"};
@@ -14,9 +25,8 @@ TEST_CASE("Test signature if no overloads", "[function]") {
 	auto pybindCode = f.getPybind();
 	CAPTURE(pybindCode);
 
-	using TestUtil::contains;
 	// The function bind does not contain the signature since it is not overloaded
-	REQUIRE(contains(pybindCode, R"(def("f", &f,)"));
+	REQUIRE(TestUtil::contains(pybindCode, R"(def("f", &f,)"));
 }
 
 TEST_CASE("Test signature of overloaded function", "[function]") {
@@ -30,9 +40,8 @@ TEST_CASE("Test signature of overloaded function", "[function]") {
 	auto pybindCode = f.getPybind();
 	CAPTURE(pybindCode);
 
-	using TestUtil::contains;
 	// The function bind contains the signature since it is overloaded (artificially)
-	REQUIRE(contains(pybindCode, R"((void(*)(int, int, int))"));
+	REQUIRE(TestUtil::contains(pybindCode, R"((void(*)(int, int, int))"));
 }
 
 TEST_CASE("Simple function within a namespace", "[function]") {
@@ -41,9 +50,8 @@ TEST_CASE("Simple function within a namespace", "[function]") {
 	auto pybindCode = f.getPybind();
 	CAPTURE(pybindCode);
 
-	using TestUtil::contains;
 	// The function bind
-	REQUIRE(contains(pybindCode, R"(def("f", &MyNamespace::f)"));
+	REQUIRE(TestUtil::contains(pybindCode, R"(def("f", &MyNamespace::f)"));
 }
 
 TEST_CASE("Function with arguments", "[function]") {
@@ -56,12 +64,12 @@ TEST_CASE("Function with arguments", "[function]") {
 	auto pybindCode = f.getPybind();
 	CAPTURE(pybindCode);
 
-	using TestUtil::contains;
 	// The function bind
-	REQUIRE(contains(pybindCode, R"(def("f", &f)"));
+	REQUIRE(TestUtil::contains(pybindCode, R"(def("f", &f)"));
 
 	for (auto const& arg : args) {
-		REQUIRE(contains(pybindCode, fmt::format(R"(py::arg("{}"))", arg)));
+		REQUIRE(TestUtil::contains(pybindCode,
+		                           fmt::format(R"(py::arg("{}"))", arg)));
 	}
 }
 
@@ -77,13 +85,13 @@ TEST_CASE("Function with arguments that are not named", "[function]") {
 	auto pybindCode = f.getPybind();
 	CAPTURE(pybindCode);
 
-	using TestUtil::contains;
 	// The function bind
-	REQUIRE(contains(pybindCode, R"(def("f", &f)"));
+	REQUIRE(TestUtil::contains(pybindCode, R"(def("f", &f)"));
 
 	for (auto const& arg : args) {
 		// Should not contain any of the arguments
-		REQUIRE(!contains(pybindCode, fmt::format(R"(py::arg("{}"))", arg)));
+		REQUIRE(!TestUtil::contains(pybindCode,
+		                            fmt::format(R"(py::arg("{}"))", arg)));
 	}
 }
 

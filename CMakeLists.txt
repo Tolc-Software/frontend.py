@@ -37,6 +37,7 @@ FetchContent_MakeAvailable(IRSpecification)
 
 add_library(
   Frontend.py
+  src/Builders/attributeBuilder.cpp
   src/Builders/classBuilder.cpp
   src/Builders/enumBuilder.cpp
   src/Builders/functionBuilder.cpp
@@ -47,8 +48,10 @@ add_library(
   src/Helpers/Pybind/extractIncludes.cpp
   src/Helpers/enumsToString.cpp
   src/Helpers/getOverloadedFunctions.cpp
+  src/Helpers/split.cpp
   src/Helpers/string.cpp
   src/Helpers/types.cpp
+  src/PybindProxy/attribute.cpp
   src/PybindProxy/class.cpp
   src/PybindProxy/enum.cpp
   src/PybindProxy/function.cpp

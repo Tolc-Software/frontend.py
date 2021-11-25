@@ -30,6 +30,8 @@ public:
 	// Is there another function with the same name but with different arguments?
 	void setAsOverloaded();
 
+	void setAsStatic();
+
 	// E.g. std::string f();
 	// should call setReturnType("std::string")
 	void setReturnType(std::string const& typeName);
@@ -81,5 +83,6 @@ private:
 	std::vector<std::string> m_includes;
 	bool m_isConstructor;
 	bool m_isOverloaded;
+	bool m_isStatic;
 };
-}
+}    // namespace PybindProxy

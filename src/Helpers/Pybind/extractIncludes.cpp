@@ -9,15 +9,31 @@
 
 namespace Helpers::Pybind {
 
+IR::Type::Container const*
+addIncludesAndGetNextContainer(IR::Type const& type,
+                               std::set<std::string>& includes) {
+	if (auto container = Helpers::getContainer(type)) {
+		return container;
+	} else if (Helpers::isFunctionType(type)) {
+		// The type is std::function
+		includes.insert("<pybind11/functional.h>");
+	} else if (Helpers::isBaseType(type, IR::BaseType::FilesystemPath)) {
+		// The type is std::filesystem::path
+		includes.insert("<pybind11/stl/filesystem.h>");
+	} else if (Helpers::isBaseType(type, IR::BaseType::Complex)) {
+		// The type is std::complex
+		includes.insert("<pybind11/complex.h>");
+	}
+
+	return nullptr;
+}
+
 std::set<std::string> extractIncludes(IR::Type const& type) {
 	std::set<std::string> includes;
 
 	std::queue<IR::Type::Container> containersToCheck;
-	if (auto container = Helpers::getContainer(type)) {
+	if (auto container = addIncludesAndGetNextContainer(type, includes)) {
 		containersToCheck.push(*container);
-	} else if (Helpers::isFunctionType(type)) {
-		// The type is std::function
-		includes.insert("<pybind11/functional.h>");
 	}
 
 	while (!containersToCheck.empty()) {
@@ -33,6 +49,7 @@ std::set<std::string> extractIncludes(IR::Type const& type) {
 			case IR::ContainerType::Set:
 			case IR::ContainerType::UnorderedMap:
 			case IR::ContainerType::UnorderedSet:
+			case IR::ContainerType::Valarray:
 			case IR::ContainerType::Variant:
 			case IR::ContainerType::Vector:
 				includes.insert("<pybind11/stl.h>");
@@ -57,15 +74,15 @@ std::set<std::string> extractIncludes(IR::Type const& type) {
 			case IR::ContainerType::Hash:
 			case IR::ContainerType::Less:
 			case IR::ContainerType::Pair:
-			case IR::ContainerType::Tuple: break;
+			case IR::ContainerType::SharedPtr:
+			case IR::ContainerType::Tuple:
+			case IR::ContainerType::UniquePtr: break;
 		}
 
 		for (auto const& containedType : current.m_containedTypes) {
-			if (auto container = Helpers::getContainer(containedType)) {
+			if (auto container =
+			        addIncludesAndGetNextContainer(containedType, includes)) {
 				containersToCheck.push(*container);
-			} else if (Helpers::isFunctionType(containedType)) {
-				// The type is std::function
-				includes.insert("<pybind11/functional.h>");
 			}
 		}
 

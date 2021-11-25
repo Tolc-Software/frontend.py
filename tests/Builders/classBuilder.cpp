@@ -5,13 +5,89 @@
 #include <catch2/catch.hpp>
 #include <fmt/format.h>
 
-TEST_CASE("Templated class", "[classBuilder]") {
-	std::string moduleName = "MyModule";
+namespace {
+IR::Struct getStruct(std::string const& name) {
 	IR::Struct s;
-	std::string removedTemplatePars = "SomeClass_int";
-	s.m_name = "SomeClass<int>";
+	s.m_name = name;
 	s.m_representation = s.m_name;
 	s.m_hasImplicitDefaultConstructor = true;
+	return s;
+}
+struct Var {
+	std::string name;
+	std::string type;
+	bool isConst;
+};
+}    // namespace
+
+TEST_CASE("Class with static member variables", "[classBuilder]") {
+	std::vector<Var> variables = {Var({"v0", "int", true}),
+	                              Var({"myVar", "double", false})};
+
+	std::string moduleName = "MyModule";
+	IR::Struct s;
+	s.m_name = "MyStruct";
+	s.m_representation = s.m_name;
+	s.m_hasImplicitDefaultConstructor = true;
+
+	for (auto const& var : variables) {
+		IR::Variable v;
+		v.m_name = var.name;
+		IR::Type t;
+		t.m_representation = var.type;
+		t.m_isConst = var.isConst;
+		t.m_isStatic = true;
+		v.m_type = t;
+		s.m_memberVariables.push_back({IR::AccessModifier::Public, v});
+	}
+
+	auto myStruct = Builders::buildClass(s).value();
+	auto pybind = myStruct.getPybind(moduleName);
+	CAPTURE(pybind);
+
+	for (auto const& var : variables) {
+		auto accessor = var.isConst ? "readonly" : "readwrite";
+		auto expectedContains = fmt::format(
+		    R"(def_{accessor}_static("{variableName}", &{className}::{variableName}))",
+		    fmt::arg("accessor", accessor),
+		    fmt::arg("variableName", var.name),
+		    fmt::arg("className", s.m_name));
+		CAPTURE(expectedContains);
+		REQUIRE(TestUtil::contains(pybind, expectedContains));
+	}
+}
+
+TEST_CASE("Class with static function", "[classBuilder]") {
+	std::string moduleName = "MyModule";
+	auto s = getStruct("MyStruct");
+
+	IR::Function f;
+
+	f.m_name = "f";
+	f.m_representation = f.m_name;
+	f.m_isStatic = true;
+
+	IR::Type returnType;
+	returnType.m_representation = "void";
+	f.m_returnType = returnType;
+
+	s.m_functions.push_back({IR::AccessModifier::Public, f});
+
+	auto myStruct = Builders::buildClass(s).value();
+	auto pybind = myStruct.getPybind(moduleName);
+	CAPTURE(pybind);
+
+	auto expectedContains =
+	    fmt::format("\t.def_static(\"{function}\", &{function}",
+	                fmt::arg("function", f.m_name));
+	CAPTURE(expectedContains);
+	REQUIRE(TestUtil::contains(pybind, expectedContains));
+}
+
+TEST_CASE("Templated class", "[classBuilder]") {
+	std::string moduleName = "MyModule";
+	std::string removedTemplatePars = "SomeClass_int";
+	auto s = getStruct("SomeClass<int>");
 	IR::Type t;
 	t.m_isConst = false;
 	t.m_isReference = false;
@@ -22,7 +98,7 @@ TEST_CASE("Templated class", "[classBuilder]") {
 	t.m_type = v;
 	s.m_templateArguments.push_back(t);
 
-	auto myStruct = Builders::buildClass(s);
+	auto myStruct = Builders::buildClass(s).value();
 	auto pybind = myStruct.getPybind(moduleName);
 	auto expectedContains = fmt::format(
 	    R"(py::class_<{fullyQualifiedClassName}>({moduleName}, "{className}"))",
@@ -42,7 +118,7 @@ TEST_CASE("Class within namespace", "[classBuilder]") {
 	                                 fmt::arg("className", s.m_name));
 	s.m_hasImplicitDefaultConstructor = true;
 
-	auto myStruct = Builders::buildClass(s);
+	auto myStruct = Builders::buildClass(s).value();
 	auto pybind = myStruct.getPybind(moduleName);
 	CAPTURE(pybind);
 
@@ -62,7 +138,7 @@ TEST_CASE("Empty class gets default constructor", "[classBuilder]") {
 	s.m_representation = s.m_name;
 	s.m_hasImplicitDefaultConstructor = true;
 
-	auto myStruct = Builders::buildClass(s);
+	auto myStruct = Builders::buildClass(s).value();
 	auto pybind = myStruct.getPybind(moduleName);
 	CAPTURE(pybind);
 
@@ -81,6 +157,7 @@ TEST_CASE("Class with a constructor", "[classBuilder]") {
 	IR::Function f;
 	f.m_name = s.m_name;
 	f.m_representation = f.m_name;
+	f.m_isStatic = true;
 	IR::Variable v;
 	v.m_name = 's';
 	IR::Type t;
@@ -89,7 +166,7 @@ TEST_CASE("Class with a constructor", "[classBuilder]") {
 	f.m_arguments.push_back(v);
 	s.m_functions.push_back({IR::AccessModifier::Public, f});
 
-	auto myStruct = Builders::buildClass(s);
+	auto myStruct = Builders::buildClass(s).value();
 	auto pybind = myStruct.getPybind(moduleName);
 	CAPTURE(pybind);
 
@@ -116,6 +193,7 @@ TEST_CASE("Class with functions", "[classBuilder]") {
 
 		f.m_name = function;
 		f.m_representation = f.m_name;
+		f.m_isStatic = false;
 
 		IR::Variable v;
 		v.m_name = "myVar";
@@ -132,7 +210,7 @@ TEST_CASE("Class with functions", "[classBuilder]") {
 		s.m_functions.push_back({IR::AccessModifier::Public, f});
 	}
 
-	auto myStruct = Builders::buildClass(s);
+	auto myStruct = Builders::buildClass(s).value();
 	auto pybind = myStruct.getPybind(moduleName);
 	CAPTURE(pybind);
 
@@ -146,11 +224,6 @@ TEST_CASE("Class with functions", "[classBuilder]") {
 }
 
 TEST_CASE("Class with member variables", "[classBuilder]") {
-	struct Var {
-		std::string name;
-		std::string type;
-		bool isConst;
-	};
 	std::vector<Var> variables = {Var({"v0", "int", true}),
 	                              Var({"s", "const std::string&", false}),
 	                              Var({"myVar", "double", false})};
@@ -171,7 +244,7 @@ TEST_CASE("Class with member variables", "[classBuilder]") {
 		s.m_memberVariables.push_back({IR::AccessModifier::Public, v});
 	}
 
-	auto myStruct = Builders::buildClass(s);
+	auto myStruct = Builders::buildClass(s).value();
 	auto pybind = myStruct.getPybind(moduleName);
 	CAPTURE(pybind);
 
@@ -195,6 +268,7 @@ TEST_CASE("Class with vector in constructor gives the correct include",
 	s.m_hasImplicitDefaultConstructor = true;
 	IR::Function constructor;
 	constructor.m_name = s.m_name;
+	constructor.m_isStatic = false;
 	IR::Type arg;
 	IR::Type::Container c;
 	c.m_container = IR::ContainerType::Vector;
@@ -202,7 +276,7 @@ TEST_CASE("Class with vector in constructor gives the correct include",
 	constructor.m_arguments.push_back({"myVar", arg});
 	s.m_functions.push_back({IR::AccessModifier::Public, constructor});
 
-	auto myStruct = Builders::buildClass(s);
+	auto myStruct = Builders::buildClass(s).value();
 	auto includes = myStruct.getIncludes();
 	REQUIRE(includes.size() == 1);
 	for (auto const& include : includes) {
@@ -218,6 +292,7 @@ TEST_CASE("Class with vector in member function gives the correct include",
 	s.m_hasImplicitDefaultConstructor = true;
 	IR::Function constructor;
 	constructor.m_name = s.m_name;
+	constructor.m_isStatic = false;
 	IR::Type arg;
 	IR::Type::Container c;
 	c.m_container = IR::ContainerType::Vector;
@@ -225,7 +300,7 @@ TEST_CASE("Class with vector in member function gives the correct include",
 	constructor.m_arguments.push_back({"myVar", arg});
 	s.m_functions.push_back({IR::AccessModifier::Public, constructor});
 
-	auto myStruct = Builders::buildClass(s);
+	auto myStruct = Builders::buildClass(s).value();
 	auto includes = myStruct.getIncludes();
 	REQUIRE(includes.size() == 1);
 	for (auto const& include : includes) {
@@ -245,7 +320,7 @@ TEST_CASE("Class with enum", "[classBuilder]") {
 	e.m_values.push_back("Hi");
 	s.m_enums.push_back({IR::AccessModifier::Public, e});
 
-	auto myStruct = Builders::buildClass(s);
+	auto myStruct = Builders::buildClass(s).value();
 	auto pybind = myStruct.getPybind(moduleName);
 	auto expectedContains = fmt::format(
 	    R"(py::enum_<{representation}>({structureName}, "{enumName}")",

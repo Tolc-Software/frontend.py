@@ -99,6 +99,7 @@ set_tests_properties(ConfigureTestStage PROPERTIES FIXTURES_SETUP TestStage)
 foreach(
   test
 
+  Builders/attributeBuilder.cpp
   Builders/classBuilder.cpp
   Builders/enumBuilder.cpp
   Builders/functionBuilder.cpp
@@ -106,6 +107,7 @@ foreach(
   Builders/typeToStringBuilder.cpp
   Helpers/Pybind/extractIncludes.cpp
   Helpers/combine.cpp
+  PybindProxy/attribute.cpp
   PybindProxy/class.cpp
   PybindProxy/enum.cpp
   PybindProxy/function.cpp
@@ -113,10 +115,13 @@ foreach(
   PybindProxy/moduleFile.cpp
   arrays.cpp
   classes.cpp
+  complex.cpp
   deques.cpp
   enums.cpp
+  filesystem_paths.cpp
   functional.cpp
   functions.cpp
+  globalVariables.cpp
   lists.cpp
   maps.cpp
   memberVariables.cpp
@@ -126,11 +131,13 @@ foreach(
   overloadedFunctions.cpp
   pairs.cpp
   sets.cpp
+  smartPointers.cpp
   templates.cpp
   tuples.cpp
   unordered_maps.cpp
   unordered_sets.cpp
   userDefined.cpp
+  valarrays.cpp
   variants.cpp
   vectors.cpp
 

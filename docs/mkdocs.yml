@@ -6,7 +6,9 @@ docs_dir: 'public'
 strict: true
 nav:
   - python:
+    - Introduction: 'introduction.md'
     - Conversions: 'conversions.md'
+    - Template Naming Convention: 'template_naming_convention.md'
 markdown_extensions:
   - pymdownx.highlight
   - pymdownx.inlinehilite

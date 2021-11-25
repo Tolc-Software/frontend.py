@@ -11,10 +11,14 @@ int runPybindTest(TestUtil::PybindStage& stage,
                   std::string const& moduleName) {
 	auto globalNS = stage.parseModuleFile(cppCode);
 
-	auto [file, content] = Frontend::Python::createModule(globalNS, moduleName);
+	if (auto m = Frontend::Python::createModule(globalNS, moduleName)) {
+		auto [file, content] = m.value();
 
-	stage.addModuleFile(file, content);
+		stage.addModuleFile(file, content);
 
-	return stage.runPythonUnittest(pythonUnittestCode);
+		return stage.runPythonUnittest(pythonUnittestCode);
+	}
+
+	return 1;
 }
 }    // namespace TestUtil

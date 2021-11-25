@@ -18,7 +18,9 @@ public:
 
 	void addConstructor(Function const& constructor);
 
-	void addMemberVariable(std::string const& variableName, bool isConst);
+	void addMemberVariable(std::string const& variableName,
+	                       bool isConst,
+	                       bool isStatic);
 
 	std::string const& getName() const;
 
@@ -33,6 +35,7 @@ private:
 		// User defined name of the member variable
 		std::string m_name;
 		bool m_isConst;
+		bool m_isStatic;
 	};
 
 	// User defined name of the class

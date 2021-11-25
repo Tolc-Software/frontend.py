@@ -5,6 +5,9 @@
 #include <vector>
 
 namespace Helpers {
+
+// Go through functions and return the representations of the functions that are overloaded
+// i.e. exists twice in functions
 std::set<std::string>
 getOverloadedFunctions(std::vector<IR::Function> const& functions);
-}
+}    // namespace Helpers

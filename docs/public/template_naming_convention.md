@@ -24,14 +24,21 @@ print(example.f(5))
 ```
 
 Multiple template parameters are separated with an underscore (_).
+The names are meant to be as predictable as possible. The rules are:
+
+* `std::` is removed from any standard library type.
+* `\_` is removed from any standard library type.
+* User defined types are left untouched (i.e. the class `MyNamespace::MyClass` will result in appending `MyClass`).
 
 ## Type to string conversions ##
 
 | C++ type                        | Resulting name           |
 |:------------------------------- |:------------------------ |
 | std::array                      | array                    |
+| std::complex                    | complex                  |
 | std::deque                      | deque                    |
-| std::forward\_list              | forwardlist converted    |
+| std::filesystem::path           | path                     |
+| std::forward\_list              | forwardlist              |
 | std::function                   | function                 |
 | std::list                       | list                     |
 | std::map                        | map                      |
@@ -42,12 +49,15 @@ Multiple template parameters are separated with an underscore (_).
 | std::priority\_queue            | priorityqueue            |
 | std::queue                      | queue                    |
 | std::set                        | set                      |
+| std::shared\_ptr                | sharedptr                |
 | std::stack                      | stack                    |
 | std::tuple                      | tuple                    |
+| std::unique\_ptr                | uniqueptr                |
 | std::unordered\_map             | unorderedmap             |
 | std::unordered\_multimap        | unorderedmultimap        |
 | std::unordered\_multiset        | unorderedmultiset        |
 | std::unordered\_set             | unorderedset             |
+| std::valarray                   | valarray                 |
 | std::variant                    | variant                  |
 | std::vector                     | vector                   |
 | bool                            | bool                     |

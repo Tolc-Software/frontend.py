@@ -25,9 +25,11 @@ std::string Class::getPybind(std::string const& moduleName) const {
 
 	for (auto const& variable : m_memberVariables) {
 		std::string accessor = variable.m_isConst ? "readonly" : "readwrite";
+		std::string staticness = variable.m_isStatic ? "_static" : "";
 		out += fmt::format(
-		    "\t.def_{accessor}(\"{variableName}\", &{fullyQualifiedClassName}::{variableName})\n",
+		    "\t.def_{accessor}{staticness}(\"{variableName}\", &{fullyQualifiedClassName}::{variableName})\n",
 		    fmt::arg("accessor", accessor),
+		    fmt::arg("staticness", staticness),
 		    fmt::arg("fullyQualifiedClassName", m_fullyQualifiedName),
 		    fmt::arg("variableName", variable.m_name));
 	}
@@ -66,8 +68,10 @@ void Class::addConstructor(Function const& constructor) {
 	m_constructors.push_back(constructor);
 }
 
-void Class::addMemberVariable(std::string const& variableName, bool isConst) {
-	m_memberVariables.push_back({variableName, isConst});
+void Class::addMemberVariable(std::string const& variableName,
+                              bool isConst,
+                              bool isStatic) {
+	m_memberVariables.push_back({variableName, isConst, isStatic});
 }
 
 std::string const& Class::getName() const {
@@ -81,4 +85,4 @@ void Class::addInclude(std::string const& i) {
 std::vector<std::string> const& Class::getIncludes() const {
 	return m_includes;
 }
-}
+}    // namespace PybindProxy

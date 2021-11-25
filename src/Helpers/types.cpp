@@ -11,6 +11,20 @@ IR::Type::Container const* getContainer(IR::Type const& type) {
 	return nullptr;
 }
 
+bool isBaseType(IR::Type const& type, IR::BaseType base) {
+	if (auto value = std::get_if<IR::Type::Value>(&type.m_type)) {
+		return value->m_base == base;
+	}
+	return false;
+}
+
+bool isContainerType(IR::Type const& type, IR::ContainerType container) {
+	if (auto c = Helpers::getContainer(type)) {
+		return c->m_container == container;
+	}
+	return false;
+}
+
 bool isFunctionType(IR::Type const& type) {
 	return std::holds_alternative<IR::Type::Function>(type.m_type);
 }

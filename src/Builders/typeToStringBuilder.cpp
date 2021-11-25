@@ -39,12 +39,15 @@ std::string toString(IR::ContainerType type) {
 		case ContainerType::PriorityQueue: return "priorityqueue";
 		case ContainerType::Queue: return "queue";
 		case ContainerType::Set: return "set";
+		case ContainerType::SharedPtr: return "sharedptr";
 		case ContainerType::Stack: return "stack";
 		case ContainerType::Tuple: return "tuple";
+		case ContainerType::UniquePtr: return "uniqueptr";
 		case ContainerType::UnorderedMap: return "unorderedmap";
 		case ContainerType::UnorderedMultiMap: return "unorderedmultimap";
 		case ContainerType::UnorderedMultiSet: return "unorderedmultiset";
 		case ContainerType::UnorderedSet: return "unorderedset";
+		case ContainerType::Valarray: return "valarray";
 		case ContainerType::Variant: return "variant";
 		case ContainerType::Vector: return "vector";
 
@@ -66,7 +69,9 @@ std::string toString(IR::BaseType type) {
 		case BaseType::Char16_t: return "char16t";
 		case BaseType::Char32_t: return "char32t";
 		case BaseType::Char: return "char";
+		case BaseType::Complex: return "complex";
 		case BaseType::Double: return "double";
+		case BaseType::FilesystemPath: return "string";
 		case BaseType::Float: return "float";
 		case BaseType::Int: return "int";
 		case BaseType::LongDouble: return "longdouble";
@@ -136,7 +141,8 @@ std::string toString(IR::Type::Container const& type) {
 		        [&typeString, &typesToStringify](IR::Type::Container type) {
 			        // Some container type should not be entered (such as Allocator etc.)
 			        // They are usually hidden from the user
-			        if (auto container = toString(type.m_container); !container.empty()) {
+			        if (auto container = toString(type.m_container);
+			            !container.empty()) {
 				        typeString.push_back(container);
 				        reverseAndAdd(type.m_containedTypes, typesToStringify);
 			        }

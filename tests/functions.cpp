@@ -37,6 +37,10 @@ int weirdArgumentsNaming(int, int i) {
 char firstLetter(std::string_view s) {
 	return s[0];
 }
+
+int static getZero() {
+	return 0;
+}
 )";
 
 	auto pythonTestCode = fmt::format(R"(
@@ -63,6 +67,9 @@ with self.assertRaises(TypeError) as error_context:
 # Getting the first letter from a string_view
 result = {moduleName}.firstLetter("Hello")
 self.assertEqual(result, "H")
+
+# Static functions are just normal functions in python
+self.assertEqual({moduleName}.getZero(), 0)
 )",
 	                                  fmt::arg("moduleName", moduleName));
 
@@ -70,4 +77,3 @@ self.assertEqual(result, "H")
 	    TestUtil::runPybindTest(stage, cppCode, pythonTestCode, moduleName);
 	REQUIRE(errorCode == 0);
 }
-

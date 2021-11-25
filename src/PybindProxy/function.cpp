@@ -19,7 +19,8 @@ std::string Function::getPybind() const {
 	} else {
 		// Results in
 		// def("myFunction", (void (*)(int, double))&MyNamespace::myFunction, "This is a function"
-		f = fmt::format(R"(def("{}", {}&{}, "{}")",
+		f = fmt::format(R"(def{}("{}", {}&{}, "{}")",
+		                m_isStatic ? "_static" : "",
 		                m_name,
 		                m_isOverloaded ? getSignature() : "",
 		                m_fullyQualifiedName,
@@ -52,7 +53,7 @@ Function::Function(std::string const& name,
                    std::string const& fullyQualifiedName)
     : m_name(name), m_fullyQualifiedName(fullyQualifiedName),
       m_returnType("void"), m_returnValuePolicy(std::nullopt), m_arguments({}),
-      m_isConstructor(false), m_isOverloaded(false) {}
+      m_isConstructor(false), m_isOverloaded(false), m_isStatic(false) {}
 
 void Function::addInclude(std::string const& i) {
 	m_includes.push_back(i);
@@ -77,6 +78,10 @@ void Function::setReturnValuePolicy(return_value_policy policy) {
 
 void Function::setAsConstructor() {
 	m_isConstructor = true;
+};
+
+void Function::setAsStatic() {
+	m_isStatic = true;
 };
 
 void Function::setAsOverloaded() {

@@ -21,7 +21,7 @@ TEST_CASE(
 
 	std::string moduleName = "MyModule";
 
-	auto file = Builders::buildModuleFile(ns, moduleName);
+	auto file = Builders::buildModuleFile(ns, moduleName).value();
 	auto path = file.getFilepath();
 	auto pybind = file.getPybind();
 	CAPTURE(path);
@@ -43,7 +43,7 @@ TEST_CASE("One level namespace", "[moduleFileBuilder]") {
 	IR::Namespace ns;
 	std::string moduleName = "MyModule";
 
-	auto file = Builders::buildModuleFile(ns, moduleName);
+	auto file = Builders::buildModuleFile(ns, moduleName).value();
 	auto path = file.getFilepath();
 	auto pybind = file.getPybind();
 	CAPTURE(path);
@@ -72,7 +72,7 @@ TEST_CASE("Two level namespace", "[moduleFileBuilder]") {
 	}
 
 	std::string moduleName = "MyModule";
-	auto file = Builders::buildModuleFile(ns, moduleName);
+	auto file = Builders::buildModuleFile(ns, moduleName).value();
 	auto path = file.getFilepath();
 	auto pybind = file.getPybind();
 	CAPTURE(path);
@@ -82,7 +82,7 @@ TEST_CASE("Two level namespace", "[moduleFileBuilder]") {
 
 	for (auto const& subNamespace : subNamespaces) {
 		auto expectedContains = fmt::format(
-		    R"(auto {moduleName}__{subNamespace} = {moduleName}.def_submodule("{subNamespace}");)",
+		    R"(auto {moduleName}_{subNamespace} = {moduleName}.def_submodule("{subNamespace}");)",
 		    fmt::arg("moduleName", moduleName),
 		    fmt::arg("subNamespace", subNamespace));
 		CAPTURE(subNamespace);
@@ -108,15 +108,15 @@ TEST_CASE("Three level namespace", "[moduleFileBuilder]") {
 	ns.m_namespaces.push_back(sub);
 
 	std::string moduleName = "MyModule";
-	auto file = Builders::buildModuleFile(ns, moduleName);
+	auto file = Builders::buildModuleFile(ns, moduleName).value();
 	auto pybind = file.getPybind();
 	CAPTURE(pybind);
 
-	auto firstSub = R"(auto MyModule__sub = MyModule.def_submodule("sub");)";
+	auto firstSub = R"(auto MyModule_sub = MyModule.def_submodule("sub");)";
 
 	REQUIRE(TestUtil::contains(pybind, firstSub));
 
 	auto secondSub =
-	    R"(auto MyModule__sub__subsub = MyModule__sub.def_submodule("subsub");)";
+	    R"(auto MyModule_sub_subsub = MyModule_sub.def_submodule("subsub");)";
 	REQUIRE(TestUtil::contains(pybind, secondSub));
 }
