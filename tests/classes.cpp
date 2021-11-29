@@ -1,5 +1,6 @@
 #include "Frontend/Python/frontend.hpp"
 #include "TestStage/paths.hpp"
+#include "TestUtil/files.hpp"
 #include "TestUtil/pybindStage.hpp"
 #include "TestUtil/runPybindTest.hpp"
 #include <catch2/catch.hpp>
@@ -9,6 +10,13 @@ TEST_CASE("Classes", "[classes]") {
 	std::string moduleName = "defaultModule";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
+	// Add instantiation in a source file.
+	// This cannot be just declared, must be instantiated
+	// See https://github.com/pybind/pybind11/issues/682
+	// And https://en.cppreference.com/w/cpp/language/static
+	//
+	// Instantiation (must be in a source file):
+	stage.addModuleFile("test.cpp", "int const WithConstructor::i;");
 
 	auto cppCode = R"(
 #include <string>
@@ -18,7 +26,7 @@ class WithConstructor {
 public:
 	explicit WithConstructor(std::string s) : m_s(s) {}
 
-	static int const i = 10;
+	static int const i = 5;
 
 	std::string getS() { return m_s; }
 	std::string_view getSView() { return m_s; }
@@ -54,7 +62,7 @@ namespace MyLib {
 
 	auto pythonTestCode = fmt::format(R"(
 # You can access static variables without instantiating class
-self.assertEqual({moduleName}.WithConstructor.i, 10)
+self.assertEqual({moduleName}.WithConstructor.i, 5)
 
 withConstructor = {moduleName}.WithConstructor("Hello")
 self.assertEqual(withConstructor.getS(), "Hello")

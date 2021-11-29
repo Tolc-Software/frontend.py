@@ -32,17 +32,17 @@ std::unique_ptr<Example> create_unique() {
 	return std::make_unique<Example>();
 }
 
-std::shared_ptr<Example> create_shared() {
-	return std::make_shared<Example>();
-}
+// std::shared_ptr<Example> create_shared() {
+	// return std::make_shared<Example>();
+// }
 )";
 
 	auto pythonTestCode = fmt::format(R"(
 u = {moduleName}.create_unique()
 self.assertEqual(u.m_hi, 5)
 
-s = {moduleName}.create_shared()
-self.assertEqual(s.m_hi, 5)
+# s = {moduleName}.create_shared()
+# self.assertEqual(s.m_hi, 5)
 )",
 	                                  fmt::arg("moduleName", moduleName));
 
