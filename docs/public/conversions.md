@@ -17,7 +17,8 @@ Note that any restriction this poses only applies to the public interface of you
 | Public const member variable        | Read only property             |
 | Public non const member variable    | Read write property            |
 | Private member variable             | Not converted                  |
-| Global variable                     | Mobule variable                |
+| Global variable                     | Module variable                |
+| Global static variable              | Static module variable         |
 | Free function                       | Module function                |
 | Overloaded function                 | Module function*               |
 | Enum                                | Enum                           |
@@ -55,6 +56,7 @@ Note that any restriction this poses only applies to the public interface of you
 | std::stack                      | Not converted                                                     |
 | std::tuple                      | tuple                                                             |
 | std::unique_ptr                 | value*                                                            |
+| std::shared_ptr                 | value**                                                           |
 | std::unordered\_map             | dict                                                              |
 | std::unordered\_multimap        | Not converted                                                     |
 | std::unordered\_multiset        | Not converted                                                     |
@@ -64,6 +66,8 @@ Note that any restriction this poses only applies to the public interface of you
 | std::vector                     | array                                                             |
 
 \* Note that due to how python works internally, function argument of type `std::unique_ptr` is not allowed. For more info see [the pybind11 documentation on smart pointers](https://pybind11.readthedocs.io/en/stable/advanced/smart_ptrs.html).
+
+\*\* When a user defined struct/class is managed by `std::shared_ptr`, it is marked as such in the resulting pybind11. For more info see [the pybind11 documentation on smart pointers](https://pybind11.readthedocs.io/en/stable/advanced/smart_ptrs.html).
 
 | C++ builtin type           | Python translation       |
 |:-------------------------- |:------------------------ |
