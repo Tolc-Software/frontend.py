@@ -14,10 +14,10 @@ std::string getUniqueTempCppFilename() {
 	std::uniform_int_distribution<> uniform(0, std::numeric_limits<int>::max());
 
 	auto tempDir = std::filesystem::temp_directory_path();
-	std::string tempFile = tempDir / std::to_string(uniform(rEngine));
+	std::string tempFile = (tempDir / std::to_string(uniform(rEngine))).string();
 	tempFile += ".hpp";
 	while (std::filesystem::exists(tempFile)) {
-		tempFile = tempDir / std::to_string(uniform(rEngine));
+		tempFile = (tempDir / std::to_string(uniform(rEngine))).string();
 		tempFile += ".hpp";
 	}
 	return tempFile;
@@ -50,7 +50,7 @@ public:
 
 	// Implicitly converts to the filename
 	operator std::string() const {
-		return m_filename;
+		return m_filename.string();
 	}
 
 private:
