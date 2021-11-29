@@ -18,7 +18,8 @@ public:
 	*/
 	void addModule(Module const& m);
 
-	void addInclude(std::string const& i);
+	// Copies the type info into this classes
+	void setTypeInfo(PybindProxy::TypeInfo const& info);
 
 	std::filesystem::path getFilepath() const;
 
@@ -28,13 +29,12 @@ private:
 	std::string m_rootModuleName;
 	std::string m_libraryName;
 
-	// What will be included
-	// Ex: '<string>' for '#include <string>'
-	// NOTE: Use <> or "" explicitly
-	std::vector<std::string> m_includes;
-
 	// Will be put one after each other
 	// The modules are responsible for which of them are submodules
 	std::vector<Module> m_modules;
+
+	// Contains global information about types in the module
+	// E.g. if there is a type that forces some pybind include
+	PybindProxy::TypeInfo m_typeInfo;
 };
 }    // namespace PybindProxy

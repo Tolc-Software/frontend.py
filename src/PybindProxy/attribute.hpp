@@ -19,14 +19,9 @@ public:
 	*/
 	std::string getPybind() const;
 
-	void addInclude(std::string const& i);
-
-	std::vector<std::string> const& getIncludes() const;
-
 private:
 	// The user defined name of the enum
 	std::string m_name;
 	std::string m_fullyQualifiedName;
-	std::vector<std::string> m_includes;
 };
 }    // namespace PybindProxy

@@ -105,7 +105,7 @@ foreach(
   Builders/functionBuilder.cpp
   Builders/moduleFileBuilder.cpp
   Builders/typeToStringBuilder.cpp
-  Helpers/Pybind/extractIncludes.cpp
+  Helpers/Pybind/checkType.cpp
   Helpers/combine.cpp
   PybindProxy/attribute.cpp
   PybindProxy/class.cpp
@@ -154,6 +154,10 @@ foreach(
     TestUtil
     TestStage
     fmt::fmt)
+
+  set(ENABLE_SANITIZER_ADDRESS TRUE)
+  set(ENABLE_SANITIZER_MEMORY TRUE)
+  enable_sanitizers(${testName})
 
   string(FIND "${test}" "/" subdirectory)
   if(subdirectory EQUAL -1)

@@ -2,10 +2,11 @@
 #include "Builders/enumBuilder.hpp"
 #include "Builders/functionBuilder.hpp"
 #include "Builders/typeToStringBuilder.hpp"
-#include "Helpers/Pybind/extractIncludes.hpp"
+#include "Helpers/Pybind/checkType.hpp"
 #include "Helpers/combine.hpp"
 #include "Helpers/getOverloadedFunctions.hpp"
 #include "Helpers/types.hpp"
+#include "PybindProxy/typeInfo.hpp"
 #include <IR/ir.hpp>
 #include <numeric>
 #include <optional>
@@ -39,20 +40,19 @@ getTemplateParameterString(std::vector<IR::Type> const& parameters) {
 
 }    // namespace
 
-std::optional<PybindProxy::Class> buildClass(IR::Struct const& cppClass) {
+std::optional<PybindProxy::Class> buildClass(IR::Struct const& cppClass,
+                                             PybindProxy::TypeInfo& typeInfo) {
 	PybindProxy::Class pyClass(
 	    Helpers::removeCppTemplate(cppClass.m_name) +
 	        getTemplateParameterString(cppClass.m_templateArguments),
 	    cppClass.m_representation);
-	std::set<std::string> includes;
 
 	auto publicFunctions = getPublicFunctions(cppClass.m_functions);
 	auto overloadedFunctions = Helpers::getOverloadedFunctions(publicFunctions);
 	// Ignore private functions
 	for (auto const& function : publicFunctions) {
-		if (auto maybePyFunction = buildFunction(function)) {
+		if (auto maybePyFunction = buildFunction(function, typeInfo)) {
 			auto pyFunction = maybePyFunction.value();
-			Helpers::combine(includes, pyFunction.getIncludes());
 
 			if (function.m_isStatic) {
 				pyFunction.setAsStatic();
@@ -76,6 +76,7 @@ std::optional<PybindProxy::Class> buildClass(IR::Struct const& cppClass) {
 
 	for (auto const& [accessModifier, variable] : cppClass.m_memberVariables) {
 		if (accessModifier == IR::AccessModifier::Public) {
+			Helpers::Pybind::checkType(variable.m_type, typeInfo);
 			pyClass.addMemberVariable(variable.m_name,
 			                          variable.m_type.m_isConst,
 			                          variable.m_type.m_isStatic);
@@ -96,8 +97,8 @@ std::optional<PybindProxy::Class> buildClass(IR::Struct const& cppClass) {
 		}
 	}
 
-	for (auto const& include : includes) {
-		pyClass.addInclude(include);
+	if (typeInfo.m_classesMarkedShared.contains(cppClass.m_representation)) {
+		pyClass.setAsManagedByShared();
 	}
 
 	return pyClass;

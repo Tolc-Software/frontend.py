@@ -28,21 +28,25 @@ struct Example {
 	int m_hi = 5;
 };
 
+struct ExampleShared {
+	int m_hi = 10;
+};
+
 std::unique_ptr<Example> create_unique() {
 	return std::make_unique<Example>();
 }
 
-// std::shared_ptr<Example> create_shared() {
-	// return std::make_shared<Example>();
-// }
+std::shared_ptr<ExampleShared> create_shared() {
+	return std::make_shared<ExampleShared>();
+}
 )";
 
 	auto pythonTestCode = fmt::format(R"(
 u = {moduleName}.create_unique()
 self.assertEqual(u.m_hi, 5)
 
-# s = {moduleName}.create_shared()
-# self.assertEqual(s.m_hi, 5)
+s = {moduleName}.create_shared()
+self.assertEqual(s.m_hi, 10)
 )",
 	                                  fmt::arg("moduleName", moduleName));
 

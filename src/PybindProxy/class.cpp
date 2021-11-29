@@ -5,9 +5,16 @@
 namespace PybindProxy {
 
 std::string Class::getPybind(std::string const& moduleName) const {
+	// Should this class be managed by a shared_ptr on the python side?
+	std::string managedByShared =
+	    m_isManagedByShared ?
+	        fmt::format(", std::shared_ptr<{}>", m_fullyQualifiedName) :
+            "";
+
 	std::string out = fmt::format(
-	    "py::class_<{fullyQualifiedName}>({moduleName}, \"{name}\")\n",
+	    "py::class_<{fullyQualifiedName}{managedByShared}>({moduleName}, \"{name}\")\n",
 	    fmt::arg("fullyQualifiedName", m_fullyQualifiedName),
+	    fmt::arg("managedByShared", managedByShared),
 	    fmt::arg("name", m_name),
 	    fmt::arg("moduleName", moduleName));
 
@@ -54,7 +61,8 @@ std::string Class::getPybind(std::string const& moduleName) const {
 
 Class::Class(std::string const& name, std::string const& fullyQualifiedName)
     : m_name(name), m_fullyQualifiedName(fullyQualifiedName), m_constructors(),
-      m_functions(), m_memberVariables(), m_enums(), m_includes() {}
+      m_functions(), m_memberVariables(), m_enums(),
+      m_isManagedByShared(false) {}
 
 void Class::addEnum(Enum const& e) {
 	m_enums.push_back(e);
@@ -78,11 +86,7 @@ std::string const& Class::getName() const {
 	return m_name;
 }
 
-void Class::addInclude(std::string const& i) {
-	m_includes.push_back(i);
-}
-
-std::vector<std::string> const& Class::getIncludes() const {
-	return m_includes;
+void Class::setAsManagedByShared() {
+	m_isManagedByShared = true;
 }
 }    // namespace PybindProxy

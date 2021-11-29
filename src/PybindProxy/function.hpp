@@ -23,8 +23,6 @@ public:
 	*/
 	void addArgument(std::string const& typeName, std::string const& name = "");
 
-	void addInclude(std::string const& i);
-
 	void setAsConstructor();
 
 	// Is there another function with the same name but with different arguments?
@@ -35,8 +33,6 @@ public:
 	// E.g. std::string f();
 	// should call setReturnType("std::string")
 	void setReturnType(std::string const& typeName);
-
-	std::vector<std::string> const& getIncludes() const;
 
 	// These are all 1-to-1 with pybind11
 	enum class return_value_policy {
@@ -80,7 +76,6 @@ private:
 	std::string m_returnType;
 	std::optional<return_value_policy> m_returnValuePolicy;
 	std::vector<Argument> m_arguments;
-	std::vector<std::string> m_includes;
 	bool m_isConstructor;
 	bool m_isOverloaded;
 	bool m_isStatic;

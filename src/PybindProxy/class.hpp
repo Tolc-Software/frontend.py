@@ -24,9 +24,9 @@ public:
 
 	std::string const& getName() const;
 
-	void addInclude(std::string const& i);
-
-	std::vector<std::string> const& getIncludes() const;
+	// Will be managed by a std::shared_ptr on the python side
+	// instead of the default std::unique_ptr
+	void setAsManagedByShared();
 
 	std::string getPybind(std::string const& moduleName) const;
 
@@ -47,6 +47,6 @@ private:
 	std::vector<MemberVariable> m_memberVariables;
 	std::vector<Enum> m_enums;
 
-	std::vector<std::string> m_includes;
+	bool m_isManagedByShared;
 };
 }    // namespace PybindProxy

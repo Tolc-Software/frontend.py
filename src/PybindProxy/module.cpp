@@ -37,7 +37,7 @@ std::string Module::getPybind() const {
 
 Module::Module(std::string const& variableName)
     : m_variableName(variableName), m_submodules({}), m_functions(), m_enums(),
-      m_attributes(), m_includes() {}
+      m_attributes() {}
 
 void Module::addFunction(Function const& function) {
 	m_functions.push_back(function);
@@ -64,11 +64,4 @@ void Module::addSubmodule(std::string const& name,
 	m_submodules.push_back({name, variableName});
 }
 
-void Module::addInclude(std::string const& i) {
-	m_includes.push_back(i);
-}
-
-std::vector<std::string> const& Module::getIncludes() const {
-	return m_includes;
-}
 }    // namespace PybindProxy

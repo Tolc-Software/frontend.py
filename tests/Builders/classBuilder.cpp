@@ -41,7 +41,8 @@ TEST_CASE("Class with static member variables", "[classBuilder]") {
 		s.m_memberVariables.push_back({IR::AccessModifier::Public, v});
 	}
 
-	auto myStruct = Builders::buildClass(s).value();
+	PybindProxy::TypeInfo typeInfo;
+	auto myStruct = Builders::buildClass(s, typeInfo).value();
 	auto pybind = myStruct.getPybind(moduleName);
 	CAPTURE(pybind);
 
@@ -73,7 +74,8 @@ TEST_CASE("Class with static function", "[classBuilder]") {
 
 	s.m_functions.push_back({IR::AccessModifier::Public, f});
 
-	auto myStruct = Builders::buildClass(s).value();
+	PybindProxy::TypeInfo typeInfo;
+	auto myStruct = Builders::buildClass(s, typeInfo).value();
 	auto pybind = myStruct.getPybind(moduleName);
 	CAPTURE(pybind);
 
@@ -98,7 +100,8 @@ TEST_CASE("Templated class", "[classBuilder]") {
 	t.m_type = v;
 	s.m_templateArguments.push_back(t);
 
-	auto myStruct = Builders::buildClass(s).value();
+	PybindProxy::TypeInfo typeInfo;
+	auto myStruct = Builders::buildClass(s, typeInfo).value();
 	auto pybind = myStruct.getPybind(moduleName);
 	auto expectedContains = fmt::format(
 	    R"(py::class_<{fullyQualifiedClassName}>({moduleName}, "{className}"))",
@@ -118,7 +121,8 @@ TEST_CASE("Class within namespace", "[classBuilder]") {
 	                                 fmt::arg("className", s.m_name));
 	s.m_hasImplicitDefaultConstructor = true;
 
-	auto myStruct = Builders::buildClass(s).value();
+	PybindProxy::TypeInfo typeInfo;
+	auto myStruct = Builders::buildClass(s, typeInfo).value();
 	auto pybind = myStruct.getPybind(moduleName);
 	CAPTURE(pybind);
 
@@ -138,7 +142,8 @@ TEST_CASE("Empty class gets default constructor", "[classBuilder]") {
 	s.m_representation = s.m_name;
 	s.m_hasImplicitDefaultConstructor = true;
 
-	auto myStruct = Builders::buildClass(s).value();
+	PybindProxy::TypeInfo typeInfo;
+	auto myStruct = Builders::buildClass(s, typeInfo).value();
 	auto pybind = myStruct.getPybind(moduleName);
 	CAPTURE(pybind);
 
@@ -166,7 +171,8 @@ TEST_CASE("Class with a constructor", "[classBuilder]") {
 	f.m_arguments.push_back(v);
 	s.m_functions.push_back({IR::AccessModifier::Public, f});
 
-	auto myStruct = Builders::buildClass(s).value();
+	PybindProxy::TypeInfo typeInfo;
+	auto myStruct = Builders::buildClass(s, typeInfo).value();
 	auto pybind = myStruct.getPybind(moduleName);
 	CAPTURE(pybind);
 
@@ -210,7 +216,8 @@ TEST_CASE("Class with functions", "[classBuilder]") {
 		s.m_functions.push_back({IR::AccessModifier::Public, f});
 	}
 
-	auto myStruct = Builders::buildClass(s).value();
+	PybindProxy::TypeInfo typeInfo;
+	auto myStruct = Builders::buildClass(s, typeInfo).value();
 	auto pybind = myStruct.getPybind(moduleName);
 	CAPTURE(pybind);
 
@@ -240,11 +247,13 @@ TEST_CASE("Class with member variables", "[classBuilder]") {
 		IR::Type t;
 		t.m_representation = var.type;
 		t.m_isConst = var.isConst;
+		t.m_isStatic = false;
 		v.m_type = t;
 		s.m_memberVariables.push_back({IR::AccessModifier::Public, v});
 	}
 
-	auto myStruct = Builders::buildClass(s).value();
+	PybindProxy::TypeInfo typeInfo;
+	auto myStruct = Builders::buildClass(s, typeInfo).value();
 	auto pybind = myStruct.getPybind(moduleName);
 	CAPTURE(pybind);
 
@@ -276,10 +285,10 @@ TEST_CASE("Class with vector in constructor gives the correct include",
 	constructor.m_arguments.push_back({"myVar", arg});
 	s.m_functions.push_back({IR::AccessModifier::Public, constructor});
 
-	auto myStruct = Builders::buildClass(s).value();
-	auto includes = myStruct.getIncludes();
-	REQUIRE(includes.size() == 1);
-	for (auto const& include : includes) {
+	PybindProxy::TypeInfo typeInfo;
+	auto myStruct = Builders::buildClass(s, typeInfo).value();
+	REQUIRE(typeInfo.m_includes.size() == 1);
+	for (auto const& include : typeInfo.m_includes) {
 		REQUIRE(include == "<pybind11/stl.h>");
 	}
 }
@@ -300,10 +309,10 @@ TEST_CASE("Class with vector in member function gives the correct include",
 	constructor.m_arguments.push_back({"myVar", arg});
 	s.m_functions.push_back({IR::AccessModifier::Public, constructor});
 
-	auto myStruct = Builders::buildClass(s).value();
-	auto includes = myStruct.getIncludes();
-	REQUIRE(includes.size() == 1);
-	for (auto const& include : includes) {
+	PybindProxy::TypeInfo typeInfo;
+	auto myStruct = Builders::buildClass(s, typeInfo).value();
+	REQUIRE(typeInfo.m_includes.size() == 1);
+	for (auto const& include : typeInfo.m_includes) {
 		REQUIRE(include == "<pybind11/stl.h>");
 	}
 }
@@ -320,7 +329,8 @@ TEST_CASE("Class with enum", "[classBuilder]") {
 	e.m_values.push_back("Hi");
 	s.m_enums.push_back({IR::AccessModifier::Public, e});
 
-	auto myStruct = Builders::buildClass(s).value();
+	PybindProxy::TypeInfo typeInfo;
+	auto myStruct = Builders::buildClass(s, typeInfo).value();
 	auto pybind = myStruct.getPybind(moduleName);
 	auto expectedContains = fmt::format(
 	    R"(py::enum_<{representation}>({structureName}, "{enumName}")",

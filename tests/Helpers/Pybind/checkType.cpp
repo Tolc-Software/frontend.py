@@ -1,4 +1,5 @@
-#include "Helpers/Pybind/extractIncludes.hpp"
+#include "Helpers/Pybind/checkType.hpp"
+#include "PybindProxy/typeInfo.hpp"
 #include <IR/ir.hpp>
 #include <catch2/catch.hpp>
 
@@ -54,45 +55,50 @@ IR::Type insertIntoContainer(IR::Type container, IR::Type contained) {
 }    // namespace
 
 TEST_CASE("Can find the include for function types within conatiners",
-          "[extractIncludes]") {
+          "[checkType]") {
 	auto vectorOfFunction =
 	    insertIntoContainer(constructVector(), constructFunction());
-	auto includes = Helpers::Pybind::extractIncludes(vectorOfFunction);
-	REQUIRE(includes.size() == 2);
+	PybindProxy::TypeInfo typeInfo;
+	Helpers::Pybind::checkType(vectorOfFunction, typeInfo);
+	REQUIRE(typeInfo.m_includes.size() == 2);
 }
 
-TEST_CASE("Can find the include for container types", "[extractIncludes]") {
+TEST_CASE("Can find the include for container types", "[checkType]") {
 	auto c = constructVector();
-	auto includes = Helpers::Pybind::extractIncludes(c);
-	REQUIRE(includes.size() == 1);
-	for (auto const& include : includes) {
+	PybindProxy::TypeInfo typeInfo;
+	Helpers::Pybind::checkType(c, typeInfo);
+	REQUIRE(typeInfo.m_includes.size() == 1);
+	for (auto const& include : typeInfo.m_includes) {
 		REQUIRE(include == "<pybind11/stl.h>");
 	}
 }
 
-TEST_CASE("Can find the include for function types", "[extractIncludes]") {
+TEST_CASE("Can find the include for function types", "[checkType]") {
 	auto f = constructFunction();
-	auto includes = Helpers::Pybind::extractIncludes(f);
-	REQUIRE(includes.size() == 1);
-	for (auto const& include : includes) {
+	PybindProxy::TypeInfo typeInfo;
+	Helpers::Pybind::checkType(f, typeInfo);
+	REQUIRE(typeInfo.m_includes.size() == 1);
+	for (auto const& include : typeInfo.m_includes) {
 		REQUIRE(include == "<pybind11/functional.h>");
 	}
 }
 
-TEST_CASE("Can find the include for complex types", "[extractIncludes]") {
+TEST_CASE("Can find the include for complex types", "[checkType]") {
 	auto c = constructComplex();
-	auto includes = Helpers::Pybind::extractIncludes(c);
-	REQUIRE(includes.size() == 1);
-	for (auto const& include : includes) {
+	PybindProxy::TypeInfo typeInfo;
+	Helpers::Pybind::checkType(c, typeInfo);
+	REQUIRE(typeInfo.m_includes.size() == 1);
+	for (auto const& include : typeInfo.m_includes) {
 		REQUIRE(include == "<pybind11/complex.h>");
 	}
 }
 
-TEST_CASE("Can find the include for path types", "[extractIncludes]") {
+TEST_CASE("Can find the include for path types", "[checkType]") {
 	auto p = constructFilesystemPath();
-	auto includes = Helpers::Pybind::extractIncludes(p);
-	REQUIRE(includes.size() == 1);
-	for (auto const& include : includes) {
+	PybindProxy::TypeInfo typeInfo;
+	Helpers::Pybind::checkType(p, typeInfo);
+	REQUIRE(typeInfo.m_includes.size() == 1);
+	for (auto const& include : typeInfo.m_includes) {
 		REQUIRE(include == "<pybind11/stl/filesystem.h>");
 	}
 }

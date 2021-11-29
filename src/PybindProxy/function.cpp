@@ -55,14 +55,6 @@ Function::Function(std::string const& name,
       m_returnType("void"), m_returnValuePolicy(std::nullopt), m_arguments({}),
       m_isConstructor(false), m_isOverloaded(false), m_isStatic(false) {}
 
-void Function::addInclude(std::string const& i) {
-	m_includes.push_back(i);
-}
-
-std::vector<std::string> const& Function::getIncludes() const {
-	return m_includes;
-}
-
 void Function::addArgument(std::string const& typeName,
                            std::string const& name) {
 	m_arguments.push_back({typeName, name});

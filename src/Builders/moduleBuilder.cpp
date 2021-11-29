@@ -7,6 +7,7 @@
 #include "Helpers/getOverloadedFunctions.hpp"
 #include "Helpers/split.hpp"
 #include "PybindProxy/module.hpp"
+#include "PybindProxy/typeInfo.hpp"
 #include <IR/ir.hpp>
 #include <algorithm>
 #include <fmt/format.h>
@@ -14,14 +15,6 @@
 #include <string>
 
 namespace Builders {
-
-namespace {
-template <typename PybindProxyType>
-void combineIncludes(std::set<std::string>& includes,
-                     PybindProxyType const& pyType) {
-	Helpers::combine(includes, pyType.getIncludes());
-}
-}    // namespace
 
 // Return a unique variable name that can be used in the generated code for this module
 std::string getVariableName(std::string qualifiedName,
@@ -45,20 +38,20 @@ std::string getVariableName(std::string qualifiedName,
 }
 
 std::optional<PybindProxy::Module>
-buildModule(IR::Namespace const& ns, std::string const& rootModuleName) {
+buildModule(IR::Namespace const& ns,
+            std::string const& rootModuleName,
+            PybindProxy::TypeInfo& typeInfo) {
 	PybindProxy::Module builtModule(
 	    getVariableName(ns.m_representation, rootModuleName));
-	std::set<std::string> includes;
 
 	auto overloadedFunctions = Helpers::getOverloadedFunctions(ns.m_functions);
 	for (auto const& function : ns.m_functions) {
-		if (auto maybeF = Builders::buildFunction(function)) {
+		if (auto maybeF = Builders::buildFunction(function, typeInfo)) {
 			auto f = maybeF.value();
 			if (overloadedFunctions.find(function.m_representation) !=
 			    overloadedFunctions.end()) {
 				f.setAsOverloaded();
 			}
-			combineIncludes(includes, f);
 			builtModule.addFunction(f);
 		} else {
 			return std::nullopt;
@@ -66,15 +59,14 @@ buildModule(IR::Namespace const& ns, std::string const& rootModuleName) {
 	}
 
 	for (auto const& variable : ns.m_variables) {
-		auto v = Builders::buildAttribute(ns.m_representation, variable);
-		combineIncludes(includes, v);
+		auto v =
+		    Builders::buildAttribute(ns.m_representation, variable, typeInfo);
 		builtModule.addAttribute(v);
 	}
 
 	for (auto const& cls : ns.m_structs) {
-		if (auto maybeC = Builders::buildClass(cls)) {
+		if (auto maybeC = Builders::buildClass(cls, typeInfo)) {
 			auto c = maybeC.value();
-			combineIncludes(includes, c);
 			builtModule.addClass(c);
 		} else {
 			return std::nullopt;
@@ -89,10 +81,6 @@ buildModule(IR::Namespace const& ns, std::string const& rootModuleName) {
 		builtModule.addSubmodule(
 		    subNamespace.m_name,
 		    getVariableName(subNamespace.m_representation, rootModuleName));
-	}
-
-	for (auto const& include : includes) {
-		builtModule.addInclude(include);
 	}
 
 	return builtModule;

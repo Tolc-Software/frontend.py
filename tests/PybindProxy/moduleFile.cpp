@@ -15,8 +15,6 @@ TEST_CASE("ModuleFile can take a module", "[moduleFile]") {
 	auto pybindCode = mf.getPybind();
 	CAPTURE(pybindCode);
 
-	// The necessary include
-	REQUIRE(TestUtil::contains(pybindCode, "#include <pybind11/pybind11.h>"));
 	// The module
 	REQUIRE(TestUtil::contains(pybindCode,
 	                           fmt::format("PYBIND11_MODULE({}, {})",

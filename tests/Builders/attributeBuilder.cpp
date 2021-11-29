@@ -14,7 +14,8 @@ TEST_CASE("Can build simple attributes", "[attributeBuilder]") {
 	std::string moduleName = "Module";
 	auto fullyQualifiedName = moduleName + "::" + variableName;
 
-	auto proxyAttribute = Builders::buildAttribute(moduleName, v);
+	PybindProxy::TypeInfo typeInfo;
+	auto proxyAttribute = Builders::buildAttribute(moduleName, v, typeInfo);
 	auto pybind = proxyAttribute.getPybind();
 	CAPTURE(pybind);
 

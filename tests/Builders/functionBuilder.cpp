@@ -8,10 +8,10 @@ TEST_CASE("function returning containers adds the correct include", "[functionBu
 	c.m_container = IR::ContainerType::Vector;
 	t.m_type = c;
 	f.m_returnType = t;
-	auto pyFunction = Builders::buildFunction(f).value();
-	auto includes = pyFunction.getIncludes();
-	REQUIRE(includes.size() == 1);
-	for (auto const& include : includes) {
+	PybindProxy::TypeInfo typeInfo;
+	auto pyFunction = Builders::buildFunction(f, typeInfo).value();
+	REQUIRE(typeInfo.m_includes.size() == 1);
+	for (auto const& include : typeInfo.m_includes) {
 		REQUIRE(include == "<pybind11/stl.h>");
 	}
 }
@@ -27,6 +27,7 @@ TEST_CASE("function fails on unique_ptr argument", "[functionBuilder]") {
 	v.m_type = t;
 	v.m_name = "v";
 	f.m_arguments.push_back(v);
-	auto pyFunction = Builders::buildFunction(f);
+	PybindProxy::TypeInfo typeInfo;
+	auto pyFunction = Builders::buildFunction(f, typeInfo);
 	REQUIRE(!pyFunction.has_value());
 }

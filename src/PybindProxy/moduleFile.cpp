@@ -6,34 +6,39 @@ namespace PybindProxy {
 
 ModuleFile::ModuleFile(Module const& rootModule, std::string const& libraryName)
     : m_rootModuleName(rootModule.getVariableName()),
-      m_libraryName(libraryName), m_includes({"<pybind11/pybind11.h>"}),
-      m_modules({rootModule}) {}
+      m_libraryName(libraryName), m_modules({rootModule}), m_typeInfo() {}
 
 void ModuleFile::addModule(Module const& m) {
 	m_modules.push_back(m);
-}
-
-void ModuleFile::addInclude(std::string const& i) {
-	m_includes.push_back(i);
 }
 
 std::filesystem::path ModuleFile::getFilepath() const {
 	return m_libraryName + ".cpp";
 }
 
-std::string ModuleFile::getPybind() const {
-	std::string out;
-	for (auto const& include : m_includes) {
-		out += fmt::format("#include {}\n", include);
-	}
+void ModuleFile::setTypeInfo(PybindProxy::TypeInfo const& info) {
+	m_typeInfo = info;
+	m_typeInfo.m_includes.insert("<pybind11/pybind11.h>");
+}
 
-	out += fmt::format(
+std::string ModuleFile::getPybind() const {
+	std::vector<std::string> includes;
+	std::transform(m_typeInfo.m_includes.begin(),
+	               m_typeInfo.m_includes.end(),
+	               std::back_inserter(includes),
+	               [](auto const& i) { return fmt::format("#include {}", i); });
+
+	std::string out = fmt::format(
 	    R"(
+{includes}
+
 namespace py = pybind11;
 
-PYBIND11_MODULE({}, {}))",
-	    m_libraryName,
-	    m_rootModuleName);
+PYBIND11_MODULE({libraryName}, {rootModuleName}))",
+	    fmt::arg("includes", fmt::join(includes, "\n")),
+	    fmt::arg("libraryName", m_libraryName),
+	    fmt::arg("rootModuleName", m_rootModuleName));
+
 	out += " {\n";
 	for (auto const& m : m_modules) {
 		out += m.getPybind();

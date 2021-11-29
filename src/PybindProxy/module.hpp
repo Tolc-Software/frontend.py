@@ -4,6 +4,7 @@
 #include "PybindProxy/class.hpp"
 #include "PybindProxy/enum.hpp"
 #include "PybindProxy/function.hpp"
+#include "PybindProxy/typeInfo.hpp"
 #include <string>
 #include <vector>
 
@@ -24,10 +25,6 @@ struct Module {
 
 	void addSubmodule(std::string const& name, std::string const& variableName);
 
-	void addInclude(std::string const& i);
-
-	std::vector<std::string> const& getIncludes() const;
-
 	std::string getPybind() const;
 
 private:
@@ -44,6 +41,5 @@ private:
 	std::vector<Class> m_classes;
 	std::vector<Enum> m_enums;
 	std::vector<Attribute> m_attributes;
-	std::vector<std::string> m_includes;
 };
 }

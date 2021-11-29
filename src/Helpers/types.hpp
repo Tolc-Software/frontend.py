@@ -4,7 +4,12 @@
 
 namespace Helpers {
 /**
-* Return container if type is a Container, otherwise nullptr
+* Return UserDefined if type is a Container, otherwise nullptr
+*/
+IR::Type::UserDefined const* getUserDefined(IR::Type const& type);
+
+/**
+* Return Container if type is a Container, otherwise nullptr
 */
 IR::Type::Container const* getContainer(IR::Type const& type);
 
@@ -30,4 +35,7 @@ bool isFunctionType(IR::Type const& type);
 *   myFunction<int> -> myFunction
 */
 std::string removeCppTemplate(std::string const& name);
+
+// String version of the container
+std::string toString(IR::ContainerType container);
 }    // namespace Helpers

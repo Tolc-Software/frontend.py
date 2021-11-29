@@ -45,7 +45,7 @@ add_library(
   src/Builders/moduleFileBuilder.cpp
   src/Builders/typeToStringBuilder.cpp
   src/Frontend/Python/frontend.cpp
-  src/Helpers/Pybind/extractIncludes.cpp
+  src/Helpers/Pybind/checkType.cpp
   src/Helpers/enumsToString.cpp
   src/Helpers/getOverloadedFunctions.cpp
   src/Helpers/split.cpp
