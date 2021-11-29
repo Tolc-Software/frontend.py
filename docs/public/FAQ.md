@@ -1,4 +1,6 @@
-## How do I specialize a templated function/class so I can use it from python? ##
+[TOC]
+
+## How do I specialize a templated function/class? ##
 
 Given a simple function, you can create a specialization on the form:
 
@@ -50,7 +52,7 @@ print(my_class_int.fun(42))
 
 For more information about type postfixes see [the Template Naming Convention page](template_naming_convention.md).
 
-## I get an `ImportError: <module>: undefined symbol: _ZN15<class>1<variable>E` when I import my module ##
+## I get `ImportError: <module>: undefined symbol: _ZN15<class>1<variable>E` when I import my module ##
 
 It might be that there is a static variable not instantiated in a source file.
 Consider the example:

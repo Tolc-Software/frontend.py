@@ -27,7 +27,7 @@ Multiple template parameters are separated with an underscore (_).
 The names are meant to be as predictable as possible. The rules are:
 
 * `std::` is removed from any standard library type.
-* `\_` is removed from any standard library type.
+* `_` is removed from any standard library type.
 * User defined types are left untouched (i.e. the class `MyNamespace::MyClass` will result in appending `MyClass`).
 
 ## Type to string conversions ##
