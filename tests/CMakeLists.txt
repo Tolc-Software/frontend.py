@@ -2,7 +2,9 @@ include_guard()
 
 include(${PROJECT_SOURCE_DIR}/cmake/GetParser.cmake)
 
-option(BUILD_DEPENDENCIES_FROM_SOURCE "Building dependencies from source instead of downloading an asset" FALSE)
+option(BUILD_DEPENDENCIES_FROM_SOURCE
+       "Building dependencies from source instead of downloading an asset"
+       FALSE)
 set(parser_source_switch "")
 if(BUILD_DEPENDENCIES_FROM_SOURCE)
   set(parser_source_switch "BUILD_FROM_SOURCE")
@@ -21,21 +23,20 @@ if(NOT parser_source_switch)
   # with the downloaded llvm for include paths in the parsing
   get_parser_system_include(
     VARIABLE
-      SYSTEM_INCLUDE_PATHS
+    SYSTEM_INCLUDE_PATHS
     PARSER_SOURCE_DIR
-      ${parser_SOURCE_DIR}
+    ${parser_SOURCE_DIR}
     LIBCPP_ROOT_DIR
-      ${parser_SOURCE_DIR}/lib/Parser
+    ${parser_SOURCE_DIR}/lib/Parser
     LLVM_VERSION
-      ${PARSER_LLVM_VERSION})
+    ${PARSER_LLVM_VERSION})
 endif()
 
 # If Parser was built from source, the file should only be expanded with empty strings
 # and therefore use the default config from Parser.
 configure_file(
   TestUtil/include/TestUtil/parserConfig.hpp.in
-  ${CMAKE_CURRENT_LIST_DIR}/TestUtil/include/TestUtil/parserConfig.hpp
-    @ONLY)
+  ${CMAKE_CURRENT_LIST_DIR}/TestUtil/include/TestUtil/parserConfig.hpp @ONLY)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -98,7 +99,6 @@ set_tests_properties(ConfigureTestStage PROPERTIES FIXTURES_SETUP TestStage)
 
 foreach(
   test
-
   Builders/attributeBuilder.cpp
   Builders/classBuilder.cpp
   Builders/enumBuilder.cpp
@@ -139,9 +139,7 @@ foreach(
   userDefined.cpp
   valarrays.cpp
   variants.cpp
-  vectors.cpp
-
-)
+  vectors.cpp)
   # Ex: PybindProxy/moduleFile.cpp -> moduleFile
   get_filename_component(testName ${test} NAME_WLE)
 

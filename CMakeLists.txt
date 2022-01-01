@@ -23,9 +23,8 @@ include(cmake/ConanHelpers.cmake)
 setup_conan_profile(VARIABLE frontend_conan_profile)
 # This helps with packaging
 set(FRONTEND.PY_CONAN_REQUIRES_PACKAGES spdlog/1.8.0 fmt/7.1.3)
-find_conan_packages(
-  REQUIRES ${FRONTEND.PY_CONAN_REQUIRES_PACKAGES} PROFILE
-  ${frontend_conan_profile})
+find_conan_packages(REQUIRES ${FRONTEND.PY_CONAN_REQUIRES_PACKAGES} PROFILE
+                    ${frontend_conan_profile})
 
 include(FetchContent)
 FetchContent_Declare(
@@ -74,8 +73,11 @@ target_include_directories(
   Frontend.py PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
                      $<INSTALL_INTERFACE:include>)
 
-set_target_properties(Frontend.py PROPERTIES CXX_STANDARD_REQUIRED ON
-                                             CXX_EXTENSIONS OFF CXX_STANDARD 17)
+set_target_properties(
+  Frontend.py
+  PROPERTIES CXX_STANDARD_REQUIRED ON
+             CXX_EXTENSIONS OFF
+             CXX_STANDARD 17)
 
 # Add library to link against
 add_library(Tolc::Frontend.py ALIAS Frontend.py)
