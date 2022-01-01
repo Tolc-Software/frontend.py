@@ -10,6 +10,7 @@
 !.gitignore
 !configureAndBuild.bat
 !CMakeLists.txt
+!README.md
 
 # Directories
 !cmake

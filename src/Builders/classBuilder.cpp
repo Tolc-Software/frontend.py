@@ -16,16 +16,6 @@
 namespace Builders {
 
 namespace {
-std::vector<IR::Function> getPublicFunctions(
-    std::vector<std::pair<IR::AccessModifier, IR::Function>> const& functions) {
-	std::vector<IR::Function> publicFunctions;
-	for (auto const& [am, function] : functions) {
-		if (am == IR::AccessModifier::Public) {
-			publicFunctions.push_back(function);
-		}
-	}
-	return publicFunctions;
-}
 
 std::string
 getTemplateParameterString(std::vector<IR::Type> const& parameters) {
@@ -47,10 +37,10 @@ std::optional<PybindProxy::Class> buildClass(IR::Struct const& cppClass,
 	        getTemplateParameterString(cppClass.m_templateArguments),
 	    cppClass.m_representation);
 
-	auto publicFunctions = getPublicFunctions(cppClass.m_functions);
-	auto overloadedFunctions = Helpers::getOverloadedFunctions(publicFunctions);
+	auto overloadedFunctions =
+	    Helpers::getOverloadedFunctions(cppClass.m_public.m_functions);
 	// Ignore private functions
-	for (auto const& function : publicFunctions) {
+	for (auto const& function : cppClass.m_public.m_functions) {
 		if (auto maybePyFunction = buildFunction(function, typeInfo)) {
 			auto pyFunction = maybePyFunction.value();
 
@@ -63,24 +53,34 @@ std::optional<PybindProxy::Class> buildClass(IR::Struct const& cppClass,
 				pyFunction.setAsOverloaded();
 			}
 
-			if (function.m_name == cppClass.m_name) {
-				pyFunction.setAsConstructor();
-				pyClass.addConstructor(pyFunction);
-			} else {
-				pyClass.addFunction(pyFunction);
-			}
+			pyClass.addFunction(pyFunction);
 		} else {
 			return std::nullopt;
 		}
 	}
 
-	for (auto const& [accessModifier, variable] : cppClass.m_memberVariables) {
-		if (accessModifier == IR::AccessModifier::Public) {
-			Helpers::Pybind::checkType(variable.m_type, typeInfo);
-			pyClass.addMemberVariable(variable.m_name,
-			                          variable.m_type.m_isConst,
-			                          variable.m_type.m_isStatic);
+	for (auto const& constructor : cppClass.m_public.m_constructors) {
+		if (auto maybePyFunction = buildFunction(constructor, typeInfo)) {
+			auto pyFunction = maybePyFunction.value();
+
+			if (constructor.m_isStatic) {
+				pyFunction.setAsStatic();
+			}
+
+			if (cppClass.m_public.m_constructors.size() > 1) {
+				pyFunction.setAsOverloaded();
+			}
+
+			pyFunction.setAsConstructor();
+			pyClass.addConstructor(pyFunction);
 		}
+	}
+
+	for (auto const& variable : cppClass.m_public.m_memberVariables) {
+		Helpers::Pybind::checkType(variable.m_type, typeInfo);
+		pyClass.addMemberVariable(variable.m_name,
+		                          variable.m_type.m_isConst,
+		                          variable.m_type.m_isStatic);
 	}
 
 	// Add default constructor
@@ -91,10 +91,8 @@ std::optional<PybindProxy::Class> buildClass(IR::Struct const& cppClass,
 		pyClass.addConstructor(constructor);
 	}
 
-	for (auto const& [am, e] : cppClass.m_enums) {
-		if (am == IR::AccessModifier::Public) {
-			pyClass.addEnum(buildEnum(e));
-		}
+	for (auto const& e : cppClass.m_public.m_enums) {
+		pyClass.addEnum(buildEnum(e));
 	}
 
 	if (typeInfo.m_classesMarkedShared.contains(cppClass.m_representation)) {
