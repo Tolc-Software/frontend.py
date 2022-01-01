@@ -1,3 +1,5 @@
+# C++ to python conversions #
+
 This page shows what is automatically translated and to what.
 On the left is the `C++` and to the right what the corresponding interface in `python` will be.
 Not converted means there will be no automatic translation to a corresponding `python` object (for example `std::queue` does not automatically translate to `queue.Queue`).

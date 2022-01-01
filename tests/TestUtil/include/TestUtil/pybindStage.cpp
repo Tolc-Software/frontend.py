@@ -29,7 +29,7 @@ void PybindStage::addModuleFile(std::filesystem::path const& file,
 
 IR::Namespace PybindStage::parseModuleFile(std::string const& content) {
 	auto testFile = m_stage.addSourceFile(m_moduleName + ".hpp", content);
-	return TestUtil::parseFile(testFile.generic_string());
+	return TestUtil::parseFile(testFile.string());
 }
 
 int PybindStage::runPythonUnittest(std::string const& testBody) {

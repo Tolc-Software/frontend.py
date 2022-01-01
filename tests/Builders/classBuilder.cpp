@@ -38,7 +38,7 @@ TEST_CASE("Class with static member variables", "[classBuilder]") {
 		t.m_isConst = var.isConst;
 		t.m_isStatic = true;
 		v.m_type = t;
-		s.m_memberVariables.push_back({IR::AccessModifier::Public, v});
+		s.m_public.m_memberVariables.push_back(v);
 	}
 
 	PybindProxy::TypeInfo typeInfo;
@@ -72,7 +72,7 @@ TEST_CASE("Class with static function", "[classBuilder]") {
 	returnType.m_representation = "void";
 	f.m_returnType = returnType;
 
-	s.m_functions.push_back({IR::AccessModifier::Public, f});
+	s.m_public.m_functions.push_back(f);
 
 	PybindProxy::TypeInfo typeInfo;
 	auto myStruct = Builders::buildClass(s, typeInfo).value();
@@ -162,14 +162,14 @@ TEST_CASE("Class with a constructor", "[classBuilder]") {
 	IR::Function f;
 	f.m_name = s.m_name;
 	f.m_representation = f.m_name;
-	f.m_isStatic = true;
+	f.m_isStatic = false;
 	IR::Variable v;
 	v.m_name = 's';
 	IR::Type t;
 	t.m_representation = "const std::string&";
 	v.m_type = t;
 	f.m_arguments.push_back(v);
-	s.m_functions.push_back({IR::AccessModifier::Public, f});
+	s.m_public.m_constructors.push_back(f);
 
 	PybindProxy::TypeInfo typeInfo;
 	auto myStruct = Builders::buildClass(s, typeInfo).value();
@@ -213,7 +213,7 @@ TEST_CASE("Class with functions", "[classBuilder]") {
 		returnType.m_representation = "void";
 		f.m_returnType = returnType;
 
-		s.m_functions.push_back({IR::AccessModifier::Public, f});
+		s.m_public.m_functions.push_back(f);
 	}
 
 	PybindProxy::TypeInfo typeInfo;
@@ -249,7 +249,7 @@ TEST_CASE("Class with member variables", "[classBuilder]") {
 		t.m_isConst = var.isConst;
 		t.m_isStatic = false;
 		v.m_type = t;
-		s.m_memberVariables.push_back({IR::AccessModifier::Public, v});
+		s.m_public.m_memberVariables.push_back(v);
 	}
 
 	PybindProxy::TypeInfo typeInfo;
@@ -283,7 +283,7 @@ TEST_CASE("Class with vector in constructor gives the correct include",
 	c.m_container = IR::ContainerType::Vector;
 	arg.m_type = c;
 	constructor.m_arguments.push_back({"myVar", arg});
-	s.m_functions.push_back({IR::AccessModifier::Public, constructor});
+	s.m_public.m_functions.push_back(constructor);
 
 	PybindProxy::TypeInfo typeInfo;
 	auto myStruct = Builders::buildClass(s, typeInfo).value();
@@ -307,7 +307,7 @@ TEST_CASE("Class with vector in member function gives the correct include",
 	c.m_container = IR::ContainerType::Vector;
 	arg.m_type = c;
 	constructor.m_arguments.push_back({"myVar", arg});
-	s.m_functions.push_back({IR::AccessModifier::Public, constructor});
+	s.m_public.m_functions.push_back(constructor);
 
 	PybindProxy::TypeInfo typeInfo;
 	auto myStruct = Builders::buildClass(s, typeInfo).value();
@@ -327,7 +327,7 @@ TEST_CASE("Class with enum", "[classBuilder]") {
 	e.m_name = "MyEnum";
 	e.m_representation = moduleName + "::" + e.m_name;
 	e.m_values.push_back("Hi");
-	s.m_enums.push_back({IR::AccessModifier::Public, e});
+	s.m_public.m_enums.push_back(e);
 
 	PybindProxy::TypeInfo typeInfo;
 	auto myStruct = Builders::buildClass(s, typeInfo).value();

@@ -42,15 +42,6 @@ IR::Type::Container* getContainer(IR::Type& t) {
 	return nullptr;
 }
 
-std::vector<IR::AccessModifier> getAccessModifiers() {
-	using IR::AccessModifier;
-	return {
-	    AccessModifier::Public,
-	    AccessModifier::Private,
-	    AccessModifier::Protected,
-	};
-}
-
 std::vector<IR::BaseType> getTypes() {
 	using IR::BaseType;
 	return {BaseType::Bool,
@@ -74,16 +65,6 @@ std::vector<IR::BaseType> getTypes() {
 	        BaseType::UnsignedShortInt,
 	        BaseType::Void,
 	        BaseType::Wchar_t};
-}
-
-std::string getAsString(IR::AccessModifier am) {
-	using IR::AccessModifier;
-	switch (am) {
-		case AccessModifier::Public: return "public";
-		case AccessModifier::Private: return "private";
-		case AccessModifier::Protected: return "protected";
-	}
-	return "";
 }
 
 std::string getAsString(IR::BaseType type) {

@@ -1,3 +1,5 @@
+# Template Naming Convention #
+
 When creating bindings for a templated `class` `tolc` will choose a name based on the template parameters.
 For example:
 

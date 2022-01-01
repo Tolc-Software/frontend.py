@@ -9,7 +9,6 @@ nav:
     - Introduction: 'introduction.md'
     - Conversions: 'conversions.md'
     - Template Naming Convention: 'template_naming_convention.md'
-    - FAQ: 'FAQ.md'
 markdown_extensions:
   - pymdownx.highlight
   - pymdownx.inlinehilite
