@@ -29,7 +29,7 @@ find_conan_packages(REQUIRES ${FRONTEND.PY_CONAN_REQUIRES_PACKAGES} PROFILE
 include(FetchContent)
 FetchContent_Declare(
   IRSpecification
-  GIT_REPOSITORY git@github.com:srydell/IntermediateRepresentation.git
+  GIT_REPOSITORY git@github.com:Tolc-Software/IntermediateRepresentation.git
   GIT_TAG master)
 
 FetchContent_MakeAvailable(IRSpecification)

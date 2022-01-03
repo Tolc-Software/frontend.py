@@ -1,7 +1,7 @@
 site_name: frontend-py
 site_description: 'Frontend.py: A test site to see how this will look in production'
 site_author: 'Simon Rydell'
-site_url: 'https://srydell.github.io/tolc/'
+site_url: 'https://Tolc-Software.github.io/tolc/'
 docs_dir: 'public'
 strict: true
 nav:

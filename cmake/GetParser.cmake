@@ -27,7 +27,7 @@ function(get_parser)
     # Download source
     FetchContent_Declare(
       Parser
-      GIT_REPOSITORY git@github.com:srydell/Parser.git
+      GIT_REPOSITORY git@github.com:Tolc-Software/Parser.git
       GIT_TAG master)
     FetchContent_MakeAvailable(Parser)
   else()
@@ -42,7 +42,7 @@ function(get_parser)
       GITHUB_TOKEN
       $ENV{GITHUB_AUTH_TOKEN}
       USER
-      srydell
+      Tolc-Software
       REPOSITORY
       Parser
       TAG

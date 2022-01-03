@@ -31,7 +31,7 @@ function(setup_test)
   add_options(TARGET ${ARG_TEST_NAME})
 
   if(ENABLE_COVERAGE)
-    include(${CMAKE_CURRENT_LIST_DIR}/CodeCoverage.cmake)
+    include(${PROJECT_SOURCE_DIR}/cmake/CodeCoverage.cmake)
     # Assumes CodeCoverage.cmake is included Adds code coverage to the test and
     # adds it to the ccov-all target
     target_code_coverage(${ARG_TEST_NAME} ALL)
