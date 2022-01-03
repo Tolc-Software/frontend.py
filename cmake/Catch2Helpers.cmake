@@ -42,7 +42,7 @@ endfunction()
 # NOTE: Internal function that should not be called
 
 # Creates a file with a Catch main defined as
-# https://github.com/catchorg/Catch2/blob/master/docs/slow-compiles.md#top Then
+# https://github.com/catchorg/Catch2/blob/main/docs/slow-compiles.md#top Then
 # it creates a library that can be linked against to get Catch2
 function(_create_main_catch2)
   set(main_catch2_file "${CMAKE_CURRENT_BINARY_DIR}/main_catch2.cpp")
