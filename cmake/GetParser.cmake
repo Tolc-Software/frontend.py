@@ -29,10 +29,17 @@ function(get_parser)
       GIT_TAG main)
     FetchContent_MakeAvailable(Parser)
   else()
+    # On Windows you can't link a Debug build to a Release build,
+    # therefore there are two binary versions available.
+    # Need to distinguish between them.
+    set(windows_config "")
+    if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL Windows)
+      set(windows_config "-${CMAKE_BUILD_TYPE}")
+    endif()
     # Download binary
     FetchContent_Declare(parser_entry
       URL
-      https://github.com/Tolc-Software/Parser/releases/download/main-release/Parser-${CMAKE_HOST_SYSTEM_NAME}-main.tar.xz)
+      https://github.com/Tolc-Software/Parser/releases/download/main-release/Parser-${CMAKE_HOST_SYSTEM_NAME}-main${windows_config}.tar.xz)
 
     message(STATUS "Checking if Parser needs to be downloaded...")
     FetchContent_Populate(parser_entry)
