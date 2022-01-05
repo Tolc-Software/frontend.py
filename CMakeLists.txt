@@ -4,16 +4,10 @@ project(
   VERSION 0.1
   LANGUAGES CXX)
 
-include(cmake/Doxygen.cmake)
-enable_doxygen()
-
 # Set ccache, ipo, etc.
 include(cmake/ProjectSettings.cmake)
 
 include(cmake/WarningsAndOptions.cmake)
-
-# allow for static analysis options
-include(cmake/StaticAnalyzers.cmake)
 
 include(cmake/Sanitizers.cmake)
 

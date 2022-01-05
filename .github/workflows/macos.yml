@@ -55,7 +55,6 @@ jobs:
 
     - name: Configure
       env:
-        GITHUB_AUTH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         CC: /usr/local/opt/llvm/bin/clang
         CXX: /usr/local/opt/llvm/bin/clang++
       run: |
