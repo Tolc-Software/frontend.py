@@ -20,6 +20,13 @@ install(
   DESTINATION
     ${CMAKE_INSTALL_LIBDIR}/cmake/Frontend.py)
 
+# Add License
+install(
+  FILES
+    ${CMAKE_SOURCE_DIR}/LICENSE.md
+  DESTINATION
+    .)
+
 configure_file(${CMAKE_SOURCE_DIR}/cmake/packaging/Frontend.pyConfig.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/Frontend.pyConfig.cmake @ONLY)
 
