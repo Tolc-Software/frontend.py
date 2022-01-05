@@ -4,6 +4,45 @@
 
 `frontend.py` is a library that takes an AST defined by [`IR::IR`](https://github.com/Tolc-Software/IntermediateRepresentation) and writes [`pybind11`](https://github.com/pybind/pybind11) code. The idea is to be able to use the C++ code that corresponds to the AST from `python` via the generated `pybind11`.
 
+## Building ##
+
+`frontend.py` can be built on Linux, MacOS, and Windows. See the [CI pipelines for more platform specific information.](./.github/workflows/).
+
+Here is a general overview:
+
+Requirements:
+
+* CMake
+* python3
+* conan
+* clang
+
+Configure the project:
+
+```shell
+$ cmake -S. -Bbuild -G Ninja -DCMAKE_CXX_COMPILER="clang++" -DCMAKE_C_COMPILER="clang" -DCMAKE_BUILD_TYPE="Debug" -DENABLE_TESTING=ON -DENABLE_PACKAGING=ON
+```
+
+Build `tolc`:
+
+```shell
+$ cmake --build build
+```
+
+Test with `ctest`:
+
+```shell
+$ cd build
+$ ctest --output-on-failure
+```
+
+Install with `CPack`:
+
+```shell
+$ cpack -G TGZ --config build/CPackConfig.cmake
+```
+
+
 ## Design goals ##
 
 ### Sane (easily understandable) defaults ###

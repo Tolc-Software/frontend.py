@@ -43,7 +43,6 @@ jobs:
       run: |
         python -m pip install setuptools wheel
         python -m pip install conan ninja
-        python -m pip install -r tools/requirements.txt
 
     - name: Conan cache
       uses: actions/cache@v2
@@ -55,7 +54,6 @@ jobs:
 
     - name: Configure
       env:
-        GITHUB_AUTH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         CC: /usr/local/opt/llvm/bin/clang
         CXX: /usr/local/opt/llvm/bin/clang++
       run: |
