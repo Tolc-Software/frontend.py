@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TestStage/stage.hpp"
+#include "Stage/cmakeStage.hpp"
 #include <IR/ir.hpp>
 #include <filesystem>
 
@@ -32,7 +32,7 @@ struct PybindStage {
 	*/
 	void keepAliveAfterTest();
 
-	TestStage::Stage m_stage;
+	Stage::CMakeStage m_stage;
 	std::string m_moduleName;
 };
 }    // namespace TestUtil

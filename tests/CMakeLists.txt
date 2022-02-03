@@ -49,10 +49,17 @@ FetchContent_MakeAvailable(Catch2)
 set(Catch2_FOUND TRUE)
 set(Catch2_INCLUDE_DIRS ${Catch2_SOURCE_DIR}/single_include)
 
+include(FetchContent)
+FetchContent_Declare(
+  stage_content
+  GIT_REPOSITORY https://github.com/Tolc-Software/Stage.git
+  GIT_TAG main)
+FetchContent_MakeAvailable(stage_content)
+
 # Everything put in TestUtil/include is available
 add_library(TestUtil TestUtil/include/TestUtil/pybindStage.cpp)
 target_include_directories(TestUtil PUBLIC TestUtil/include)
-target_link_libraries(TestUtil PRIVATE Tolc::Parser Catch2::Catch2)
+target_link_libraries(TestUtil PRIVATE Tolc::Parser Catch2::Catch2 Tolc::Stage)
 target_link_libraries(TestUtil PUBLIC IR::IR)
 find_package(fmt REQUIRED)
 
@@ -61,14 +68,6 @@ add_options(TARGET TestUtil)
 
 # Defines create_catch2_test
 include(${modules}/Catch2Helpers.cmake)
-
-add_library(TestStage TestUtil/include/TestStage/stage.cpp)
-target_include_directories(TestStage PUBLIC TestUtil/include)
-# find_package(fmt)
-# target_link_libraries(TestStage PRIVATE fmt::fmt)
-
-add_warnings(TARGET TestStage)
-add_options(TARGET TestStage)
 
 if(ENABLE_COVERAGE)
   include(${modules}/CodeCoverage.cmake)
@@ -153,7 +152,7 @@ foreach(
     LINK_LIBRARIES
     Frontend.py
     TestUtil
-    TestStage
+    Tolc::Stage
     fmt::fmt)
 
   add_warnings(TARGET ${testName})

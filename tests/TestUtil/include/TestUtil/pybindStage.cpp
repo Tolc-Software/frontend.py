@@ -1,5 +1,5 @@
 #include "TestUtil/pybindStage.hpp"
-#include "TestStage/stage.hpp"
+#include "Stage/cmakeStage.hpp"
 #include "TestStage/stageFunctions.hpp"
 #include "TestUtil/parse.hpp"
 #include <IR/ir.hpp>
@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <iostream>
 #include <string>
+#include <vector>
 
 namespace TestUtil {
 
@@ -19,6 +20,7 @@ PybindStage::PybindStage(std::filesystem::path const& baseStage,
                std::filesystem::path("build") / "_deps"}),
       m_moduleName(moduleName) {
 	m_stage.setTargetName(m_moduleName);
+	m_stage.setWindowsCMakeBuildAndConfigureScript("configureAndBuild.bat");
 }
 
 void PybindStage::addModuleFile(std::filesystem::path const& file,
