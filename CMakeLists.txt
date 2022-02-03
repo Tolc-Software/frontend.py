@@ -4,15 +4,24 @@ project(
   VERSION 0.1
   LANGUAGES CXX)
 
+include(FetchContent)
+FetchContent_Declare(
+  cmake_modules
+  GIT_REPOSITORY https://github.com/Tolc-Software/cmake-modules.git
+  GIT_TAG main)
+FetchContent_MakeAvailable(cmake_modules)
+# Basis of all shared CMake modules
+set(modules ${cmake_modules_SOURCE_DIR}/cmake)
+
 # Set ccache, ipo, etc.
-include(cmake/ProjectSettings.cmake)
+include(${modules}/ProjectSettings.cmake)
 
-include(cmake/WarningsAndOptions.cmake)
+include(${modules}/WarningsAndOptions.cmake)
 
-include(cmake/Sanitizers.cmake)
+include(${modules}/Sanitizers.cmake)
 
 # Define run_conan
-include(cmake/ConanHelpers.cmake)
+include(${modules}/ConanHelpers.cmake)
 # Create the profile from variables known during configure
 setup_conan_profile(VARIABLE frontend_conan_profile)
 # This helps with packaging

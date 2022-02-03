@@ -1,6 +1,6 @@
 include_guard()
 
-include(${PROJECT_SOURCE_DIR}/cmake/GetParser.cmake)
+include(${modules}/GetParser.cmake)
 
 option(BUILD_DEPENDENCIES_FROM_SOURCE
        "Building dependencies from source instead of downloading an asset"
@@ -60,7 +60,7 @@ add_warnings(TARGET TestUtil)
 add_options(TARGET TestUtil)
 
 # Defines create_catch2_test
-include(${PROJECT_SOURCE_DIR}/cmake/SetupTest.cmake)
+include(${modules}/Catch2Helpers.cmake)
 
 add_library(TestStage TestUtil/include/TestStage/stage.cpp)
 target_include_directories(TestStage PUBLIC TestUtil/include)
@@ -71,7 +71,7 @@ add_warnings(TARGET TestStage)
 add_options(TARGET TestStage)
 
 if(ENABLE_COVERAGE)
-  include(${PROJECT_SOURCE_DIR}/cmake/CodeCoverage.cmake)
+  include(${modules}/CodeCoverage.cmake)
 
   # Use coverage of frontend
   target_code_coverage(Frontend.py)
@@ -143,15 +143,21 @@ foreach(
   # Ex: PybindProxy/moduleFile.cpp -> moduleFile
   get_filename_component(testName ${test} NAME_WLE)
 
-  setup_test(
-    TEST_NAME
+  create_catch2_test(
+    TARGET
     ${testName}
-    SOURCE
+    SOURCES
     ${test}
-    LIBRARIES
+    INCLUDE
+    ${PROJECT_SOURCE_DIR}/src
+    LINK_LIBRARIES
+    Frontend.py
     TestUtil
     TestStage
     fmt::fmt)
+
+  add_warnings(TARGET ${testName})
+  add_options(TARGET ${testName})
 
   set(ENABLE_SANITIZER_ADDRESS TRUE)
   set(ENABLE_SANITIZER_MEMORY TRUE)
