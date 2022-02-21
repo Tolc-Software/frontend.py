@@ -6,7 +6,7 @@
 #include <fmt/format.h>
 
 TEST_CASE("Classes", "[namespaces]") {
-	std::string moduleName = "defaultModule";
+	std::string moduleName = "MyLib";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 

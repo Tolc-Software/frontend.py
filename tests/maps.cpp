@@ -6,7 +6,7 @@
 #include <fmt/format.h>
 
 TEST_CASE("Using std::maps", "[maps]") {
-	std::string moduleName = "defaultModule";
+	std::string moduleName = "MyLib";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 

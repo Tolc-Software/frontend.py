@@ -13,11 +13,7 @@ namespace TestUtil {
 
 PybindStage::PybindStage(std::filesystem::path const& baseStage,
                          std::string const& moduleName)
-    : m_stage(baseStage,
-              {"cmake",
-               "CMakeLists.txt",
-               "configureAndBuild.bat",
-               std::filesystem::path("build") / "_deps"}),
+    : m_stage(baseStage, {"cmake", "CMakeLists.txt", "configureAndBuild.bat"}),
       m_moduleName(moduleName) {
 	m_stage.setTargetName(m_moduleName);
 	m_stage.setWindowsCMakeBuildAndConfigureScript("configureAndBuild.bat");

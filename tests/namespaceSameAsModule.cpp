@@ -6,12 +6,12 @@
 #include <fmt/format.h>
 
 TEST_CASE("Namespace name same as module", "[namespaceSameAsModule]") {
-	std::string moduleName = "defaultModule";
+	std::string moduleName = "MyLib";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
 	auto cppCode = R"(
-namespace defaultModule {
+namespace MyLib {
 
 int complexFunction() {
 	return 5;

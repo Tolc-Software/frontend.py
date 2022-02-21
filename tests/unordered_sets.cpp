@@ -6,7 +6,7 @@
 #include <fmt/format.h>
 
 TEST_CASE("Using std::unordered_sets", "[unordered_sets]") {
-	std::string moduleName = "defaultModule";
+	std::string moduleName = "MyLib";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
@@ -45,7 +45,7 @@ self.assertEqual(c.getValue({{1, 2, 3}}, 4), -1)
 # Test unordered_set of the wrong type
 for incompatible_set in [{{"key": "value"}}, (5, 2)]:
     with self.assertRaises(TypeError) as error_context:
-        c = defaultModule.MyClass(incompatible_set)
+        c = MyLib.MyClass(incompatible_set)
         c.getValue(incompatible_set, 5)
 
 self.assertEqual(len(error_context.exception.args), 1)

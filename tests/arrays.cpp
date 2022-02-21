@@ -6,7 +6,7 @@
 #include <fmt/format.h>
 
 TEST_CASE("Using std::arrays", "[arrays]") {
-	std::string moduleName = "defaultModule";
+	std::string moduleName = "MyLib";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
@@ -48,7 +48,7 @@ self.assertEqual(withFunction.sum([1, 2, 3, 4, 5]), 15)
 # Test array with too many/few values
 for incompatibleArray in [["too many", "too many", "too many"], ["too few"]]:
     with self.assertRaises(TypeError) as error_context:
-        withMember = defaultModule.WithMember(incompatibleArray)
+        withMember = MyLib.WithMember(incompatibleArray)
 
     self.assertEqual(len(error_context.exception.args), 1)
     self.assertTrue(

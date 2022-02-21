@@ -7,7 +7,7 @@
 
 TEST_CASE("std::filesystem::path gets converted to pathlib.Path",
           "[filesystem_paths]") {
-	std::string moduleName = "defaultModule";
+	std::string moduleName = "MyLib";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 

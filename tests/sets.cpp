@@ -6,7 +6,7 @@
 #include <fmt/format.h>
 
 TEST_CASE("Using std::sets", "[sets]") {
-	std::string moduleName = "defaultModule";
+	std::string moduleName = "MyLib";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
@@ -45,7 +45,7 @@ self.assertEqual(c.getValue({{1, 2, 3}}, 4), -1)
 # Test set of the wrong type
 for incompatibleset in [{{"key": "value"}}, (5, 2)]:
     with self.assertRaises(TypeError) as error_context:
-        c = defaultModule.MyClass(incompatibleset)
+        c = MyLib.MyClass(incompatibleset)
         c.getValue(incompatibleset, 5)
 
 self.assertEqual(len(error_context.exception.args), 1)

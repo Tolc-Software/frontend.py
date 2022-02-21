@@ -17,7 +17,7 @@ TEST_CASE("Smart pointers of custom types work", "[smartPointers]") {
 	//   }
 	//
 	//   m.def("create_int", []() { return *create_int().get(); });
-	std::string moduleName = "defaultModule";
+	std::string moduleName = "MyLib";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 

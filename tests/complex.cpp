@@ -6,7 +6,7 @@
 #include <fmt/format.h>
 
 TEST_CASE("std::complex gets converted to complex", "[complex]") {
-	std::string moduleName = "defaultModule";
+	std::string moduleName = "MyLib";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 

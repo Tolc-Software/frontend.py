@@ -7,7 +7,7 @@
 #include <fmt/format.h>
 
 TEST_CASE("Classes", "[classes]") {
-	std::string moduleName = "defaultModule";
+	std::string moduleName = "MyLib";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 	// Add instantiation in a source file.

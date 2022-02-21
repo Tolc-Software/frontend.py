@@ -6,7 +6,7 @@
 #include <fmt/format.h>
 
 TEST_CASE("Write to file functions", "[functions]") {
-	std::string moduleName = "defaultModule";
+	std::string moduleName = "MyLib";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 

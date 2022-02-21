@@ -156,6 +156,9 @@ std::string toString(IR::Type::Container const& type) {
 		        [&typeString](IR::Type::Function) {
 			        // NOTE: Function to string is too complicated -> Give up
 			        typeString.push_back("f");
+		        },
+		        [&typeString, &current](IR::Type::Integral) {
+			        typeString.push_back(current.m_representation);
 		        }},
 		    current.m_type);
 	}
@@ -186,6 +189,9 @@ std::string buildTypeString(IR::Type const& t) {
 	              [&typeString](IR::Type::Function) {
 		              // NOTE: Function to string is too complicated -> Give up
 		              typeString.push_back("f");
+	              },
+	              [&typeString, &t](IR::Type::Integral) {
+		              typeString.push_back(t.m_representation);
 	              }},
 	    // , std::variant<Value, Container, EnumValue, UserDefined, Function> m_type;
 	    t.m_type);

@@ -38,16 +38,10 @@ configure_file(
   TestUtil/include/TestUtil/parserConfig.hpp.in
   ${CMAKE_CURRENT_LIST_DIR}/TestUtil/include/TestUtil/parserConfig.hpp @ONLY)
 
-include(FetchContent)
-FetchContent_Declare(
-  Catch2
-  GIT_REPOSITORY git@github.com:catchorg/Catch2.git
-  GIT_TAG v2.12.1)
-FetchContent_MakeAvailable(Catch2)
+# Defines create_catch2_test and get_catch2
+include(${modules}/Catch2Helpers.cmake)
 
-# These are needed to use create_catch2_test
-set(Catch2_FOUND TRUE)
-set(Catch2_INCLUDE_DIRS ${Catch2_SOURCE_DIR}/single_include)
+get_catch2(VERSION v2.13.8)
 
 include(FetchContent)
 FetchContent_Declare(

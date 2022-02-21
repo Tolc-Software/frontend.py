@@ -7,7 +7,7 @@
 
 TEST_CASE("Global variables are converted",
           "[globalVariables]") {
-	std::string moduleName = "defaultModule";
+	std::string moduleName = "MyLib";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
