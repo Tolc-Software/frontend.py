@@ -1277,6 +1277,7 @@ self.assertEqual(withFunction.sum([1, 2, 3]), 6)
 
 ```cpp
 
+#include <array>
 #include <map>
 #include <string>
 #include <vector>
@@ -1300,25 +1301,36 @@ T myFun(T type) {
 
 template class MyClass<int>;
 template class MyClass<std::map<char, std::vector<int>>>;
+template class MyClass<std::array<int, 3>>;
 
 ```
 
 
 ```python
 
+# getSomething<std::string>
 hi = m.getSomething("hi")
 self.assertEqual(hi, "hi")
 
+# getSomething<int>
 five = m.getSomething(5)
 self.assertEqual(five, 5)
 
+# getSomething<std::vector<std::string>>
 l = m.getSomething(["hi"])
 self.assertEqual(l, ["hi"])
 
+# MyClass<int>
 my_class_int = m.MyClass_int()
 self.assertEqual(my_class_int.myFun(25), 25)
 
+# MyClass<std::map<char, std::vector<int>>>
 my_class_map = m.MyClass_map_char_vector_int()
 self.assertEqual(my_class_map.myFun({'h': [1]}), {'h': [1]})
+
+# MyClass<std::array<int, 3>>
+my_class_array = m.MyClass_array_int_3()
+self.assertEqual(my_class_array.myFun([1, 2, 3]), [1, 2, 3])
+
 ```
 

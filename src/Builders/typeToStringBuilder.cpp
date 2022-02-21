@@ -193,7 +193,7 @@ std::string buildTypeString(IR::Type const& t) {
 	              [&typeString, &t](IR::Type::Integral) {
 		              typeString.push_back(t.m_representation);
 	              }},
-	    // , std::variant<Value, Container, EnumValue, UserDefined, Function> m_type;
+	    // , std::variant<Value, Container, EnumValue, UserDefined, Function, Integral> m_type;
 	    t.m_type);
 
 	return fmt::format("{}", fmt::join(typeString, "_"));

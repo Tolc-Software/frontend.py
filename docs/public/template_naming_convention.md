@@ -69,6 +69,7 @@ The names are meant to be as predictable as possible. The rules are:
 | double                          | double                   |
 | float                           | float                    |
 | int                             | int                      |
+| Integral                        | Integral literal*        |
 | long double                     | longdouble               |
 | long int                        | longint                  |
 | long long int                   | longlongint              |
@@ -82,3 +83,5 @@ The names are meant to be as predictable as possible. The rules are:
 | unsigned long long int          | unsignedlonglongint      |
 | unsigned short int              | unsignedshortint         |
 | wchar\_t                        | wchart                   |
+
+\* For example the `3` in `MyClass<std::array<int, 3>>` results in `MyClass_array_int_3`.
