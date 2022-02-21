@@ -20,7 +20,7 @@ The specialized `class` `Example<int>` will be available from `python` as `Examp
 ```python
 import MyLib
 
-example = MyLib.Example_int
+example = MyLib.Example_int()
 # Prints 5
 print(example.f(5))
 ```
