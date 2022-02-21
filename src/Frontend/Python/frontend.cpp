@@ -5,16 +5,19 @@
 #include <filesystem>
 #include <optional>
 #include <string>
+#include <vector>
 
 namespace Frontend::Python {
 
-std::optional<std::pair<std::filesystem::path, std::string>>
+std::optional<std::vector<std::pair<std::filesystem::path, std::string>>>
 createModule(IR::Namespace const& rootNamespace,
              std::string const& moduleName) {
-	if (auto moduleFile =
+	if (auto maybeModuleFile =
 	        Builders::buildModuleFile(rootNamespace, moduleName)) {
-		return std::make_pair(moduleFile.value().getFilepath(),
-		                      moduleFile.value().getPybind());
+		auto& moduleFile = maybeModuleFile.value();
+
+		return std::vector {
+		    std::make_pair(moduleFile.getFilepath(), moduleFile.getPybind())};
 	}
 	return std::nullopt;
 }

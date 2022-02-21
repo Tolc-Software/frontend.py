@@ -1,14 +1,13 @@
-#include "Frontend/Python/frontend.hpp"
 #include "TestStage/paths.hpp"
 #include "TestUtil/pybindStage.hpp"
-#include "TestUtil/runPybindTest.hpp"
 #include <catch2/catch.hpp>
 #include <fmt/format.h>
 
 TEST_CASE("Namespaces turn into modules", "[namespaces]") {
-	std::string moduleName = "defaultModule";
+	std::string moduleName = "m";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
+	stage.keepAliveAfterTest();
 
 	auto cppCode = R"(
 #include <string>
@@ -45,7 +44,8 @@ self.assertEqual(lifeProTips, "42")
 )",
 	                                  fmt::arg("moduleName", moduleName));
 
-	auto errorCode =
-	    TestUtil::runPybindTest(stage, cppCode, pythonTestCode, moduleName);
+	auto errorCode = stage.runPybindTest(cppCode, pythonTestCode);
 	REQUIRE(errorCode == 0);
+
+	stage.exportAsExample("Namespaces");
 }

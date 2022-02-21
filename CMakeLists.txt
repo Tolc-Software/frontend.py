@@ -79,13 +79,12 @@ target_include_directories(
 set_target_properties(
   Frontend.py
   PROPERTIES CXX_STANDARD_REQUIRED ON
-             CXX_EXTENSIONS OFF
-             CXX_STANDARD 17)
+             CXX_EXTENSIONS OFF)
 
 # Add library to link against
 add_library(Tolc::Frontend.py ALIAS Frontend.py)
 
-# Only build tests and benchmarks if building this project directly
+# Only build tests/benchmarks/packaging if building this project directly
 if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   option(ENABLE_TESTING "Build the testing tree" OFF)
   if(ENABLE_TESTING)
@@ -101,13 +100,6 @@ if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
 
   option(ENABLE_PACKAGING "Enables install and packaging via CPack" OFF)
   if(ENABLE_PACKAGING)
-    if(BUILD_DEPENDENCIES_FROM_SOURCE)
-      message(
-        FATAL_ERROR
-          "It is not allowed to build a release package and build dependencies from source. Use a prebuilt library from CI."
-      )
-    endif()
-
     add_subdirectory(tools/packaging)
   endif()
 endif()

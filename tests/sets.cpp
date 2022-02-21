@@ -1,12 +1,10 @@
-#include "Frontend/Python/frontend.hpp"
 #include "TestStage/paths.hpp"
 #include "TestUtil/pybindStage.hpp"
-#include "TestUtil/runPybindTest.hpp"
 #include <catch2/catch.hpp>
 #include <fmt/format.h>
 
 TEST_CASE("Using std::sets", "[sets]") {
-	std::string moduleName = "defaultModule";
+	std::string moduleName = "m";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
@@ -45,7 +43,7 @@ self.assertEqual(c.getValue({{1, 2, 3}}, 4), -1)
 # Test set of the wrong type
 for incompatibleset in [{{"key": "value"}}, (5, 2)]:
     with self.assertRaises(TypeError) as error_context:
-        c = defaultModule.MyClass(incompatibleset)
+        c = m.MyClass(incompatibleset)
         c.getValue(incompatibleset, 5)
 
 self.assertEqual(len(error_context.exception.args), 1)
@@ -65,7 +63,8 @@ self.assertTrue(
 )",
 	                                  fmt::arg("moduleName", moduleName));
 
-	auto errorCode =
-	    TestUtil::runPybindTest(stage, cppCode, pythonTestCode, moduleName);
+	auto errorCode = stage.runPybindTest(cppCode, pythonTestCode);
 	REQUIRE(errorCode == 0);
+
+	stage.exportAsExample("std::set");
 }

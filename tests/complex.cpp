@@ -1,12 +1,10 @@
-#include "Frontend/Python/frontend.hpp"
 #include "TestStage/paths.hpp"
 #include "TestUtil/pybindStage.hpp"
-#include "TestUtil/runPybindTest.hpp"
 #include <catch2/catch.hpp>
 #include <fmt/format.h>
 
 TEST_CASE("std::complex gets converted to complex", "[complex]") {
-	std::string moduleName = "defaultModule";
+	std::string moduleName = "m";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
@@ -52,7 +50,8 @@ self.assertEqual(r.imag, 2)
 )",
 	                                  fmt::arg("moduleName", moduleName));
 
-	auto errorCode =
-	    TestUtil::runPybindTest(stage, cppCode, pythonTestCode, moduleName);
+	auto errorCode = stage.runPybindTest(cppCode, pythonTestCode);
 	REQUIRE(errorCode == 0);
+
+	stage.exportAsExample("std::complex");
 }

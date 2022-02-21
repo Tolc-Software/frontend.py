@@ -8,6 +8,7 @@ nav:
   - python:
     - Introduction: 'introduction.md'
     - Conversions: 'conversions.md'
+    - Examples: 'examples.md'
     - Template Naming Convention: 'template_naming_convention.md'
 markdown_extensions:
   - pymdownx.highlight
