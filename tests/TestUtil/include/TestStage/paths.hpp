@@ -8,7 +8,5 @@ namespace TestStage {
 * Get the path to the root of test stage
 * NOTE: This is populated at configure time by cmake
 */
-std::filesystem::path getRootStagePath() {
-	return "@test_stage@";
-}
+std::filesystem::path getRootStagePath();
 }

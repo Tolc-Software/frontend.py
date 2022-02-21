@@ -50,10 +50,20 @@ FetchContent_Declare(
   GIT_TAG main)
 FetchContent_MakeAvailable(stage_content)
 
+# Create a platform independent way of getting the path to the test stage
+set(test_stage ${CMAKE_CURRENT_LIST_DIR}/testStage)
+if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL Windows)
+  # This is to normalize strings relative to how they are used in std::filesystem
+  string(REPLACE "/" "\\\\" test_stage ${test_stage})
+endif()
+configure_file(
+  TestUtil/include/TestStage/paths.cpp.in
+  ${CMAKE_CURRENT_LIST_DIR}/TestUtil/include/TestStage/paths.cpp @ONLY)
+
 # Everything put in TestUtil/include is available
-add_library(TestUtil TestUtil/include/TestUtil/pybindStage.cpp)
+add_library(TestUtil TestUtil/include/TestUtil/pybindStage.cpp TestUtil/include/TestStage/paths.cpp)
 target_include_directories(TestUtil PUBLIC TestUtil/include)
-target_link_libraries(TestUtil PRIVATE Tolc::Parser Catch2::Catch2 Tolc::Stage)
+target_link_libraries(TestUtil PRIVATE Tolc::Parser Tolc::Frontend.py Catch2::Catch2 Tolc::Stage)
 target_link_libraries(TestUtil PUBLIC IR::IR)
 find_package(fmt REQUIRED)
 
@@ -71,16 +81,6 @@ if(ENABLE_COVERAGE)
 
   add_code_coverage_all_targets()
 endif()
-
-# Create a platform independent way of getting the path to the test stage
-set(test_stage ${CMAKE_CURRENT_LIST_DIR}/testStage)
-if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL Windows)
-  # This is to normalize strings relative to how they are used in std::filesystem
-  string(REPLACE "/" "\\\\" test_stage ${test_stage})
-endif()
-configure_file(
-  TestUtil/include/TestStage/paths.hpp.in
-  ${CMAKE_CURRENT_LIST_DIR}/TestUtil/include/TestStage/paths.hpp @ONLY)
 
 # Create a test fixture for downloading dependencies in the test stage
 # In this case pybind11

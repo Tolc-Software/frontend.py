@@ -10,6 +10,12 @@ struct PybindStage {
 	            std::string const& moduleName);
 
 	/**
+	* Compile and run a test
+	*/
+	int runPybindTest(std::string const& cppCode,
+	                  std::string const& pythonUnittestCode);
+
+	/**
 	* Adds the source file moduleName.hpp to the stage with provided content
 	* Uses Tolc::Parser to parse the file and returns the global namespace
 	*/
@@ -22,6 +28,12 @@ struct PybindStage {
 	                   std::string const& content);
 
 	/**
+	 * Exports as example. Assumes that runPybindTest has been called before
+	 * (to save the cppCode and pythonUnittestCode)
+	 */
+	void exportAsExample(std::string const& name);
+
+	/**
 	* Injects input python code testBody into a python unittest file.
 	* The content of testBody will be copied into a function and the unittest module can be used freely.
 	*/
@@ -32,7 +44,13 @@ struct PybindStage {
 	*/
 	void keepAliveAfterTest();
 
+	struct Code {
+		std::string language;
+		std::string code;
+	};
+
 	Stage::CMakeStage m_stage;
 	std::string m_moduleName;
+	std::vector<Code> m_exports;
 };
 }    // namespace TestUtil
