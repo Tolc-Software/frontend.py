@@ -15,7 +15,7 @@ TEST_CASE("Smart pointers of custom types work", "[smartPointers]") {
 	//   }
 	//
 	//   m.def("create_int", []() { return *create_int().get(); });
-	std::string moduleName = "MyLib";
+	std::string moduleName = "m";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
@@ -50,4 +50,6 @@ self.assertEqual(s.m_hi, 10)
 
 	auto errorCode = stage.runPybindTest(cppCode, pythonTestCode);
 	REQUIRE(errorCode == 0);
+
+	stage.exportAsExample("Smart Pointers");
 }

@@ -4,7 +4,7 @@
 #include <fmt/format.h>
 
 TEST_CASE("User defined classes", "[userDefined]") {
-	std::string moduleName = "MyLib";
+	std::string moduleName = "m";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 

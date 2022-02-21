@@ -4,7 +4,7 @@
 #include <fmt/format.h>
 
 TEST_CASE("Taking functions as arguments", "[functional]") {
-	std::string moduleName = "MyLib";
+	std::string moduleName = "m";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
@@ -51,5 +51,7 @@ self.assertEqual(result1, 10)
 
 	auto errorCode = stage.runPybindTest(cppCode, pythonTestCode);
 	REQUIRE(errorCode == 0);
+
+	stage.exportAsExample("std::function");
 }
 

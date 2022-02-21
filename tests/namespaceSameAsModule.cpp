@@ -4,7 +4,7 @@
 #include <fmt/format.h>
 
 TEST_CASE("Namespace name same as module", "[namespaceSameAsModule]") {
-	std::string moduleName = "MyLib";
+	std::string moduleName = "m";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
@@ -18,7 +18,7 @@ int complexFunction() {
 })";
 
 	auto pythonTestCode = fmt::format(R"(
-result = {moduleName}.{moduleName}.complexFunction()
+result = {moduleName}.MyLib.complexFunction()
 self.assertEqual(result, 5)
 )",
 	                                  fmt::arg("moduleName", moduleName));

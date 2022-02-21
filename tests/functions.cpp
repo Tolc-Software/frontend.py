@@ -4,7 +4,7 @@
 #include <fmt/format.h>
 
 TEST_CASE("Write to file functions", "[functions]") {
-	std::string moduleName = "MyLib";
+	std::string moduleName = "m";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
@@ -73,4 +73,6 @@ self.assertEqual({moduleName}.getZero(), 0)
 
 	auto errorCode = stage.runPybindTest(cppCode, pythonTestCode);
 	REQUIRE(errorCode == 0);
+
+	stage.exportAsExample("Functions");
 }

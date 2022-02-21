@@ -4,7 +4,7 @@
 #include <fmt/format.h>
 
 TEST_CASE("Specialized templates", "[templates]") {
-	std::string moduleName = "MyLib";
+	std::string moduleName = "m";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
@@ -54,4 +54,6 @@ self.assertEqual(my_class_map.myFun()",
 
 	auto errorCode = stage.runPybindTest(cppCode, pythonTestCode);
 	REQUIRE(errorCode == 0);
+
+	stage.exportAsExample("Templates");
 }

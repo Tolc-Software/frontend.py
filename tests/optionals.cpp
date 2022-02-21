@@ -4,7 +4,7 @@
 #include <fmt/format.h>
 
 TEST_CASE("Using std::optionals", "[optionals]") {
-	std::string moduleName = "MyLib";
+	std::string moduleName = "m";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
@@ -43,4 +43,6 @@ self.assertEqual(withFunction.getNullopt(), None)
 
 	auto errorCode = stage.runPybindTest(cppCode, pythonTestCode);
 	REQUIRE(errorCode == 0);
+
+	stage.exportAsExample("std::optional");
 }

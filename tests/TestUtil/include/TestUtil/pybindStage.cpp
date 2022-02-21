@@ -1,6 +1,7 @@
 #include "TestUtil/pybindStage.hpp"
 #include "Frontend/Python/frontend.hpp"
 #include "Stage/cmakeStage.hpp"
+#include "TestStage/paths.hpp"
 #include "TestStage/stageFunctions.hpp"
 #include "TestUtil/parse.hpp"
 #include <IR/ir.hpp>
@@ -88,7 +89,7 @@ std::string makeValidFileName(std::string s) {
 
 void PybindStage::exportAsExample(std::string const& name) {
 	std::filesystem::path fileName =
-	    // TestStage::getExamplesPath() /
+	    TestStage::getExamplesPath() /
 	    fmt::format("{}.md", makeValidFileName(name));
 	std::string content = fmt::format(R"(
 ## {} ##

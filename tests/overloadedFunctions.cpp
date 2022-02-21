@@ -4,7 +4,7 @@
 #include <fmt/format.h>
 
 TEST_CASE("Overloaded functions", "[overloadedFunctions]") {
-	std::string moduleName = "MyLib";
+	std::string moduleName = "m";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
@@ -62,5 +62,7 @@ self.assertEqual(overload.safety(), {moduleName}.safety())
 
 	auto errorCode = stage.runPybindTest(cppCode, pythonTestCode);
 	REQUIRE(errorCode == 0);
+
+	stage.exportAsExample("Overloaded Functions");
 }
 

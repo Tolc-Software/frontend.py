@@ -1,0 +1,23 @@
+# Examples #
+
+Each example is taken from the test suite for `Tolc` and, given that you use the latest version, you can expect them all to work.
+
+Each `C++` library named `MyLib` exports as a `python module` called `MyLib`, in every test the module name is simply `m` for brevity. All tests use the `python` builtin [`unittest`](https://docs.python.org/3/library/unittest.html) library. The examples that follow contains a bit of `C++` code, and the respective `python` code using it. Each `python` example is wrapped in the following boilerplate that is removed to make the examples more readable:
+
+```python
+import unittest
+import m
+
+class TestMyLib(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        pass
+
+    def test_m(self):
+        # The actual python example body goes here
+        self.assertEqual(m.sayTen(), 10)
+
+if __name__ == "__main__":
+    unittest.main()
+```
+

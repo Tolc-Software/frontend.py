@@ -4,7 +4,7 @@
 #include <fmt/format.h>
 
 TEST_CASE("Testing enums", "[enums]") {
-	std::string moduleName = "MyLib";
+	std::string moduleName = "m";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
@@ -58,4 +58,6 @@ self.assertNotEqual(deep, {moduleName}.NS.Deep.H)
 
 	auto errorCode = stage.runPybindTest(cppCode, pythonTestCode);
 	REQUIRE(errorCode == 0);
+
+	stage.exportAsExample("Enums");
 }

@@ -5,7 +5,7 @@
 
 TEST_CASE("Global variables are converted",
           "[globalVariables]") {
-	std::string moduleName = "MyLib";
+	std::string moduleName = "m";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
@@ -35,4 +35,6 @@ self.assertEqual({moduleName}.Nested.s, "Hello world")
 
 	auto errorCode = stage.runPybindTest(cppCode, pythonTestCode);
 	REQUIRE(errorCode == 0);
+
+	stage.exportAsExample("Global Variables");
 }

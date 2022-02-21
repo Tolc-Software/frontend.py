@@ -52,9 +52,11 @@ FetchContent_MakeAvailable(stage_content)
 
 # Create a platform independent way of getting the path to the test stage
 set(test_stage ${CMAKE_CURRENT_LIST_DIR}/testStage)
+set(examples_dir ${PROJECT_SOURCE_DIR}/docs/examples)
 if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL Windows)
   # This is to normalize strings relative to how they are used in std::filesystem
   string(REPLACE "/" "\\\\" test_stage ${test_stage})
+  string(REPLACE "/" "\\\\" examples_dir ${examples_dir})
 endif()
 configure_file(
   TestUtil/include/TestStage/paths.cpp.in

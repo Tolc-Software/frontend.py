@@ -9,4 +9,10 @@ namespace TestStage {
 * NOTE: This is populated at configure time by cmake
 */
 std::filesystem::path getRootStagePath();
+
+/**
+* Get the path to the examples directory
+* NOTE: This is populated at configure time by cmake
+*/
+std::filesystem::path getExamplesPath();
 }

@@ -5,7 +5,7 @@
 #include <fmt/format.h>
 
 TEST_CASE("Classes", "[classes]") {
-	std::string moduleName = "MyLib";
+	std::string moduleName = "m";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 	// Add instantiation in a source file.
@@ -91,4 +91,6 @@ self.assertEqual(nested.divideByTwo(10), 5)
 
 	auto errorCode = stage.runPybindTest(cppCode, pythonTestCode);
 	REQUIRE(errorCode == 0);
+
+	stage.exportAsExample("Classes");
 }

@@ -4,9 +4,10 @@
 #include <fmt/format.h>
 
 TEST_CASE("Namespaces turn into modules", "[namespaces]") {
-	std::string moduleName = "MyLib";
+	std::string moduleName = "m";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
+	stage.keepAliveAfterTest();
 
 	auto cppCode = R"(
 #include <string>
@@ -45,4 +46,6 @@ self.assertEqual(lifeProTips, "42")
 
 	auto errorCode = stage.runPybindTest(cppCode, pythonTestCode);
 	REQUIRE(errorCode == 0);
+
+	stage.exportAsExample("Namespaces");
 }

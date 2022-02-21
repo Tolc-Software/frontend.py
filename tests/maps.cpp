@@ -4,7 +4,7 @@
 #include <fmt/format.h>
 
 TEST_CASE("Using std::maps", "[maps]") {
-	std::string moduleName = "MyLib";
+	std::string moduleName = "m";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
@@ -62,4 +62,6 @@ for incompatiblemap in [{{"key": "value"}}, {{5: 2}}]:
 
 	auto errorCode = stage.runPybindTest(cppCode, pythonTestCode);
 	REQUIRE(errorCode == 0);
+
+	stage.exportAsExample("std::map");
 }

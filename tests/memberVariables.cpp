@@ -4,7 +4,7 @@
 #include <fmt/format.h>
 
 TEST_CASE("Classes", "[namespaces]") {
-	std::string moduleName = "MyLib";
+	std::string moduleName = "m";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
@@ -80,4 +80,6 @@ self.assertEqual(nested.d, 4.3)
 
 	auto errorCode = stage.runPybindTest(cppCode, pythonTestCode);
 	REQUIRE(errorCode == 0);
+
+	stage.exportAsExample("Member Variables");
 }

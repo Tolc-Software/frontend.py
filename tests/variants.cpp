@@ -4,7 +4,7 @@
 #include <fmt/format.h>
 
 TEST_CASE("Using std::variants", "[variants]") {
-	std::string moduleName = "MyLib";
+	std::string moduleName = "m";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
 
@@ -56,4 +56,6 @@ self.assertEqual(withFunction.getTrue(), True)
 
 	auto errorCode = stage.runPybindTest(cppCode, pythonTestCode);
 	REQUIRE(errorCode == 0);
+
+	stage.exportAsExample("std::variant");
 }
