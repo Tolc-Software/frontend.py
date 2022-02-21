@@ -30,10 +30,9 @@ int PybindStage::runPybindTest(std::string const& cppCode,
 	auto globalNS = parseModuleFile(cppCode);
 
 	if (auto m = Frontend::Python::createModule(globalNS, m_moduleName)) {
-		auto [file, content] = m.value();
-
-		addModuleFile(file, content);
-
+		for (auto const& [file, content] : m.value()) {
+			addModuleFile(file, content);
+		}
 		return runPythonUnittest(pythonUnittestCode);
 	}
 
