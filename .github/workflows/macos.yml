@@ -8,9 +8,6 @@ on:
     branches:
       - main
 
-env:
-  BUILD_TYPE: Release
-
 jobs:
   build:
 
@@ -19,12 +16,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
-    - name: Install SSH key
-      uses: shimataro/ssh-key-action@v2
-      with:
-        key: ${{ secrets.SSH_KEY }}
-        known_hosts: ${{ secrets.KNOWN_HOSTS }}
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -53,11 +44,8 @@ jobs:
           ${{ runner.os }}-conan-
 
     - name: Configure
-      env:
-        CC: /usr/local/opt/llvm/bin/clang
-        CXX: /usr/local/opt/llvm/bin/clang++
       run: |
-        cmake -S. -Bbuild -G Ninja -DCMAKE_CXX_COMPILER="/usr/local/opt/llvm/bin/clang++" -DCMAKE_C_COMPILER="/usr/local/opt/llvm/bin/clang" -DCMAKE_BUILD_TYPE="Release" -DENABLE_TESTING=ON -DENABLE_PACKAGING=ON
+        cmake -S. -Bbuild -G Ninja -DCMAKE_CXX_COMPILER="/usr/local/opt/llvm/bin/clang++" -DCMAKE_C_COMPILER="/usr/local/opt/llvm/bin/clang" -DCMAKE_BUILD_TYPE="Release" -DENABLE_TESTING=ON -DENABLE_PACKAGING=ON -DCPACK_PACKAGE_FILE_NAME=Frontend.py
 
     - name: Build
       run: cmake --build build -j4
@@ -65,35 +53,30 @@ jobs:
     - name: Run tests
       run: |
         cd build
-        ctest --cores 4 --output-on-failure
+        ctest --output-on-failure -j4
 
     - name: Build the release tar.xz package
       if: github.ref == 'refs/heads/main'
       run: cpack -G TXZ --config build/CPackConfig.cmake
 
-    - name: Setup go
-      if: github.ref == 'refs/heads/main'
-      uses: actions/setup-go@v2
-      with:
-        go-version: '1.14'
-
-    - name: Setup go cache
-      if: github.ref == 'refs/heads/main'
-      uses: actions/cache@v2
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-
-    - name: Push main release
+    - name: Push release
       if: github.ref == 'refs/heads/main'
       env:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       run: |
-        go get -v github.com/github-release/github-release
-        echo "Checking if a new release is needed"
-        github-release release --user Tolc-Software --repo frontend.py --tag main-release --name "Head release" --description "This release gets updated with each commit to main" || true
-        echo "Pushing the release"
-        github-release upload --user Tolc-Software --repo frontend.py --tag main-release --name "Frontend.py-$(uname)-main.tar.xz" --file Frontend.py-*.tar.xz --replace
+        # Move to keep the directory on Github Actions free from filename clashes
+        mv Frontend.py.tar.xz Frontend.py-Darwin-main.tar.xz
+
+        echo "Pushing to the latest tag"
+        gh release create latest --title "Latest release from main" --notes "This release gets updated with each commit to main" || true
+        gh release upload latest Frontend.py-Darwin-main.tar.xz --clobber
+
+        version="$(cat docs/ReleaseNotes/version)"
+        # Move to keep the directory on Github Actions free from filename clashes
+        mv Frontend.py-Darwin-main.tar.xz Frontend.py-Darwin-${version}.tar.xz
+
+        echo "Making sure the release ${version} is online"
+        test -f docs/ReleaseNotes/${version}.md
+        gh release create "${version}" --title "${version}" --notes-file "docs/ReleaseNotes/${version}.md" || true
+        gh release upload "${version}" "Frontend.py-Darwin-${version}.tar.xz" || true
 

@@ -1,8 +1,12 @@
 cmake_minimum_required(VERSION 3.15)
+
 project(
   Frontend.py
-  VERSION 0.1
+  VERSION 0.2.0
   LANGUAGES CXX)
+
+configure_file(docs/ReleaseNotes/version.in
+               ${CMAKE_CURRENT_LIST_DIR}/docs/ReleaseNotes/version @ONLY)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -25,14 +29,14 @@ include(${modules}/ConanHelpers.cmake)
 # Create the profile from variables known during configure
 setup_conan_profile(VARIABLE frontend_conan_profile)
 # This helps with packaging
-set(FRONTEND.PY_CONAN_REQUIRES_PACKAGES spdlog/1.8.0 fmt/7.1.3)
+set(FRONTEND.PY_CONAN_REQUIRES_PACKAGES spdlog/1.9.2 fmt/8.1.1)
 find_conan_packages(REQUIRES ${FRONTEND.PY_CONAN_REQUIRES_PACKAGES} PROFILE
                     ${frontend_conan_profile})
 
 include(FetchContent)
 FetchContent_Declare(
   IRSpecification
-  GIT_REPOSITORY git@github.com:Tolc-Software/IntermediateRepresentation.git
+  GIT_REPOSITORY https://github.com/Tolc-Software/IntermediateRepresentation.git
   GIT_TAG main)
 
 FetchContent_MakeAvailable(IRSpecification)
