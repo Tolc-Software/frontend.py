@@ -54,9 +54,9 @@ add_library(
   src/Pybind/checkType.cpp
   src/Pybind/returnValuePolicy.cpp
   src/Pybind/getOverloadedFunctions.cpp
-  src/Helpers/split.cpp
-  src/Helpers/string.cpp
-  src/Helpers/types.cpp
+  src/Pybind/Helpers/split.cpp
+  src/Pybind/Helpers/string.cpp
+  src/Pybind/Helpers/types.cpp
   src/Pybind/Proxy/attribute.cpp
   src/Pybind/Proxy/class.cpp
   src/Pybind/Proxy/enum.cpp

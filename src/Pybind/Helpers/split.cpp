@@ -1,9 +1,9 @@
-#include "Helpers/split.hpp"
+#include "Pybind/Helpers/split.hpp"
 #include <deque>
 #include <string>
 #include <string_view>
 
-namespace Helpers {
+namespace Pybind::Helpers {
 std::deque<std::string> split(std::string_view s, std::string_view delimiter) {
 	std::deque<std::string> splitStrings;
 	std::size_t last = 0;
@@ -15,4 +15,4 @@ std::deque<std::string> split(std::string_view s, std::string_view delimiter) {
 	splitStrings.push_back(std::string(s.substr(last)));
 	return splitStrings;
 }
-}    // namespace Helpers
+}    // namespace Pybind::Helpers

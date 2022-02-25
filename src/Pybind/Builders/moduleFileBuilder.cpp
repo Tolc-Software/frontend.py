@@ -1,6 +1,6 @@
 #include "Pybind/Builders/moduleFileBuilder.hpp"
-#include "Helpers/combine.hpp"
 #include "Pybind/Builders/moduleBuilder.hpp"
+#include "Pybind/Helpers/combine.hpp"
 #include "Pybind/Proxy/moduleFile.hpp"
 #include "Pybind/Proxy/typeInfo.hpp"
 #include <IR/ir.hpp>

@@ -1,5 +1,5 @@
 #include "Pybind/Proxy/function.hpp"
-#include "Helpers/string.hpp"
+#include "Pybind/Helpers/string.hpp"
 #include "Pybind/returnValuePolicy.hpp"
 #include <algorithm>
 #include <fmt/format.h>
@@ -91,12 +91,12 @@ std::string Function::getArgumentTypes() const {
 }
 
 std::string Function::getSignature() const {
-	return fmt::format(
-	    R"(({returnType}({namespace}*)({arguments})))",
-	    fmt::arg("returnType", m_returnType),
-	    fmt::arg("namespace",
-	             Helpers::removeSubString(m_fullyQualifiedName, m_name)),
-	    fmt::arg("arguments", getArgumentTypes()));
+	return fmt::format(R"(({returnType}({namespace}*)({arguments})))",
+	                   fmt::arg("returnType", m_returnType),
+	                   fmt::arg("namespace",
+	                            Pybind::Helpers::removeSubString(
+	                                m_fullyQualifiedName, m_name)),
+	                   fmt::arg("arguments", getArgumentTypes()));
 }
 
 }    // namespace Pybind::Proxy

@@ -1,5 +1,5 @@
 #include "Pybind/Builders/functionBuilder.hpp"
-#include "Helpers/types.hpp"
+#include "Pybind/Helpers/types.hpp"
 #include "Pybind/Proxy/function.hpp"
 #include "Pybind/Proxy/typeInfo.hpp"
 #include "Pybind/checkType.hpp"
@@ -12,14 +12,14 @@ std::optional<Pybind::Proxy::Function>
 buildFunction(IR::Function const& cppFunction,
               Pybind::Proxy::TypeInfo& typeInfo) {
 	Pybind::Proxy::Function pyFunction(
-	    Helpers::removeCppTemplate(cppFunction.m_name),
+	    Pybind::Helpers::removeCppTemplate(cppFunction.m_name),
 	    cppFunction.m_representation);
 
 	std::set<std::string> includes;
 
 	for (auto const& arg : cppFunction.m_arguments) {
-		if (!Helpers::isContainerType(arg.m_type,
-		                              IR::ContainerType::UniquePtr)) {
+		if (!Pybind::Helpers::isContainerType(arg.m_type,
+		                                      IR::ContainerType::UniquePtr)) {
 			Pybind::checkType(arg.m_type, typeInfo);
 
 			pyFunction.addArgument(arg.m_type.m_representation, arg.m_name);

@@ -1,9 +1,9 @@
 #include "Pybind/Builders/classBuilder.hpp"
-#include "Helpers/combine.hpp"
-#include "Helpers/types.hpp"
 #include "Pybind/Builders/enumBuilder.hpp"
 #include "Pybind/Builders/functionBuilder.hpp"
 #include "Pybind/Builders/typeToStringBuilder.hpp"
+#include "Pybind/Helpers/combine.hpp"
+#include "Pybind/Helpers/types.hpp"
 #include "Pybind/Proxy/typeInfo.hpp"
 #include "Pybind/checkType.hpp"
 #include "Pybind/getOverloadedFunctions.hpp"
@@ -33,7 +33,7 @@ getTemplateParameterString(std::vector<IR::Type> const& parameters) {
 std::optional<Pybind::Proxy::Class>
 buildClass(IR::Struct const& cppClass, Pybind::Proxy::TypeInfo& typeInfo) {
 	Pybind::Proxy::Class pyClass(
-	    Helpers::removeCppTemplate(cppClass.m_name) +
+	    Pybind::Helpers::removeCppTemplate(cppClass.m_name) +
 	        getTemplateParameterString(cppClass.m_templateArguments),
 	    cppClass.m_representation);
 

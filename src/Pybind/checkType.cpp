@@ -1,5 +1,5 @@
 #include "Pybind/checkType.hpp"
-#include "Helpers/types.hpp"
+#include "Pybind/Helpers/types.hpp"
 #include "Pybind/Proxy/typeInfo.hpp"
 #include <IR/ir.hpp>
 #include <queue>
@@ -35,7 +35,7 @@ std::optional<std::string> getInclude(IR::ContainerType container) {
 		case IR::ContainerType::UnorderedMultiSet:
 			spdlog::error(
 			    "Container type {} does not currently have a direct translation via pybind11. The translation might not work.",
-			    Helpers::toString(container));
+			    Pybind::Helpers::toString(container));
 			break;
 
 		case IR::ContainerType::Allocator:
@@ -56,15 +56,16 @@ std::optional<std::string> getInclude(IR::ContainerType container) {
 * E.g. vector conversion requires inclusion of <pybind11/stl.h>
 */
 std::optional<std::string> extractInclude(IR::Type const& type) {
-	if (auto container = Helpers::getContainer(type)) {
+	if (auto container = Pybind::Helpers::getContainer(type)) {
 		return getInclude(container->m_container);
-	} else if (Helpers::isFunctionType(type)) {
+	} else if (Pybind::Helpers::isFunctionType(type)) {
 		// The type is std::function
 		return "<pybind11/functional.h>";
-	} else if (Helpers::isBaseType(type, IR::BaseType::FilesystemPath)) {
+	} else if (Pybind::Helpers::isBaseType(type,
+	                                       IR::BaseType::FilesystemPath)) {
 		// The type is std::filesystem::path
 		return "<pybind11/stl/filesystem.h>";
-	} else if (Helpers::isBaseType(type, IR::BaseType::Complex)) {
+	} else if (Pybind::Helpers::isBaseType(type, IR::BaseType::Complex)) {
 		// The type is std::complex
 		return "<pybind11/complex.h>";
 	}
@@ -78,7 +79,7 @@ bool isSharedPtr(IR::ContainerType c) {
 std::optional<std::string>
 getFirstUserDefinedRepresentation(std::vector<IR::Type> const& types) {
 	if (!types.empty()) {
-		if (auto userDefined = Helpers::getUserDefined(types[0])) {
+		if (auto userDefined = Pybind::Helpers::getUserDefined(types[0])) {
 			return userDefined->m_representation;
 		}
 	}
@@ -86,7 +87,7 @@ getFirstUserDefinedRepresentation(std::vector<IR::Type> const& types) {
 }
 
 std::optional<std::string> extractShared(IR::Type const& type) {
-	if (auto container = Helpers::getContainer(type)) {
+	if (auto container = Pybind::Helpers::getContainer(type)) {
 		if (isSharedPtr(container->m_container)) {
 			return getFirstUserDefinedRepresentation(
 			    container->m_containedTypes);
@@ -110,7 +111,7 @@ void checkType(IR::Type const& type, Pybind::Proxy::TypeInfo& info) {
 			info.m_classesMarkedShared.insert(sharedClass.value());
 		}
 
-		if (auto container = Helpers::getContainer(current)) {
+		if (auto container = Pybind::Helpers::getContainer(current)) {
 			for (auto const& containedType : container->m_containedTypes) {
 				typesToCheck.push(containedType);
 			}

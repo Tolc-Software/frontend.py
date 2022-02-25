@@ -1,9 +1,9 @@
-#include "Helpers/types.hpp"
+#include "Pybind/Helpers/types.hpp"
 #include <IR/ir.hpp>
 #include <optional>
 #include <variant>
 
-namespace Helpers {
+namespace Pybind::Helpers {
 IR::Type::Container const* getContainer(IR::Type const& type) {
 	if (auto container = std::get_if<IR::Type::Container>(&type.m_type)) {
 		return container;
@@ -26,7 +26,7 @@ bool isBaseType(IR::Type const& type, IR::BaseType base) {
 }
 
 bool isContainerType(IR::Type const& type, IR::ContainerType container) {
-	if (auto c = Helpers::getContainer(type)) {
+	if (auto c = Pybind::Helpers::getContainer(type)) {
 		return c->m_container == container;
 	}
 	return false;
@@ -77,4 +77,4 @@ std::string toString(IR::ContainerType c) {
 	return "";
 }
 
-}    // namespace Helpers
+}    // namespace Pybind::Helpers

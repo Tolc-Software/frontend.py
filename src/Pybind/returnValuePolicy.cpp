@@ -19,4 +19,4 @@ returnValuePolicyToString(Pybind::Proxy::Function::return_value_policy p) {
 	}
 	return "";
 }
-}    // namespace Helpers
+}    // namespace Pybind

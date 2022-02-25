@@ -2,7 +2,7 @@
 
 #include <IR/ir.hpp>
 
-namespace Helpers {
+namespace Pybind::Helpers {
 /**
 * Return UserDefined if type is a Container, otherwise nullptr
 */
@@ -38,4 +38,4 @@ std::string removeCppTemplate(std::string const& name);
 
 // String version of the container
 std::string toString(IR::ContainerType container);
-}    // namespace Helpers
+}    // namespace Pybind::Helpers

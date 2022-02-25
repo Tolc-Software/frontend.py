@@ -3,7 +3,7 @@
 #include <set>
 #include <vector>
 
-namespace Helpers {
+namespace Pybind::Helpers {
 /**
 * Add the contents of the vector to the set
 */
@@ -15,4 +15,4 @@ void combine(std::set<T>& result, std::vector<T> const& toBeAdded) {
 		}
 	}
 }
-}    // namespace Helpers
+}    // namespace Pybind::Helpers

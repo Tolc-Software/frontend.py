@@ -85,7 +85,7 @@ foreach(
   Pybind/Builders/moduleFileBuilder.cpp
   Pybind/Builders/typeToStringBuilder.cpp
   Pybind/checkType.cpp
-  Helpers/combine.cpp
+  Pybind/Helpers/combine.cpp
   Pybind/Proxy/attribute.cpp
   Pybind/Proxy/class.cpp
   Pybind/Proxy/enum.cpp

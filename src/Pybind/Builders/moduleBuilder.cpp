@@ -1,10 +1,10 @@
 #include "Pybind/Builders/moduleBuilder.hpp"
-#include "Helpers/combine.hpp"
-#include "Helpers/split.hpp"
 #include "Pybind/Builders/attributeBuilder.hpp"
 #include "Pybind/Builders/classBuilder.hpp"
 #include "Pybind/Builders/enumBuilder.hpp"
 #include "Pybind/Builders/functionBuilder.hpp"
+#include "Pybind/Helpers/combine.hpp"
+#include "Pybind/Helpers/split.hpp"
 #include "Pybind/Proxy/module.hpp"
 #include "Pybind/Proxy/typeInfo.hpp"
 #include "Pybind/getOverloadedFunctions.hpp"
@@ -23,7 +23,7 @@ std::string getVariableName(std::string qualifiedName,
 	// This is to avoid naming conflicts when defining namespaces with the
 	// same name as the root module
 	// This happens if you call your module tensorflow and have a namespace with tensorflow
-	auto splitted = Helpers::split(qualifiedName, "::");
+	auto splitted = Pybind::Helpers::split(qualifiedName, "::");
 
 	// If we only have the global namespace (empty name), drop it
 	// This will result in module variable name of "MyModule" instead of "MyModule_"
