@@ -1,10 +1,10 @@
-#include "Helpers/getOverloadedFunctions.hpp"
+#include "Pybind/getOverloadedFunctions.hpp"
 #include <IR/ir.hpp>
 #include <set>
 #include <string>
 #include <vector>
 
-namespace Helpers {
+namespace Pybind {
 std::set<std::string>
 getOverloadedFunctions(std::vector<IR::Function> const& functions) {
 	// Will contain all function names
@@ -19,4 +19,4 @@ getOverloadedFunctions(std::vector<IR::Function> const& functions) {
 	}
 	return overloadedFunctions;
 }
-}    // namespace
+}    // namespace Pybind

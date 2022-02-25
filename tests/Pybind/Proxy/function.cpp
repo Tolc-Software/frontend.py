@@ -1,5 +1,5 @@
 #include "Pybind/Proxy/function.hpp"
-#include "Helpers/enumsToString.hpp"
+#include "Pybind/returnValuePolicy.hpp"
 #include "TestUtil/string.hpp"
 #include <catch2/catch.hpp>
 #include <fmt/format.h>
@@ -112,7 +112,7 @@ TEST_CASE("Return value policy", "[function]") {
 
 		auto pybindCode = f.getPybind();
 		auto containsString = fmt::format(
-		    R"(, py::{})", Helpers::returnValuePolicyToString(policy));
+		    R"(, py::{})", Pybind::returnValuePolicyToString(policy));
 
 		CAPTURE(pybindCode);
 		CAPTURE(containsString);

@@ -1,6 +1,6 @@
 #include "Pybind/Proxy/function.hpp"
-#include "Helpers/enumsToString.hpp"
 #include "Helpers/string.hpp"
+#include "Pybind/returnValuePolicy.hpp"
 #include <algorithm>
 #include <fmt/format.h>
 #include <string>
@@ -29,7 +29,7 @@ std::string Function::getPybind() const {
 		if (m_returnValuePolicy) {
 			f += fmt::format(", py::{returnPolicy}",
 			                 fmt::arg("returnPolicy",
-			                          Helpers::returnValuePolicyToString(
+			                          Pybind::returnValuePolicyToString(
 			                              m_returnValuePolicy.value())));
 		}
 	}

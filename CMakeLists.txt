@@ -52,8 +52,8 @@ add_library(
   src/Pybind/Builders/typeToStringBuilder.cpp
   src/Frontend/Python/frontend.cpp
   src/Pybind/checkType.cpp
-  src/Helpers/enumsToString.cpp
-  src/Helpers/getOverloadedFunctions.cpp
+  src/Pybind/returnValuePolicy.cpp
+  src/Pybind/getOverloadedFunctions.cpp
   src/Helpers/split.cpp
   src/Helpers/string.cpp
   src/Helpers/types.cpp

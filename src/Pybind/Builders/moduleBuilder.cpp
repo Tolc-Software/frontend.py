@@ -1,6 +1,5 @@
 #include "Pybind/Builders/moduleBuilder.hpp"
 #include "Helpers/combine.hpp"
-#include "Helpers/getOverloadedFunctions.hpp"
 #include "Helpers/split.hpp"
 #include "Pybind/Builders/attributeBuilder.hpp"
 #include "Pybind/Builders/classBuilder.hpp"
@@ -8,6 +7,7 @@
 #include "Pybind/Builders/functionBuilder.hpp"
 #include "Pybind/Proxy/module.hpp"
 #include "Pybind/Proxy/typeInfo.hpp"
+#include "Pybind/getOverloadedFunctions.hpp"
 #include <IR/ir.hpp>
 #include <algorithm>
 #include <fmt/format.h>
@@ -44,7 +44,7 @@ buildModule(IR::Namespace const& ns,
 	Pybind::Proxy::Module builtModule(
 	    getVariableName(ns.m_representation, rootModuleName));
 
-	auto overloadedFunctions = Helpers::getOverloadedFunctions(ns.m_functions);
+	auto overloadedFunctions = Pybind::getOverloadedFunctions(ns.m_functions);
 	for (auto const& function : ns.m_functions) {
 		if (auto maybeF = Pybind::Builders::buildFunction(function, typeInfo)) {
 			auto f = maybeF.value();

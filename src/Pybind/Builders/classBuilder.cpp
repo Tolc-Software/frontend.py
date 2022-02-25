@@ -1,12 +1,12 @@
 #include "Pybind/Builders/classBuilder.hpp"
 #include "Helpers/combine.hpp"
-#include "Helpers/getOverloadedFunctions.hpp"
 #include "Helpers/types.hpp"
 #include "Pybind/Builders/enumBuilder.hpp"
 #include "Pybind/Builders/functionBuilder.hpp"
 #include "Pybind/Builders/typeToStringBuilder.hpp"
 #include "Pybind/Proxy/typeInfo.hpp"
 #include "Pybind/checkType.hpp"
+#include "Pybind/getOverloadedFunctions.hpp"
 #include <IR/ir.hpp>
 #include <numeric>
 #include <optional>
@@ -38,7 +38,7 @@ buildClass(IR::Struct const& cppClass, Pybind::Proxy::TypeInfo& typeInfo) {
 	    cppClass.m_representation);
 
 	auto overloadedFunctions =
-	    Helpers::getOverloadedFunctions(cppClass.m_public.m_functions);
+	    Pybind::getOverloadedFunctions(cppClass.m_public.m_functions);
 	// Ignore private functions
 	for (auto const& function : cppClass.m_public.m_functions) {
 		if (auto maybePyFunction = buildFunction(function, typeInfo)) {

@@ -1,8 +1,8 @@
-#include "Helpers/enumsToString.hpp"
+#include "Pybind/returnValuePolicy.hpp"
 #include "Pybind/Proxy/function.hpp"
 #include <string>
 
-namespace Helpers {
+namespace Pybind {
 std::string
 returnValuePolicyToString(Pybind::Proxy::Function::return_value_policy p) {
 	using rv = Pybind::Proxy::Function::return_value_policy;
