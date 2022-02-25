@@ -78,20 +78,20 @@ set_tests_properties(ConfigureTestStage PROPERTIES FIXTURES_SETUP TestStage)
 
 foreach(
   test
-  Builders/attributeBuilder.cpp
-  Builders/classBuilder.cpp
-  Builders/enumBuilder.cpp
-  Builders/functionBuilder.cpp
-  Builders/moduleFileBuilder.cpp
-  Builders/typeToStringBuilder.cpp
-  Helpers/Pybind/checkType.cpp
+  Pybind/Builders/attributeBuilder.cpp
+  Pybind/Builders/classBuilder.cpp
+  Pybind/Builders/enumBuilder.cpp
+  Pybind/Builders/functionBuilder.cpp
+  Pybind/Builders/moduleFileBuilder.cpp
+  Pybind/Builders/typeToStringBuilder.cpp
+  Pybind/checkType.cpp
   Helpers/combine.cpp
-  PybindProxy/attribute.cpp
-  PybindProxy/class.cpp
-  PybindProxy/enum.cpp
-  PybindProxy/function.cpp
-  PybindProxy/module.cpp
-  PybindProxy/moduleFile.cpp
+  Pybind/Proxy/attribute.cpp
+  Pybind/Proxy/class.cpp
+  Pybind/Proxy/enum.cpp
+  Pybind/Proxy/function.cpp
+  Pybind/Proxy/module.cpp
+  Pybind/Proxy/moduleFile.cpp
   arrays.cpp
   classes.cpp
   complex.cpp
@@ -119,7 +119,7 @@ foreach(
   valarrays.cpp
   variants.cpp
   vectors.cpp)
-  # Ex: PybindProxy/moduleFile.cpp -> moduleFile
+  # Ex: Pybind/Proxy/moduleFile.cpp -> moduleFile
   get_filename_component(testName ${test} NAME_WLE)
 
   create_catch2_test(

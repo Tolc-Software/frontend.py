@@ -1,9 +1,9 @@
 #pragma once
 
-#include "PybindProxy/function.hpp"
+#include "Pybind/Proxy/function.hpp"
 #include <string>
 
 namespace Helpers {
 std::string
-returnValuePolicyToString(PybindProxy::Function::return_value_policy p);
+returnValuePolicyToString(Pybind::Proxy::Function::return_value_policy p);
 }

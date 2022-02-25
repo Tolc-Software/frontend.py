@@ -1,11 +1,11 @@
 #include "Helpers/enumsToString.hpp"
-#include "PybindProxy/function.hpp"
+#include "Pybind/Proxy/function.hpp"
 #include <string>
 
 namespace Helpers {
 std::string
-returnValuePolicyToString(PybindProxy::Function::return_value_policy p) {
-	using rv = PybindProxy::Function::return_value_policy;
+returnValuePolicyToString(Pybind::Proxy::Function::return_value_policy p) {
+	using rv = Pybind::Proxy::Function::return_value_policy;
 	switch (p) {
 		case rv::take_ownership: return "return_value_policy::take_ownership";
 		case rv::copy: return "return_value_policy::copy";

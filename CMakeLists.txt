@@ -43,26 +43,26 @@ FetchContent_MakeAvailable(IRSpecification)
 
 add_library(
   Frontend.py
-  src/Builders/attributeBuilder.cpp
-  src/Builders/classBuilder.cpp
-  src/Builders/enumBuilder.cpp
-  src/Builders/functionBuilder.cpp
-  src/Builders/moduleBuilder.cpp
-  src/Builders/moduleFileBuilder.cpp
-  src/Builders/typeToStringBuilder.cpp
+  src/Pybind/Builders/attributeBuilder.cpp
+  src/Pybind/Builders/classBuilder.cpp
+  src/Pybind/Builders/enumBuilder.cpp
+  src/Pybind/Builders/functionBuilder.cpp
+  src/Pybind/Builders/moduleBuilder.cpp
+  src/Pybind/Builders/moduleFileBuilder.cpp
+  src/Pybind/Builders/typeToStringBuilder.cpp
   src/Frontend/Python/frontend.cpp
-  src/Helpers/Pybind/checkType.cpp
+  src/Pybind/checkType.cpp
   src/Helpers/enumsToString.cpp
   src/Helpers/getOverloadedFunctions.cpp
   src/Helpers/split.cpp
   src/Helpers/string.cpp
   src/Helpers/types.cpp
-  src/PybindProxy/attribute.cpp
-  src/PybindProxy/class.cpp
-  src/PybindProxy/enum.cpp
-  src/PybindProxy/function.cpp
-  src/PybindProxy/module.cpp
-  src/PybindProxy/moduleFile.cpp)
+  src/Pybind/Proxy/attribute.cpp
+  src/Pybind/Proxy/class.cpp
+  src/Pybind/Proxy/enum.cpp
+  src/Pybind/Proxy/function.cpp
+  src/Pybind/Proxy/module.cpp
+  src/Pybind/Proxy/moduleFile.cpp)
 
 add_warnings(TARGET Frontend.py)
 add_options(TARGET Frontend.py)

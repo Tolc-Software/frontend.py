@@ -2,7 +2,7 @@
 
 ### Builders are smart, they are building dumb objects ###
 
-You should see a strong connection between the `Builders` and the `PybindProxy` objects they are building. You should consider the objects as data aggregations, with builders making decisions on how they are stored the best. **The `PybindProxy` classes should not make decisions.**
+You should see a strong connection between the `Builders` and the `Pybind::Proxy` objects they are building. You should consider the objects as data aggregations, with builders making decisions on how they are stored the best. **The `Pybind::Proxy` classes should not make decisions.**
 
 ## Good to know ##
 
