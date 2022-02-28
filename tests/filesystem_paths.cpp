@@ -31,6 +31,7 @@ std::filesystem::path joinPaths(std::vector<std::filesystem::path> arrayToSum) {
 )";
 
 	auto pythonTestCode = fmt::format(R"(
+# std::filesystem::path translates to pathlib.Path in python
 from pathlib import Path
 
 p0 = Path("Hello")

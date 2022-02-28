@@ -62,19 +62,23 @@ namespace MyLib {
 # You can access static variables without instantiating class
 self.assertEqual({moduleName}.WithConstructor.i, 5)
 
-withConstructor = {moduleName}.WithConstructor("Hello")
-self.assertEqual(withConstructor.getS(), "Hello")
-withConstructor = {moduleName}.WithConstructor(s="named argument")
-self.assertEqual(withConstructor.getS(), "named argument")
-self.assertEqual(withConstructor.getSView(), "named argument")
+# Creating classes via their constructor
+with_constructor = {moduleName}.WithConstructor("Hello")
+self.assertEqual(with_constructor.getS(), "Hello")
 
-withFunction = {moduleName}.WithFunction()
-self.assertEqual(withFunction.add(2, 5), 7)
+# Named arguments in constructors
+with_constructor = {moduleName}.WithConstructor(s="named argument")
+self.assertEqual(with_constructor.getS(), "named argument")
+self.assertEqual(with_constructor.getSView(), "named argument")
 
-# Test private function
+# Member functions are available after construction
+with_function = {moduleName}.WithFunction()
+self.assertEqual(with_function.add(2, 5), 7)
+
+# Private functions have no bindings
 with self.assertRaises(AttributeError) as error_context:
-    withPrivateFunction = {moduleName}.WithPrivateFunction()
-    withPrivateFunction.multiply(3, 2)
+    with_private_function = {moduleName}.WithPrivateFunction()
+    with_private_function.multiply(3, 2)
 
 self.assertEqual(len(error_context.exception.args), 1)
 # print(error_context.test_case)
@@ -84,6 +88,7 @@ self.assertEqual(
     "Not correct exception on private functions",
 )
 
+# Classes under namespaces are available under the corresponding submodule
 nested = {moduleName}.MyLib.Nested()
 self.assertEqual(nested.divideByTwo(10), 5)
 )",

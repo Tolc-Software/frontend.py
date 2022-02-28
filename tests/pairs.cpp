@@ -32,13 +32,13 @@ public:
 
 	auto pythonTestCode = fmt::format(R"(
 # Converts to a tuple, but is convertible from array aswell
-myArray = ["hi", 4]
-for t in [myArray, tuple(myArray)]:
-    withMember = {moduleName}.MyClass(t)
-    self.assertEqual(withMember.getS(), tuple(t))
+my_array = ["hi", 4]
+for t in [my_array, tuple(my_array)]:
+    with_member = {moduleName}.MyClass(t)
+    self.assertEqual(with_member.getS(), tuple(t))
 
-withFunction = {moduleName}.WithFunction()
-self.assertEqual(withFunction.sum((1, 2)), 3)
+with_function = {moduleName}.WithFunction()
+self.assertEqual(with_function.sum((1, 2)), 3)
 )",
 	                                  fmt::arg("moduleName", moduleName));
 

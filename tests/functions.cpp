@@ -28,7 +28,7 @@ int calculate() {
 	return 5;
 }
 
-int weirdArgumentsNaming(int, int i) {
+int missingArgumentsNaming(int, int i) {
 	return i;
 }
 
@@ -55,18 +55,18 @@ result = {moduleName}.calculate()
 self.assertEqual(result, 5)
 
 # Without naming variables is fine
-result = {moduleName}.weirdArgumentsNaming(2, 5)
+result = {moduleName}.missingArgumentsNaming(2, 5)
 self.assertEqual(result, 5)
 
-# Not possible to name any variables since they are not all known
+# Not possible to name any variables unless they are all known
 with self.assertRaises(TypeError) as error_context:
-  result = {moduleName}.weirdArgumentsNaming(2, i=5)
+  result = {moduleName}.missingArgumentsNaming(2, i=5)
 
-# Getting the first letter from a string_view
+# std::string_view works fine
 result = {moduleName}.firstLetter("Hello")
 self.assertEqual(result, "H")
 
-# Static functions are just normal functions in python
+# Static functions are just normal module functions in python
 self.assertEqual({moduleName}.getZero(), 0)
 )",
 	                                  fmt::arg("moduleName", moduleName));

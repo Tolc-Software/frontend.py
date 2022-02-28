@@ -36,17 +36,18 @@ public:
 )";
 
 	auto pythonTestCode = fmt::format(R"(
-myArray = ["hi", "ho"]
-withMember = {moduleName}.WithMember(myArray)
-self.assertEqual(withMember.getS(), myArray)
+# std::array translates to a normal array in python
+my_array = ["hi", "ho"]
+with_member = {moduleName}.WithMember(my_array)
+self.assertEqual(with_member.getS(), my_array)
 
-withFunction = {moduleName}.WithFunction()
-self.assertEqual(withFunction.sum([1, 2, 3, 4, 5]), 15)
+with_function = {moduleName}.WithFunction()
+self.assertEqual(with_function.sum([1, 2, 3, 4, 5]), 15)
 
-# Test array with too many/few values
-for incompatibleArray in [["too many", "too many", "too many"], ["too few"]]:
+# It still corresponds to a fixed amount of elements
+for incompatible_array in [["too many", "too many", "too many"], ["too few"]]:
     with self.assertRaises(TypeError) as error_context:
-        withMember = m.WithMember(incompatibleArray)
+        with_member = m.WithMember(incompatible_array)
 
     self.assertEqual(len(error_context.exception.args), 1)
     self.assertTrue(
@@ -55,11 +56,10 @@ for incompatibleArray in [["too many", "too many", "too many"], ["too few"]]:
         + str(error_context.exception.args[0]),
     )
     self.assertTrue(
-        "Invoked with: " + str(incompatibleArray)
+        "Invoked with: " + str(incompatible_array)
         in error_context.exception.args[0],
         "Error msg does not mention the given arguments: " + str(error_context.exception.args[0]),
     )
-
 )",
 	                                  fmt::arg("moduleName", moduleName));
 

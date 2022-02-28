@@ -35,15 +35,18 @@ int accumulateArrayOfFunctions(std::vector<std::function<int()>> arrayToSum) {
 def callback(i):
   return i
 
+# You can send a python function as a C++ callback
 result0 = {moduleName}.takingFunction(callback)
 self.assertEqual(result0, 5.0)
 
+# Or in the other direction
 inc_by_one = {moduleName}.returnFunction(callback)
 self.assertEqual(inc_by_one(5), 6)
 
 def fiver():
   return 5
 
+# Or a vector of functions
 result1 = {moduleName}.accumulateArrayOfFunctions([fiver, fiver])
 self.assertEqual(result1, 10)
 )",

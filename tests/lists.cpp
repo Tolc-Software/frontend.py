@@ -36,12 +36,13 @@ public:
 )";
 
 	auto pythonTestCode = fmt::format(R"(
-myArray = ["hi", "ho"]
-withMember = {moduleName}.WithMember(myArray)
-self.assertEqual(withMember.getS(), myArray)
+# std::list translates to a normal array in python
+my_array = ["hi", "ho"]
+with_member = {moduleName}.WithMember(my_array)
+self.assertEqual(with_member.getS(), my_array)
 
-withFunction = {moduleName}.WithFunction()
-self.assertEqual(withFunction.sum([1, 2, 3]), 6)
+with_function = {moduleName}.WithFunction()
+self.assertEqual(with_function.sum([1, 2, 3]), 6)
 )",
 	                                  fmt::arg("moduleName", moduleName));
 

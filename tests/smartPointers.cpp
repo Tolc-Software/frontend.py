@@ -40,9 +40,13 @@ std::shared_ptr<ExampleShared> create_shared() {
 )";
 
 	auto pythonTestCode = fmt::format(R"(
+# std::unique_ptr acts as a normal value
+# Note that passing a std::unique_ptr as an argument gives an error
+#   See https://pybind11.readthedocs.io/en/stable/advanced/smart_ptrs.html
 u = {moduleName}.create_unique()
 self.assertEqual(u.m_hi, 5)
 
+# std::shared_ptr acts as a normal value
 s = {moduleName}.create_shared()
 self.assertEqual(s.m_hi, 10)
 )",

@@ -10,49 +10,49 @@ TEST_CASE("Testing enums", "[enums]") {
 
 	auto cppCode = R"(
 enum Unscoped {
-	A,
-	B,
-	C
+	Under,
+	Uboat,
 };
 
 enum class Scoped {
-	D,
-	E,
-	F
+	Sacred,
+	Snail,
 };
 
 class EnumTest {
 public:
-	explicit EnumTest(Scoped s) : e(s) {};
+	explicit EnumTest(Scoped _s) : s(_s) {};
 
-	Scoped e;
+	Scoped s;
 };
 
-Unscoped f(Unscoped s) {
-	return s;
+Unscoped f(Unscoped u) {
+	return u;
 }
 
 namespace NS {
-enum class Deep {
-	G,
-	H,
-	I
-};
+	enum class Deep {
+		Double,
+		Down,
+	};
 }
 
 )";
 
 	auto pythonTestCode = fmt::format(R"(
-scoped = {moduleName}.Scoped.D
+# C++11 enums work
+scoped = {moduleName}.Scoped.Snail
 enumTest = {moduleName}.EnumTest(scoped)
-self.assertEqual(enumTest.e, scoped)
+self.assertEqual(enumTest.s, scoped)
 
-unscoped = {moduleName}.Unscoped.B
+# Aswell as legacy enums
+unscoped = {moduleName}.Unscoped.Uboat
 u = {moduleName}.f(unscoped)
 self.assertEqual(u, unscoped)
 
-deep = {moduleName}.NS.Deep.I
-self.assertNotEqual(deep, {moduleName}.NS.Deep.H)
+# Enums under namespaces are available under the corresponding submodule
+deep = {moduleName}.NS.Deep.Down
+self.assertNotEqual(deep, {moduleName}.NS.Deep.Double)
 )",
 	                                  fmt::arg("moduleName", moduleName));
 

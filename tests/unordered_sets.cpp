@@ -33,9 +33,10 @@ private:
 )";
 
 	auto pythonTestCode = fmt::format(R"(
-myunordered_set = {{"hi", "this is a unordered_set"}}
-c = {moduleName}.MyClass(myunordered_set)
-self.assertEqual(c.getS(), myunordered_set)
+# std::unordered_set translates to a normal array or a set in python
+my_unordered_set = {{"hi", "this is a unordered_set"}}
+c = {moduleName}.MyClass(my_unordered_set)
+self.assertEqual(c.getS(), my_unordered_set)
 
 self.assertEqual(c.getValue({{1, 2, 3}}, 3), 3)
 self.assertEqual(c.getValue({{1, 2, 3}}, 4), -1)
@@ -58,8 +59,6 @@ self.assertTrue(
     "Error msg does not mention the given arguments: \n\t"
     + str(error_context.exception.args[0]),
 )
-
-
 )",
 	                                  fmt::arg("moduleName", moduleName));
 

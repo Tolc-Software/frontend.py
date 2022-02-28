@@ -32,12 +32,13 @@ public:
 )";
 
 	auto pythonTestCode = fmt::format(R"(
+# std::optional is either the value or None in python
 greeting = "hello"
-withMember = {moduleName}.WithMember(greeting)
-self.assertEqual(withMember.getS(), greeting)
+with_member = {moduleName}.WithMember(greeting)
+self.assertEqual(with_member.getS(), greeting)
 
-withFunction = {moduleName}.WithFunction()
-self.assertEqual(withFunction.getNullopt(), None)
+with_function = {moduleName}.WithFunction()
+self.assertEqual(with_function.getNullopt(), None)
 )",
 	                                  fmt::arg("moduleName", moduleName));
 

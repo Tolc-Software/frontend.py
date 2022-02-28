@@ -75,19 +75,23 @@ namespace MyLib {
 # You can access static variables without instantiating class
 self.assertEqual(m.WithConstructor.i, 5)
 
-withConstructor = m.WithConstructor("Hello")
-self.assertEqual(withConstructor.getS(), "Hello")
-withConstructor = m.WithConstructor(s="named argument")
-self.assertEqual(withConstructor.getS(), "named argument")
-self.assertEqual(withConstructor.getSView(), "named argument")
+# Creating classes via their constructor
+with_constructor = m.WithConstructor("Hello")
+self.assertEqual(with_constructor.getS(), "Hello")
 
-withFunction = m.WithFunction()
-self.assertEqual(withFunction.add(2, 5), 7)
+# Named arguments in constructors
+with_constructor = m.WithConstructor(s="named argument")
+self.assertEqual(with_constructor.getS(), "named argument")
+self.assertEqual(with_constructor.getSView(), "named argument")
 
-# Test private function
+# Member functions are available after construction
+with_function = m.WithFunction()
+self.assertEqual(with_function.add(2, 5), 7)
+
+# Private functions have no bindings
 with self.assertRaises(AttributeError) as error_context:
-    withPrivateFunction = m.WithPrivateFunction()
-    withPrivateFunction.multiply(3, 2)
+    with_private_function = m.WithPrivateFunction()
+    with_private_function.multiply(3, 2)
 
 self.assertEqual(len(error_context.exception.args), 1)
 # print(error_context.test_case)
@@ -97,6 +101,7 @@ self.assertEqual(
     "Not correct exception on private functions",
 )
 
+# Classes under namespaces are available under the corresponding submodule
 nested = m.MyLib.Nested()
 self.assertEqual(nested.divideByTwo(10), 5)
 
@@ -109,34 +114,31 @@ self.assertEqual(nested.divideByTwo(10), 5)
 ```cpp
 
 enum Unscoped {
-	A,
-	B,
-	C
+	Under,
+	Uboat,
 };
 
 enum class Scoped {
-	D,
-	E,
-	F
+	Sacred,
+	Snail,
 };
 
 class EnumTest {
 public:
-	explicit EnumTest(Scoped s) : e(s) {};
+	explicit EnumTest(Scoped _s) : s(_s) {};
 
-	Scoped e;
+	Scoped s;
 };
 
-Unscoped f(Unscoped s) {
-	return s;
+Unscoped f(Unscoped u) {
+	return u;
 }
 
 namespace NS {
-enum class Deep {
-	G,
-	H,
-	I
-};
+	enum class Deep {
+		Double,
+		Down,
+	};
 }
 
 
@@ -145,16 +147,19 @@ enum class Deep {
 
 ```python
 
-scoped = m.Scoped.D
+# C++11 enums work
+scoped = m.Scoped.Snail
 enumTest = m.EnumTest(scoped)
-self.assertEqual(enumTest.e, scoped)
+self.assertEqual(enumTest.s, scoped)
 
-unscoped = m.Unscoped.B
+# Aswell as legacy enums
+unscoped = m.Unscoped.Uboat
 u = m.f(unscoped)
 self.assertEqual(u, unscoped)
 
-deep = m.NS.Deep.I
-self.assertNotEqual(deep, m.NS.Deep.H)
+# Enums under namespaces are available under the corresponding submodule
+deep = m.NS.Deep.Down
+self.assertNotEqual(deep, m.NS.Deep.Double)
 
 ```
 
@@ -183,7 +188,7 @@ int calculate() {
 	return 5;
 }
 
-int weirdArgumentsNaming(int, int i) {
+int missingArgumentsNaming(int, int i) {
 	return i;
 }
 
@@ -213,18 +218,18 @@ result = m.calculate()
 self.assertEqual(result, 5)
 
 # Without naming variables is fine
-result = m.weirdArgumentsNaming(2, 5)
+result = m.missingArgumentsNaming(2, 5)
 self.assertEqual(result, 5)
 
-# Not possible to name any variables since they are not all known
+# Not possible to name any variables unless they are all known
 with self.assertRaises(TypeError) as error_context:
-  result = m.weirdArgumentsNaming(2, i=5)
+  result = m.missingArgumentsNaming(2, i=5)
 
-# Getting the first letter from a string_view
+# std::string_view works fine
 result = m.firstLetter("Hello")
 self.assertEqual(result, "H")
 
-# Static functions are just normal functions in python
+# Static functions are just normal module functions in python
 self.assertEqual(m.getZero(), 0)
 
 ```
@@ -303,6 +308,7 @@ namespace MyLib {
 
 ```python
 
+# Mutable member variables can be changed
 simpleMember = m.SimpleMember()
 self.assertEqual(simpleMember.myString, "Hello")
 simpleMember.myString = "Changed now!"
@@ -311,7 +317,7 @@ self.assertEqual(simpleMember.myString, "Changed now!")
 constMember = m.ConstMember()
 self.assertEqual(constMember.i, 42)
 
-# Test changing the const member
+# Const member variables cannot be changed
 with self.assertRaises(AttributeError) as error_context:
     constMember.i = 0
 
@@ -322,7 +328,7 @@ self.assertEqual(
     "Prohibiting changing const variables does not work!",
 )
 
-# Test getting the private member variable
+# Private member variables are not available
 with self.assertRaises(AttributeError) as error_context:
     privateMember = m.PrivateMember("Hello")
     print(privateMember.myString)
@@ -374,9 +380,11 @@ int complexFunction() {
 
 ```python
 
+# Namespaces corresponds to submodules
 result = m.MyLib.complexFunction()
 self.assertEqual(result, 5)
 
+# You can nest namespaces arbitrarily deep
 lifeProTips = m.MyLib.We.Are.Going.Pretty.Deep.meaningOfLife()
 self.assertEqual(lifeProTips, "42")
 
@@ -400,12 +408,6 @@ std::string sayHello(std::string to) {
 
 std::string safety() { return "Safe!"; }
 
-class overloadedFunctions {
-public:
-
-
-};
-
 class Overload {
 public:
 	// Overloaded constructor
@@ -425,11 +427,10 @@ public:
 
 ```python
 
-
+# Overloaded functions work the same as in C++
 # Free function overload
 self.assertEqual(m.sayHello(), "Hello!")
-to_me = "to me!"
-self.assertEqual(m.sayHello(to_me), "Hello to me!")
+self.assertEqual(m.sayHello("to me!"), "Hello to me!")
 
 # Class function overload
 overload = m.Overload()
@@ -471,9 +472,13 @@ std::shared_ptr<ExampleShared> create_shared() {
 
 ```python
 
+# std::unique_ptr acts as a normal value
+# Note that passing a std::unique_ptr as an argument gives an error
+#   See https://pybind11.readthedocs.io/en/stable/advanced/smart_ptrs.html
 u = m.create_unique()
 self.assertEqual(u.m_hi, 5)
 
+# std::shared_ptr acts as a normal value
 s = m.create_shared()
 self.assertEqual(s.m_hi, 10)
 
@@ -515,17 +520,18 @@ public:
 
 ```python
 
-myArray = ["hi", "ho"]
-withMember = m.WithMember(myArray)
-self.assertEqual(withMember.getS(), myArray)
+# std::array translates to a normal array in python
+my_array = ["hi", "ho"]
+with_member = m.WithMember(my_array)
+self.assertEqual(with_member.getS(), my_array)
 
-withFunction = m.WithFunction()
-self.assertEqual(withFunction.sum([1, 2, 3, 4, 5]), 15)
+with_function = m.WithFunction()
+self.assertEqual(with_function.sum([1, 2, 3, 4, 5]), 15)
 
-# Test array with too many/few values
-for incompatibleArray in [["too many", "too many", "too many"], ["too few"]]:
+# It still corresponds to a fixed amount of elements
+for incompatible_array in [["too many", "too many", "too many"], ["too few"]]:
     with self.assertRaises(TypeError) as error_context:
-        withMember = m.WithMember(incompatibleArray)
+        with_member = m.WithMember(incompatible_array)
 
     self.assertEqual(len(error_context.exception.args), 1)
     self.assertTrue(
@@ -534,11 +540,10 @@ for incompatibleArray in [["too many", "too many", "too many"], ["too few"]]:
         + str(error_context.exception.args[0]),
     )
     self.assertTrue(
-        "Invoked with: " + str(incompatibleArray)
+        "Invoked with: " + str(incompatible_array)
         in error_context.exception.args[0],
         "Error msg does not mention the given arguments: " + str(error_context.exception.args[0]),
     )
-
 
 ```
 
@@ -573,6 +578,7 @@ std::complex<double> r(std::complex<double> d) {
 
 ```python
 
+# std::complex translates to a complex in python
 i = m.i()
 self.assertEqual(i.real, 5)
 self.assertEqual(i.imag, 0)
@@ -628,12 +634,13 @@ public:
 
 ```python
 
-myArray = ["hi", "ho"]
-withMember = m.WithMember(myArray)
-self.assertEqual(withMember.getS(), myArray)
+# std::deque translates to a normal array in python
+my_array = ["hi", "ho"]
+with_member = m.WithMember(my_array)
+self.assertEqual(with_member.getS(), my_array)
 
-withFunction = m.WithFunction()
-self.assertEqual(withFunction.sum([1, 2, 3]), 6)
+with_function = m.WithFunction()
+self.assertEqual(with_function.sum([1, 2, 3]), 6)
 
 ```
 
@@ -667,6 +674,7 @@ std::filesystem::path joinPaths(std::vector<std::filesystem::path> arrayToSum) {
 
 ```python
 
+# std::filesystem::path translates to pathlib.Path in python
 from pathlib import Path
 
 p0 = Path("Hello")
@@ -717,15 +725,18 @@ int accumulateArrayOfFunctions(std::vector<std::function<int()>> arrayToSum) {
 def callback(i):
   return i
 
+# You can send a python function as a C++ callback
 result0 = m.takingFunction(callback)
 self.assertEqual(result0, 5.0)
 
+# Or in the other direction
 inc_by_one = m.returnFunction(callback)
 self.assertEqual(inc_by_one(5), 6)
 
 def fiver():
   return 5
 
+# Or a vector of functions
 result1 = m.accumulateArrayOfFunctions([fiver, fiver])
 self.assertEqual(result1, 10)
 
@@ -767,12 +778,13 @@ public:
 
 ```python
 
-myArray = ["hi", "ho"]
-withMember = m.WithMember(myArray)
-self.assertEqual(withMember.getS(), myArray)
+# std::list translates to a normal array in python
+my_array = ["hi", "ho"]
+with_member = m.WithMember(my_array)
+self.assertEqual(with_member.getS(), my_array)
 
-withFunction = m.WithFunction()
-self.assertEqual(withFunction.sum([1, 2, 3]), 6)
+with_function = m.WithFunction()
+self.assertEqual(with_function.sum([1, 2, 3]), 6)
 
 ```
 
@@ -809,15 +821,16 @@ private:
 
 ```python
 
-myMap = {"hi": 4, "ho": 5}
-c = m.MyClass(myMap)
-self.assertEqual(c.getS(), myMap)
+# std::map translates to a normal dictionary in python
+my_map = {"hi": 4, "ho": 5}
+c = m.MyClass(my_map)
+self.assertEqual(c.getS(), my_map)
 
-# Test map of the wrong type
-for incompatiblemap in [{"key": "value"}, {5: 2}]:
+# The maps are typed on the C++ side
+for incopatible_map in [{"key": "value"}, {5: 2}]:
     with self.assertRaises(TypeError) as error_context:
-        c = m.MyClass(incompatiblemap)
-        c.getValue(incompatiblemap, 5)
+        c = m.MyClass(incopatible_map)
+        c.getValue(incopatible_map, 5)
 
     self.assertEqual(len(error_context.exception.args), 1)
     self.assertTrue(
@@ -828,11 +841,10 @@ for incompatiblemap in [{"key": "value"}, {5: 2}]:
         + str(error_context.exception.args[0]),
     )
     self.assertTrue(
-        str(incompatiblemap) in error_context.exception.args[0],
+        str(incopatible_map) in error_context.exception.args[0],
         "Error msg does not mention the given arguments: \n\t"
         + str(error_context.exception.args[0]),
     )
-
 
 ```
 
@@ -868,12 +880,13 @@ public:
 
 ```python
 
+# std::optional is either the value or None in python
 greeting = "hello"
-withMember = m.WithMember(greeting)
-self.assertEqual(withMember.getS(), greeting)
+with_member = m.WithMember(greeting)
+self.assertEqual(with_member.getS(), greeting)
 
-withFunction = m.WithFunction()
-self.assertEqual(withFunction.getNullopt(), None)
+with_function = m.WithFunction()
+self.assertEqual(with_function.getNullopt(), None)
 
 ```
 
@@ -909,13 +922,13 @@ public:
 ```python
 
 # Converts to a tuple, but is convertible from array aswell
-myArray = ["hi", 4]
-for t in [myArray, tuple(myArray)]:
-    withMember = m.MyClass(t)
-    self.assertEqual(withMember.getS(), tuple(t))
+my_array = ["hi", 4]
+for t in [my_array, tuple(my_array)]:
+    with_member = m.MyClass(t)
+    self.assertEqual(with_member.getS(), tuple(t))
 
-withFunction = m.WithFunction()
-self.assertEqual(withFunction.sum((1, 2)), 3)
+with_function = m.WithFunction()
+self.assertEqual(with_function.sum((1, 2)), 3)
 
 ```
 
@@ -952,6 +965,7 @@ private:
 
 ```python
 
+# std::set translates to a normal array or a set in python
 mySet = {"hi", "this is a set"}
 c = m.MyClass(mySet)
 self.assertEqual(c.getS(), mySet)
@@ -1017,13 +1031,13 @@ public:
 ```python
 
 # Converts to a tuple, but is convertible from array aswell
-myArray = ["hi", 4]
-for t in [myArray, tuple(myArray)]:
-    withMember = m.MyClass(t)
-    self.assertEqual(withMember.getS(), tuple(t))
+my_array = ["hi", 4]
+for t in [my_array, tuple(my_array)]:
+    with_member = m.MyClass(t)
+    self.assertEqual(with_member.getS(), tuple(t))
 
-withFunction = m.WithFunction()
-self.assertAlmostEqual(withFunction.sum((1, 2, 3.3, 2.0)), 8.3, delta=0.0001)
+with_function = m.WithFunction()
+self.assertAlmostEqual(with_function.sum((1, 2, 3.3, 2.0)), 8.3, delta=0.0001)
 
 ```
 
@@ -1060,6 +1074,7 @@ private:
 
 ```python
 
+# std::unordered_map translates to a normal dictionary in python
 myunordered_map = {"hi": 4, "ho": 5}
 c = m.MyClass(myunordered_map)
 self.assertEqual(c.getS(), myunordered_map)
@@ -1120,9 +1135,10 @@ private:
 
 ```python
 
-myunordered_set = {"hi", "this is a unordered_set"}
-c = m.MyClass(myunordered_set)
-self.assertEqual(c.getS(), myunordered_set)
+# std::unordered_set translates to a normal array or a set in python
+my_unordered_set = {"hi", "this is a unordered_set"}
+c = m.MyClass(my_unordered_set)
+self.assertEqual(c.getS(), my_unordered_set)
 
 self.assertEqual(c.getValue({1, 2, 3}, 3), 3)
 self.assertEqual(c.getValue({1, 2, 3}, 4), -1)
@@ -1145,8 +1161,6 @@ self.assertTrue(
     "Error msg does not mention the given arguments: \n\t"
     + str(error_context.exception.args[0]),
 )
-
-
 
 ```
 
@@ -1212,6 +1226,7 @@ public:
 
 ```python
 
+# std::variant translates to one of the values in python
 number = 6
 withNumber = m.WithMember(number)
 self.assertEqual(withNumber.getS(), number)
@@ -1219,10 +1234,10 @@ self.assertEqual(withNumber.getS(), number)
 withBool = m.WithMember(True)
 self.assertEqual(withBool.getS(), True)
 
-withFunction = m.WithFunction()
-self.assertEqual(withFunction.getFive(), 5)
-self.assertEqual(withFunction.getHello(), "Hello")
-self.assertEqual(withFunction.getTrue(), True)
+with_function = m.WithFunction()
+self.assertEqual(with_function.getFive(), 5)
+self.assertEqual(with_function.getHello(), "Hello")
+self.assertEqual(with_function.getTrue(), True)
 
 ```
 
@@ -1262,12 +1277,13 @@ public:
 
 ```python
 
-myArray = ["hi", "ho"]
-withMember = m.WithMember(myArray)
-self.assertEqual(withMember.getS(), myArray)
+# std::vector translates to a normal array in python
+my_array = ["hi", "ho"]
+with_member = m.WithMember(my_array)
+self.assertEqual(with_member.getS(), my_array)
 
-withFunction = m.WithFunction()
-self.assertEqual(withFunction.sum([1, 2, 3]), 6)
+with_function = m.WithFunction()
+self.assertEqual(with_function.sum([1, 2, 3]), 6)
 
 ```
 

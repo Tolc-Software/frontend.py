@@ -33,6 +33,7 @@ private:
 )";
 
 	auto pythonTestCode = fmt::format(R"(
+# std::set translates to a normal array or a set in python
 mySet = {{"hi", "this is a set"}}
 c = {moduleName}.MyClass(mySet)
 self.assertEqual(c.getS(), mySet)

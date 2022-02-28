@@ -33,15 +33,16 @@ private:
 )";
 
 	auto pythonTestCode = fmt::format(R"(
-myMap = {{"hi": 4, "ho": 5}}
-c = {moduleName}.MyClass(myMap)
-self.assertEqual(c.getS(), myMap)
+# std::map translates to a normal dictionary in python
+my_map = {{"hi": 4, "ho": 5}}
+c = {moduleName}.MyClass(my_map)
+self.assertEqual(c.getS(), my_map)
 
-# Test map of the wrong type
-for incompatiblemap in [{{"key": "value"}}, {{5: 2}}]:
+# The maps are typed on the C++ side
+for incopatible_map in [{{"key": "value"}}, {{5: 2}}]:
     with self.assertRaises(TypeError) as error_context:
-        c = {moduleName}.MyClass(incompatiblemap)
-        c.getValue(incompatiblemap, 5)
+        c = {moduleName}.MyClass(incopatible_map)
+        c.getValue(incopatible_map, 5)
 
     self.assertEqual(len(error_context.exception.args), 1)
     self.assertTrue(
@@ -52,11 +53,10 @@ for incompatiblemap in [{{"key": "value"}}, {{5: 2}}]:
         + str(error_context.exception.args[0]),
     )
     self.assertTrue(
-        str(incompatiblemap) in error_context.exception.args[0],
+        str(incopatible_map) in error_context.exception.args[0],
         "Error msg does not mention the given arguments: \n\t"
         + str(error_context.exception.args[0]),
     )
-
 )",
 	                                  fmt::arg("moduleName", moduleName));
 

@@ -40,6 +40,7 @@ public:
 )";
 
 	auto pythonTestCode = fmt::format(R"(
+# std::variant translates to one of the values in python
 number = 6
 withNumber = {moduleName}.WithMember(number)
 self.assertEqual(withNumber.getS(), number)
@@ -47,10 +48,10 @@ self.assertEqual(withNumber.getS(), number)
 withBool = {moduleName}.WithMember(True)
 self.assertEqual(withBool.getS(), True)
 
-withFunction = {moduleName}.WithFunction()
-self.assertEqual(withFunction.getFive(), 5)
-self.assertEqual(withFunction.getHello(), "Hello")
-self.assertEqual(withFunction.getTrue(), True)
+with_function = {moduleName}.WithFunction()
+self.assertEqual(with_function.getFive(), 5)
+self.assertEqual(with_function.getHello(), "Hello")
+self.assertEqual(with_function.getTrue(), True)
 )",
 	                                  fmt::arg("moduleName", moduleName));
 

@@ -31,6 +31,7 @@ std::complex<double> r(std::complex<double> d) {
 )";
 
 	auto pythonTestCode = fmt::format(R"(
+# std::complex translates to a complex in python
 i = {moduleName}.i()
 self.assertEqual(i.real, 5)
 self.assertEqual(i.imag, 0)

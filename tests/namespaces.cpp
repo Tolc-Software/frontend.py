@@ -7,7 +7,6 @@ TEST_CASE("Namespaces turn into modules", "[namespaces]") {
 	std::string moduleName = "m";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
-	stage.keepAliveAfterTest();
 
 	auto cppCode = R"(
 #include <string>
@@ -36,9 +35,11 @@ int complexFunction() {
 )";
 
 	auto pythonTestCode = fmt::format(R"(
+# Namespaces corresponds to submodules
 result = {moduleName}.MyLib.complexFunction()
 self.assertEqual(result, 5)
 
+# You can nest namespaces arbitrarily deep
 lifeProTips = {moduleName}.MyLib.We.Are.Going.Pretty.Deep.meaningOfLife()
 self.assertEqual(lifeProTips, "42")
 )",

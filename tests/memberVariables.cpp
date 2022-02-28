@@ -42,6 +42,7 @@ namespace MyLib {
 )";
 
 	auto pythonTestCode = fmt::format(R"(
+# Mutable member variables can be changed
 simpleMember = {moduleName}.SimpleMember()
 self.assertEqual(simpleMember.myString, "Hello")
 simpleMember.myString = "Changed now!"
@@ -50,7 +51,7 @@ self.assertEqual(simpleMember.myString, "Changed now!")
 constMember = {moduleName}.ConstMember()
 self.assertEqual(constMember.i, 42)
 
-# Test changing the const member
+# Const member variables cannot be changed
 with self.assertRaises(AttributeError) as error_context:
     constMember.i = 0
 
@@ -61,7 +62,7 @@ self.assertEqual(
     "Prohibiting changing const variables does not work!",
 )
 
-# Test getting the private member variable
+# Private member variables are not available
 with self.assertRaises(AttributeError) as error_context:
     privateMember = {moduleName}.PrivateMember("Hello")
     print(privateMember.myString)

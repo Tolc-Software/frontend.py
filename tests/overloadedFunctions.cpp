@@ -21,12 +21,6 @@ std::string sayHello(std::string to) {
 
 std::string safety() { return "Safe!"; }
 
-class overloadedFunctions {
-public:
-
-
-};
-
 class Overload {
 public:
 	// Overloaded constructor
@@ -43,11 +37,10 @@ public:
 )";
 
 	auto pythonTestCode = fmt::format(R"(
-
+# Overloaded functions work the same as in C++
 # Free function overload
 self.assertEqual({moduleName}.sayHello(), "Hello!")
-to_me = "to me!"
-self.assertEqual({moduleName}.sayHello(to_me), "Hello to me!")
+self.assertEqual({moduleName}.sayHello("to me!"), "Hello to me!")
 
 # Class function overload
 overload = {moduleName}.Overload()

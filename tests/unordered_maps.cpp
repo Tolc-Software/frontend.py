@@ -33,6 +33,7 @@ private:
 )";
 
 	auto pythonTestCode = fmt::format(R"(
+# std::unordered_map translates to a normal dictionary in python
 myunordered_map = {{"hi": 4, "ho": 5}}
 c = {moduleName}.MyClass(myunordered_map)
 self.assertEqual(c.getS(), myunordered_map)
