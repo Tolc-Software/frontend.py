@@ -4,6 +4,8 @@
 
 `frontend.py` is a library that takes an AST defined by [`IR::IR`](https://github.com/Tolc-Software/IntermediateRepresentation) and writes [`pybind11`](https://github.com/pybind/pybind11) code. The idea is to be able to use the C++ code that corresponds to the AST from `python` via the generated `pybind11`.
 
+`frontend.py` is a part of the [`Tolc`](https://github.com/Tolc-Software/tolc) project and is used to support creating `CPython` bindings via [`pybind11`](https://github.com/pybind/pybind11).
+
 ## Building ##
 
 `frontend.py` can be built on Linux, MacOS, and Windows. See the [CI pipelines for more platform specific information.](./.github/workflows/).
