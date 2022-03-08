@@ -13,7 +13,7 @@ void ModuleFile::addModule(Module const& m) {
 }
 
 std::filesystem::path ModuleFile::getFilepath() const {
-	return m_libraryName + ".cpp";
+	return m_libraryName + "_python.cpp";
 }
 
 void ModuleFile::setTypeInfo(Pybind::Proxy::TypeInfo const& info) {

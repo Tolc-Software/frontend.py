@@ -27,7 +27,7 @@ TEST_CASE(
 	CAPTURE(path);
 	CAPTURE(pybind);
 
-	REQUIRE(path == "MyModule.cpp");
+	REQUIRE(path == "MyModule_python.cpp");
 
 	for (auto const& expectedContains :
 	     {"#include <pybind11/pybind11.h>",
@@ -49,7 +49,7 @@ TEST_CASE("One level namespace", "[moduleFileBuilder]") {
 	CAPTURE(path);
 	CAPTURE(pybind);
 
-	REQUIRE(path == "MyModule.cpp");
+	REQUIRE(path == "MyModule_python.cpp");
 
 	for (auto const& expectedContains :
 	     {"#include <pybind11/pybind11.h>",
@@ -78,7 +78,7 @@ TEST_CASE("Two level namespace", "[moduleFileBuilder]") {
 	CAPTURE(path);
 	CAPTURE(pybind);
 
-	REQUIRE(path == "MyModule.cpp");
+	REQUIRE(path == "MyModule_python.cpp");
 
 	for (auto const& subNamespace : subNamespaces) {
 		auto expectedContains = fmt::format(
