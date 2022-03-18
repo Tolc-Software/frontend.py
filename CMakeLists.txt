@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 
 project(
   Frontend.py
-  VERSION 0.4.0
+  VERSION 0.4.1
   LANGUAGES CXX)
 
 configure_file(docs/ReleaseNotes/version.in
@@ -37,7 +37,7 @@ include(FetchContent)
 FetchContent_Declare(
   IRSpecification
   GIT_REPOSITORY https://github.com/Tolc-Software/IntermediateRepresentation.git
-  GIT_TAG main)
+  GIT_TAG v0.11.0)
 
 FetchContent_MakeAvailable(IRSpecification)
 
