@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 
 project(
   Frontend.py
-  VERSION 0.4.1
+  VERSION 0.5.0
   LANGUAGES CXX)
 
 configure_file(docs/ReleaseNotes/version.in
