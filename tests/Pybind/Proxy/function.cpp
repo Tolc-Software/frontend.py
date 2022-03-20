@@ -26,7 +26,7 @@ TEST_CASE("Test signature if no overloads", "[function]") {
 	auto pybindCode = f.getPybind();
 	CAPTURE(pybindCode);
 	std::string expectedContains =
-	    "def(\"f\", &f, R\"_tolc_comment(This is a function)_tolc_comment\"";
+	    "def(\"f\", &f, R\"_tolc_docs(This is a function)_tolc_docs\"";
 	CAPTURE(expectedContains);
 
 	// The function bind does not contain the signature since it is not overloaded

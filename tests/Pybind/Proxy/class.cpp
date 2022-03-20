@@ -12,7 +12,7 @@ TEST_CASE("Empty class", "[class]") {
 
 	using TestUtil::contains;
 	auto expectedContains =
-	    fmt::format(R"(py::class_<{className}>({moduleName}, "{className}"))",
+	    fmt::format(R"(py::class_<{className}>({moduleName}, "{className}")",
 	                fmt::arg("className", className),
 	                fmt::arg("moduleName", moduleName));
 	CAPTURE(expectedContains);
@@ -115,7 +115,7 @@ TEST_CASE("Class with member variables", "[class]") {
 	using TestUtil::contains;
 	for (auto const& variable : constVariables) {
 		auto expectedContains = fmt::format(
-		    "\t.def_readonly(\"{variable}\", &{className}::{variable})",
+		    "\t.def_readonly(\"{variable}\", &{className}::{variable}",
 		    fmt::arg("variable", variable),
 		    fmt::arg("className", className));
 
@@ -125,7 +125,7 @@ TEST_CASE("Class with member variables", "[class]") {
 
 	for (auto const& variable : nonConstVariables) {
 		auto expectedContains = fmt::format(
-		    "\t.def_readwrite(\"{variable}\", &{className}::{variable})",
+		    "\t.def_readwrite(\"{variable}\", &{className}::{variable}",
 		    fmt::arg("variable", variable),
 		    fmt::arg("className", className));
 

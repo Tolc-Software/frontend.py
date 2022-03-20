@@ -8,7 +8,6 @@ TEST_CASE("Classes", "[documentationStyles]") {
 	std::string moduleName = "m";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
-	stage.keepAliveAfterTest();
 
 	auto cppCode = R"(
 // One line comment

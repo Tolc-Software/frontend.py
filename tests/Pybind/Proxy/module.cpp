@@ -68,7 +68,7 @@ TEST_CASE("Modules defines their classes", "[module]") {
 	using TestUtil::contains;
 	for (auto const& cls : classes) {
 		auto expectedContains =
-		    fmt::format("\tpy::class_<{cls}>({moduleName}, \"{cls}\");\n",
+		    fmt::format("\tpy::class_<{cls}>({moduleName}, \"{cls}\"",
 		                fmt::arg("cls", cls),
 		                fmt::arg("moduleName", m.getVariableName()));
 		CAPTURE(cls);
