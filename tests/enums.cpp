@@ -31,6 +31,7 @@ Unscoped f(Unscoped u) {
 }
 
 namespace NS {
+	// Documentation describing the enum
 	enum class Deep {
 		Double,
 		Down,
@@ -53,6 +54,9 @@ self.assertEqual(u, unscoped)
 # Enums under namespaces are available under the corresponding submodule
 deep = {moduleName}.NS.Deep.Down
 self.assertNotEqual(deep, {moduleName}.NS.Deep.Double)
+
+# Documentation carries over from C++
+self.assertIn("Documentation describing the enum", {moduleName}.NS.Deep.__doc__)
 )",
 	                                  fmt::arg("moduleName", moduleName));
 

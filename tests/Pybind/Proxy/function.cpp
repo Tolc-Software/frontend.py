@@ -17,6 +17,7 @@ TEST_CASE("Static global function", "[function]") {
 
 TEST_CASE("Test signature if no overloads", "[function]") {
 	Pybind::Proxy::Function f("f", "f");
+	f.setDocumentation("This is a function");
 	std::vector<std::string> args = {"i", "j", "k"};
 	for (auto const& arg : args) {
 		f.addArgument("int", arg);
@@ -24,9 +25,12 @@ TEST_CASE("Test signature if no overloads", "[function]") {
 
 	auto pybindCode = f.getPybind();
 	CAPTURE(pybindCode);
+	std::string expectedContains =
+	    "def(\"f\", &f, R\"_tolc_docs(This is a function)_tolc_docs\"";
+	CAPTURE(expectedContains);
 
 	// The function bind does not contain the signature since it is not overloaded
-	REQUIRE(TestUtil::contains(pybindCode, R"(def("f", &f,)"));
+	REQUIRE(TestUtil::contains(pybindCode, expectedContains));
 }
 
 TEST_CASE("Test signature of overloaded function", "[function]") {

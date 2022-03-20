@@ -15,8 +15,6 @@ buildFunction(IR::Function const& cppFunction,
 	    Pybind::Helpers::removeCppTemplate(cppFunction.m_name),
 	    cppFunction.m_representation);
 
-	std::set<std::string> includes;
-
 	for (auto const& arg : cppFunction.m_arguments) {
 		if (!Pybind::Helpers::isContainerType(arg.m_type,
 		                                      IR::ContainerType::UniquePtr)) {
@@ -33,6 +31,7 @@ buildFunction(IR::Function const& cppFunction,
 
 	Pybind::checkType(cppFunction.m_returnType, typeInfo);
 	pyFunction.setReturnType(cppFunction.m_returnType.m_representation);
+	pyFunction.setDocumentation(cppFunction.m_documentation);
 
 	if (cppFunction.m_returnType.m_numPointers > 0) {
 		pyFunction.setReturnValuePolicy(

@@ -1,4 +1,5 @@
 #include "Pybind/Proxy/function.hpp"
+#include "Pybind/Helpers/getDocumentationParameter.hpp"
 #include "Pybind/Helpers/string.hpp"
 #include "Pybind/returnValuePolicy.hpp"
 #include <algorithm>
@@ -8,23 +9,24 @@
 namespace Pybind::Proxy {
 
 std::string Function::getPybind() const {
-	std::string documentation = "";
-
 	std::string f;
 	if (m_isConstructor) {
 		// Results in
 		// def(py::init<std::string, int, double>), "This is a constructor"
 		f = fmt::format(
-		    R"(def(py::init<{}>(), "{}")", getArgumentTypes(), documentation);
+		    "def(py::init<{}>(), {}",
+		    getArgumentTypes(),
+		    Pybind::Helpers::getDocumentationParameter(m_documentation));
 	} else {
 		// Results in
 		// def("myFunction", (void (*)(int, double))&MyNamespace::myFunction, "This is a function"
-		f = fmt::format(R"(def{}("{}", {}&{}, "{}")",
-		                m_isStatic ? "_static" : "",
-		                m_name,
-		                m_isOverloaded ? getSignature() : "",
-		                m_fullyQualifiedName,
-		                documentation);
+		f = fmt::format(
+		    "def{}(\"{}\", {}&{}, {}",
+		    m_isStatic ? "_static" : "",
+		    m_name,
+		    m_isOverloaded ? getSignature() : "",
+		    m_fullyQualifiedName,
+		    Pybind::Helpers::getDocumentationParameter(m_documentation));
 
 		if (m_returnValuePolicy) {
 			f += fmt::format(", py::{returnPolicy}",
@@ -79,6 +81,10 @@ void Function::setAsStatic() {
 void Function::setAsOverloaded() {
 	m_isOverloaded = true;
 };
+
+void Function::setDocumentation(std::string const& documentation) {
+	m_documentation = documentation;
+}
 
 std::string Function::getArgumentTypes() const {
 	// Get the typenames of the arguments

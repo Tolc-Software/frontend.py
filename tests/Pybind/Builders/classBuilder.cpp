@@ -49,7 +49,7 @@ TEST_CASE("Class with static member variables", "[classBuilder]") {
 	for (auto const& var : variables) {
 		auto accessor = var.isConst ? "readonly" : "readwrite";
 		auto expectedContains = fmt::format(
-		    R"(def_{accessor}_static("{variableName}", &{className}::{variableName}))",
+		    R"(def_{accessor}_static("{variableName}", &{className}::{variableName})",
 		    fmt::arg("accessor", accessor),
 		    fmt::arg("variableName", var.name),
 		    fmt::arg("className", s.m_name));
@@ -104,7 +104,7 @@ TEST_CASE("Templated class", "[classBuilder]") {
 	auto myStruct = Pybind::Builders::buildClass(s, typeInfo).value();
 	auto pybind = myStruct.getPybind(moduleName);
 	auto expectedContains = fmt::format(
-	    R"(py::class_<{fullyQualifiedClassName}>({moduleName}, "{className}"))",
+	    R"(py::class_<{fullyQualifiedClassName}>({moduleName}, "{className}")",
 	    fmt::arg("fullyQualifiedClassName", s.m_representation),
 	    fmt::arg("moduleName", moduleName),
 	    fmt::arg("className", removedTemplatePars));
@@ -127,7 +127,7 @@ TEST_CASE("Class within namespace", "[classBuilder]") {
 	CAPTURE(pybind);
 
 	auto expectedContains = fmt::format(
-	    R"(py::class_<{fullyQualifiedClassName}>({moduleName}, "{className}"))",
+	    R"(py::class_<{fullyQualifiedClassName}>({moduleName}, "{className}")",
 	    fmt::arg("fullyQualifiedClassName", s.m_representation),
 	    fmt::arg("moduleName", moduleName),
 	    fmt::arg("className", s.m_name));
@@ -260,7 +260,7 @@ TEST_CASE("Class with member variables", "[classBuilder]") {
 	for (auto const& var : variables) {
 		auto accessor = var.isConst ? "readonly" : "readwrite";
 		auto expectedContains = fmt::format(
-		    R"(def_{accessor}("{variableName}", &{className}::{variableName}))",
+		    R"(def_{accessor}("{variableName}", &{className}::{variableName})",
 		    fmt::arg("accessor", accessor),
 		    fmt::arg("variableName", var.name),
 		    fmt::arg("className", s.m_name));
@@ -282,7 +282,7 @@ TEST_CASE("Class with vector in constructor gives the correct include",
 	IR::Type::Container c;
 	c.m_container = IR::ContainerType::Vector;
 	arg.m_type = c;
-	constructor.m_arguments.push_back({"myVar", arg});
+	constructor.m_arguments.push_back({"myVar", "", arg});
 	s.m_public.m_functions.push_back(constructor);
 
 	Pybind::Proxy::TypeInfo typeInfo;
@@ -306,7 +306,7 @@ TEST_CASE("Class with vector in member function gives the correct include",
 	IR::Type::Container c;
 	c.m_container = IR::ContainerType::Vector;
 	arg.m_type = c;
-	constructor.m_arguments.push_back({"myVar", arg});
+	constructor.m_arguments.push_back({"myVar", "", arg});
 	s.m_public.m_functions.push_back(constructor);
 
 	Pybind::Proxy::TypeInfo typeInfo;

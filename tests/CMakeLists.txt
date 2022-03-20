@@ -1,7 +1,7 @@
 include_guard()
 
 include(${modules}/GetParser.cmake)
-get_parser(VERSION v0.2.0)
+get_parser(VERSION v0.3.0)
 
 # Set the include path for the system library in the variable
 # We are using the standard library shipped
@@ -96,6 +96,7 @@ foreach(
   classes.cpp
   complex.cpp
   deques.cpp
+  documentationStyles.cpp
   enums.cpp
   filesystem_paths.cpp
   functional.cpp

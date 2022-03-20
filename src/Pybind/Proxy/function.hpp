@@ -23,6 +23,12 @@ public:
 	*/
 	void addArgument(std::string const& typeName, std::string const& name = "");
 
+	/**
+	* Documentation for the corresponding C++ function
+	* E.g. Doxygen comment
+	*/
+	void setDocumentation(std::string const& documentation);
+
 	void setAsConstructor();
 
 	// Is there another function with the same name but with different arguments?
@@ -72,6 +78,7 @@ private:
 	// User defined name of the function
 	std::string m_name;
 	std::string m_fullyQualifiedName;
+	std::string m_documentation;
 	// Defaults to void
 	std::string m_returnType;
 	std::optional<return_value_policy> m_returnValuePolicy;

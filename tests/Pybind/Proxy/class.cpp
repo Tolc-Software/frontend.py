@@ -12,7 +12,7 @@ TEST_CASE("Empty class", "[class]") {
 
 	using TestUtil::contains;
 	auto expectedContains =
-	    fmt::format(R"(py::class_<{className}>({moduleName}, "{className}"))",
+	    fmt::format(R"(py::class_<{className}>({moduleName}, "{className}")",
 	                fmt::arg("className", className),
 	                fmt::arg("moduleName", moduleName));
 	CAPTURE(expectedContains);
@@ -101,12 +101,12 @@ TEST_CASE("Class with member variables", "[class]") {
 
 	std::vector<std::string> constVariables = {"myInt", "var", "yes"};
 	for (auto const& variable : constVariables) {
-		c.addMemberVariable(variable, true, false);
+		c.addMemberVariable(variable, "", true, false);
 	}
 
 	std::vector<std::string> nonConstVariables = {"myOtherInt", "var2", "no"};
 	for (auto const& variable : nonConstVariables) {
-		c.addMemberVariable(variable, false, false);
+		c.addMemberVariable(variable, "", false, false);
 	}
 
 	auto pybindCode = c.getPybind(moduleName);
@@ -115,7 +115,7 @@ TEST_CASE("Class with member variables", "[class]") {
 	using TestUtil::contains;
 	for (auto const& variable : constVariables) {
 		auto expectedContains = fmt::format(
-		    "\t.def_readonly(\"{variable}\", &{className}::{variable})",
+		    "\t.def_readonly(\"{variable}\", &{className}::{variable}",
 		    fmt::arg("variable", variable),
 		    fmt::arg("className", className));
 
@@ -125,7 +125,7 @@ TEST_CASE("Class with member variables", "[class]") {
 
 	for (auto const& variable : nonConstVariables) {
 		auto expectedContains = fmt::format(
-		    "\t.def_readwrite(\"{variable}\", &{className}::{variable})",
+		    "\t.def_readwrite(\"{variable}\", &{className}::{variable}",
 		    fmt::arg("variable", variable),
 		    fmt::arg("className", className));
 

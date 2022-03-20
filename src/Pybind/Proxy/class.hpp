@@ -19,10 +19,13 @@ public:
 	void addConstructor(Function const& constructor);
 
 	void addMemberVariable(std::string const& variableName,
+	                       std::string const& documentation,
 	                       bool isConst,
 	                       bool isStatic);
 
 	std::string const& getName() const;
+
+	void setDocumentation(std::string const& documentation);
 
 	// Will be managed by a std::shared_ptr on the python side
 	// instead of the default std::unique_ptr
@@ -34,6 +37,7 @@ private:
 	struct MemberVariable {
 		// User defined name of the member variable
 		std::string m_name;
+		std::string m_documentation;
 		bool m_isConst;
 		bool m_isStatic;
 	};
@@ -41,6 +45,7 @@ private:
 	// User defined name of the class
 	std::string m_name;
 	std::string m_fullyQualifiedName;
+	std::string m_documentation;
 
 	std::vector<Function> m_constructors;
 	std::vector<Function> m_functions;
