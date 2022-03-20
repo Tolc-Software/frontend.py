@@ -36,6 +36,9 @@ public:
 
 	static int const i = 5;
 
+	// This class has a readwrite variable
+	int readwrite = 10;
+
 	std::string getS() { return m_s; }
 	std::string_view getSView() { return m_s; }
 
@@ -66,6 +69,15 @@ namespace MyLib {
 	};
 }
 
+/** Documentation carries over */
+struct Documentation {};
+
+/***********************************************************
+* JavaDoc Style
+* is
+* boxy
+**********************************************************/
+struct JavaDoc {};
 
 ```
 
@@ -78,6 +90,9 @@ self.assertEqual(m.WithConstructor.i, 5)
 # Creating classes via their constructor
 with_constructor = m.WithConstructor("Hello")
 self.assertEqual(with_constructor.getS(), "Hello")
+
+# Documentation for variables carries over aswell
+self.assertIn("This class has a readwrite variable", m.WithConstructor.readwrite.__doc__)
 
 # Named arguments in constructors
 with_constructor = m.WithConstructor(s="named argument")
@@ -104,6 +119,87 @@ self.assertEqual(
 # Classes under namespaces are available under the corresponding submodule
 nested = m.MyLib.Nested()
 self.assertEqual(nested.divideByTwo(10), 5)
+
+# Different styles of documentation on classes carries over
+self.assertIn("Documentation carries over", m.Documentation.__doc__)
+self.assertIn("JavaDoc Style", m.JavaDoc.__doc__)
+
+
+```
+
+
+## Documentation Styles ##
+
+
+```cpp
+
+// One line comment
+class OneLiner {};
+
+/** Single multi line comment */
+class SingleMulti {};
+
+/**
+* Multi
+* line
+* comment
+*/
+class Multi {};
+
+/**
+Bare multi
+Another line
+*/
+class BareMulti {};
+
+/*!
+* Qt style
+*/
+class QtStyle {};
+
+/*****************************
+* JavaDoc Style
+* is
+* boxy
+****************************/
+class JavaDoc {};
+
+///
+/// Triplets is a commitment
+///
+class Triplets {};
+
+//!
+//! This is one of the doxy styles
+//!
+class DoxyBang {};
+
+```
+
+
+```python
+
+# These types of documentations are supported for:
+#   Classes
+#   Member variables
+#   Enums
+#   Functions
+
+self.assertIn("One line comment", m.OneLiner.__doc__)
+
+self.assertIn("Single multi line", m.SingleMulti.__doc__)
+
+self.assertIn("Multi", m.Multi.__doc__)
+
+self.assertIn("Bare multi", m.BareMulti.__doc__)
+
+self.assertIn("Qt style", m.QtStyle.__doc__)
+
+self.assertIn("JavaDoc Style", m.JavaDoc.__doc__)
+
+self.assertIn("Triplets", m.Triplets.__doc__)
+
+self.assertIn("one of the doxy styles", m.DoxyBang.__doc__)
 
 ```
 
@@ -135,6 +231,7 @@ Unscoped f(Unscoped u) {
 }
 
 namespace NS {
+	// Documentation describing the enum
 	enum class Deep {
 		Double,
 		Down,
@@ -161,6 +258,9 @@ self.assertEqual(u, unscoped)
 deep = m.NS.Deep.Down
 self.assertNotEqual(deep, m.NS.Deep.Double)
 
+# Documentation carries over from C++
+self.assertIn("Documentation describing the enum", m.NS.Deep.__doc__)
+
 ```
 
 
@@ -184,10 +284,14 @@ void addYourOwn(std::string content) {
 	f.close();
 }
 
+/**
+* Documentation carries over
+*/
 int calculate() {
 	return 5;
 }
 
+// Different documentation styles are supported
 int missingArgumentsNaming(int, int i) {
 	return i;
 }
@@ -216,10 +320,13 @@ with open("hello.txt", "r") as f:
 
 result = m.calculate()
 self.assertEqual(result, 5)
+self.assertIn("Documentation carries over", m.calculate.__doc__)
 
 # Without naming variables is fine
 result = m.missingArgumentsNaming(2, 5)
 self.assertEqual(result, 5)
+self.assertIn("Different documentation styles are supported", \
+  m.missingArgumentsNaming.__doc__)
 
 # Not possible to name any variables unless they are all known
 with self.assertRaises(TypeError) as error_context:

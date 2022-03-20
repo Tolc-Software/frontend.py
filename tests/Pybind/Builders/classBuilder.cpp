@@ -282,7 +282,7 @@ TEST_CASE("Class with vector in constructor gives the correct include",
 	IR::Type::Container c;
 	c.m_container = IR::ContainerType::Vector;
 	arg.m_type = c;
-	constructor.m_arguments.push_back({"myVar", arg});
+	constructor.m_arguments.push_back({"myVar", "", arg});
 	s.m_public.m_functions.push_back(constructor);
 
 	Pybind::Proxy::TypeInfo typeInfo;
@@ -306,7 +306,7 @@ TEST_CASE("Class with vector in member function gives the correct include",
 	IR::Type::Container c;
 	c.m_container = IR::ContainerType::Vector;
 	arg.m_type = c;
-	constructor.m_arguments.push_back({"myVar", arg});
+	constructor.m_arguments.push_back({"myVar", "", arg});
 	s.m_public.m_functions.push_back(constructor);
 
 	Pybind::Proxy::TypeInfo typeInfo;

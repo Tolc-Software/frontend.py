@@ -37,12 +37,13 @@ include(FetchContent)
 FetchContent_Declare(
   IRSpecification
   GIT_REPOSITORY https://github.com/Tolc-Software/IntermediateRepresentation.git
-  GIT_TAG v0.11.0)
+  GIT_TAG v0.12.0)
 
 FetchContent_MakeAvailable(IRSpecification)
 
 add_library(
   Frontend.py
+  src/Frontend/Python/frontend.cpp
   src/Pybind/Builders/attributeBuilder.cpp
   src/Pybind/Builders/classBuilder.cpp
   src/Pybind/Builders/enumBuilder.cpp
@@ -50,10 +51,7 @@ add_library(
   src/Pybind/Builders/moduleBuilder.cpp
   src/Pybind/Builders/moduleFileBuilder.cpp
   src/Pybind/Builders/typeToStringBuilder.cpp
-  src/Frontend/Python/frontend.cpp
-  src/Pybind/checkType.cpp
-  src/Pybind/returnValuePolicy.cpp
-  src/Pybind/getOverloadedFunctions.cpp
+  src/Pybind/Helpers/getDocumentationParameter.cpp
   src/Pybind/Helpers/split.cpp
   src/Pybind/Helpers/string.cpp
   src/Pybind/Helpers/types.cpp
@@ -62,7 +60,10 @@ add_library(
   src/Pybind/Proxy/enum.cpp
   src/Pybind/Proxy/function.cpp
   src/Pybind/Proxy/module.cpp
-  src/Pybind/Proxy/moduleFile.cpp)
+  src/Pybind/Proxy/moduleFile.cpp
+  src/Pybind/checkType.cpp
+  src/Pybind/getOverloadedFunctions.cpp
+  src/Pybind/returnValuePolicy.cpp)
 
 add_warnings(TARGET Frontend.py)
 add_options(TARGET Frontend.py)

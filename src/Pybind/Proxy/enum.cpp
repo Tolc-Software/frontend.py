@@ -1,4 +1,5 @@
 #include "Pybind/Proxy/enum.hpp"
+#include "Pybind/Helpers/getDocumentationParameter.hpp"
 #include <fmt/format.h>
 #include <string>
 
@@ -15,13 +16,11 @@ std::string Enum::getPybind(std::string const& moduleOrClass) const {
 	    fmt::arg("name", m_name),
 	    fmt::arg("moduleOrClass", moduleOrClass));
 
-	// TODO: Add support for documentation
-	std::string documentation = "";
-
 	if (m_isScoped) {
 		out += ", py::arithmetic()";
 	}
-	out += fmt::format(", \"{}\")\n", documentation);
+	out += fmt::format(
+	    ", {})\n", Pybind::Helpers::getDocumentationParameter(m_documentation));
 
 	for (auto const& value : m_values) {
 		out += fmt::format(
@@ -45,6 +44,10 @@ void Enum::setScoped(bool isScoped) {
 
 void Enum::addValue(std::string const& value) {
 	m_values.push_back(value);
+}
+
+void Enum::setDocumentation(std::string const& documentation) {
+	m_documentation = documentation;
 }
 
 }    // namespace Pybind::Proxy

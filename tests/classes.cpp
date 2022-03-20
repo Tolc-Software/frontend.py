@@ -26,6 +26,9 @@ public:
 
 	static int const i = 5;
 
+	// This class has a readwrite variable
+	int readwrite = 10;
+
 	std::string getS() { return m_s; }
 	std::string_view getSView() { return m_s; }
 
@@ -56,6 +59,15 @@ namespace MyLib {
 	};
 }
 
+/** Documentation carries over */
+struct Documentation {};
+
+/***********************************************************
+* JavaDoc Style
+* is
+* boxy
+**********************************************************/
+struct JavaDoc {};
 )";
 
 	auto pythonTestCode = fmt::format(R"(
@@ -65,6 +77,9 @@ self.assertEqual({moduleName}.WithConstructor.i, 5)
 # Creating classes via their constructor
 with_constructor = {moduleName}.WithConstructor("Hello")
 self.assertEqual(with_constructor.getS(), "Hello")
+
+# Documentation for variables carries over aswell
+self.assertIn("This class has a readwrite variable", {moduleName}.WithConstructor.readwrite.__doc__)
 
 # Named arguments in constructors
 with_constructor = {moduleName}.WithConstructor(s="named argument")
@@ -91,6 +106,11 @@ self.assertEqual(
 # Classes under namespaces are available under the corresponding submodule
 nested = {moduleName}.MyLib.Nested()
 self.assertEqual(nested.divideByTwo(10), 5)
+
+# Different styles of documentation on classes carries over
+self.assertIn("Documentation carries over", {moduleName}.Documentation.__doc__)
+self.assertIn("JavaDoc Style", {moduleName}.JavaDoc.__doc__)
+
 )",
 	                                  fmt::arg("moduleName", moduleName));
 

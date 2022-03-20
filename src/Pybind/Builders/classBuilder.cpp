@@ -37,6 +37,7 @@ buildClass(IR::Struct const& cppClass, Pybind::Proxy::TypeInfo& typeInfo) {
 	        getTemplateParameterString(cppClass.m_templateArguments),
 	    cppClass.m_representation);
 
+	pyClass.setDocumentation(cppClass.m_documentation);
 	auto overloadedFunctions =
 	    Pybind::getOverloadedFunctions(cppClass.m_public.m_functions);
 	// Ignore private functions
@@ -79,6 +80,7 @@ buildClass(IR::Struct const& cppClass, Pybind::Proxy::TypeInfo& typeInfo) {
 	for (auto const& variable : cppClass.m_public.m_memberVariables) {
 		Pybind::checkType(variable.m_type, typeInfo);
 		pyClass.addMemberVariable(variable.m_name,
+		                          variable.m_documentation,
 		                          variable.m_type.m_isConst,
 		                          variable.m_type.m_isStatic);
 	}

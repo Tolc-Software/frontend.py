@@ -101,12 +101,12 @@ TEST_CASE("Class with member variables", "[class]") {
 
 	std::vector<std::string> constVariables = {"myInt", "var", "yes"};
 	for (auto const& variable : constVariables) {
-		c.addMemberVariable(variable, true, false);
+		c.addMemberVariable(variable, "", true, false);
 	}
 
 	std::vector<std::string> nonConstVariables = {"myOtherInt", "var2", "no"};
 	for (auto const& variable : nonConstVariables) {
-		c.addMemberVariable(variable, false, false);
+		c.addMemberVariable(variable, "", false, false);
 	}
 
 	auto pybindCode = c.getPybind(moduleName);

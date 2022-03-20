@@ -1,4 +1,5 @@
 #include "Pybind/Proxy/class.hpp"
+#include "Pybind/Helpers/getDocumentationParameter.hpp"
 #include <fmt/format.h>
 #include <string>
 
@@ -12,10 +13,12 @@ std::string Class::getPybind(std::string const& moduleName) const {
             "";
 
 	std::string out = fmt::format(
-	    "py::class_<{fullyQualifiedName}{managedByShared}>({moduleName}, \"{name}\")\n",
+	    "py::class_<{fullyQualifiedName}{managedByShared}>({moduleName}, \"{name}\", {documentation})\n",
 	    fmt::arg("fullyQualifiedName", m_fullyQualifiedName),
 	    fmt::arg("managedByShared", managedByShared),
 	    fmt::arg("name", m_name),
+	    fmt::arg("documentation",
+	             Pybind::Helpers::getDocumentationParameter(m_documentation)),
 	    fmt::arg("moduleName", moduleName));
 
 	for (auto const& init : m_constructors) {
@@ -27,18 +30,19 @@ std::string Class::getPybind(std::string const& moduleName) const {
 		out += fmt::format("\t.{functionPybind}\n",
 		                   fmt::arg("functionPybind", function.getPybind()));
 	}
-	// Remove the last newline
-	out.pop_back();
 
 	for (auto const& variable : m_memberVariables) {
 		std::string accessor = variable.m_isConst ? "readonly" : "readwrite";
 		std::string staticness = variable.m_isStatic ? "_static" : "";
 		out += fmt::format(
-		    "\t.def_{accessor}{staticness}(\"{variableName}\", &{fullyQualifiedClassName}::{variableName})\n",
+		    "\t.def_{accessor}{staticness}(\"{variableName}\", &{fullyQualifiedClassName}::{variableName}, {documentation})\n",
 		    fmt::arg("accessor", accessor),
 		    fmt::arg("staticness", staticness),
 		    fmt::arg("fullyQualifiedClassName", m_fullyQualifiedName),
-		    fmt::arg("variableName", variable.m_name));
+		    fmt::arg("variableName", variable.m_name),
+		    fmt::arg("documentation",
+		             Pybind::Helpers::getDocumentationParameter(
+		                 variable.m_documentation)));
 	}
 
 	// To put the enums at the end of the class
@@ -77,9 +81,11 @@ void Class::addConstructor(Function const& constructor) {
 }
 
 void Class::addMemberVariable(std::string const& variableName,
+                              std::string const& documentation,
                               bool isConst,
                               bool isStatic) {
-	m_memberVariables.push_back({variableName, isConst, isStatic});
+	m_memberVariables.push_back(
+	    {variableName, documentation, isConst, isStatic});
 }
 
 std::string const& Class::getName() const {
@@ -88,5 +94,9 @@ std::string const& Class::getName() const {
 
 void Class::setAsManagedByShared() {
 	m_isManagedByShared = true;
+}
+
+void Class::setDocumentation(std::string const& documentation) {
+	m_documentation = documentation;
 }
 }    // namespace Pybind::Proxy

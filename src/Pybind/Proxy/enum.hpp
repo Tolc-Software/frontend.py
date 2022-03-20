@@ -27,10 +27,13 @@ public:
 
 	void setScoped(bool isScoped);
 
+	void setDocumentation(std::string const& documentation);
+
 private:
 	// The user defined name of the enum
 	std::string m_name;
 	std::string m_fullyQualifiedName;
+	std::string m_documentation;
 	std::vector<std::string> m_values;
 	bool m_isScoped;
 };

@@ -24,10 +24,14 @@ void addYourOwn(std::string content) {
 	f.close();
 }
 
+/**
+* Documentation carries over
+*/
 int calculate() {
 	return 5;
 }
 
+// Different documentation styles are supported
 int missingArgumentsNaming(int, int i) {
 	return i;
 }
@@ -53,10 +57,13 @@ with open("hello.txt", "r") as f:
 
 result = {moduleName}.calculate()
 self.assertEqual(result, 5)
+self.assertIn("Documentation carries over", {moduleName}.calculate.__doc__)
 
 # Without naming variables is fine
 result = {moduleName}.missingArgumentsNaming(2, 5)
 self.assertEqual(result, 5)
+self.assertIn("Different documentation styles are supported", \
+  {moduleName}.missingArgumentsNaming.__doc__)
 
 # Not possible to name any variables unless they are all known
 with self.assertRaises(TypeError) as error_context:
