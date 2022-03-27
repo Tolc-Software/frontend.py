@@ -5,6 +5,17 @@
 
 namespace Pybind::Proxy {
 
+namespace {
+std::string getInherited(std::vector<std::string> const& inheritedClasses) {
+	std::string inherited =
+	    fmt::format("{}", fmt::join(inheritedClasses, ", "));
+	if (!inherited.empty()) {
+		return fmt::format(", {}", inherited);
+	}
+	return inherited;
+}
+}    // namespace
+
 std::string Class::getPybind(std::string const& moduleName) const {
 	// Should this class be managed by a shared_ptr on the python side?
 	std::string managedByShared =
@@ -13,9 +24,10 @@ std::string Class::getPybind(std::string const& moduleName) const {
             "";
 
 	std::string out = fmt::format(
-	    "py::class_<{fullyQualifiedName}{managedByShared}>({moduleName}, \"{name}\", {documentation})\n",
+	    "py::class_<{fullyQualifiedName}{managedByShared}{inherited}>({moduleName}, \"{name}\", {documentation})\n",
 	    fmt::arg("fullyQualifiedName", m_fullyQualifiedName),
 	    fmt::arg("managedByShared", managedByShared),
+	    fmt::arg("inherited", getInherited(m_inherited)),
 	    fmt::arg("name", m_name),
 	    fmt::arg("documentation",
 	             Pybind::Helpers::getDocumentationParameter(m_documentation)),
@@ -98,5 +110,9 @@ void Class::setAsManagedByShared() {
 
 void Class::setDocumentation(std::string const& documentation) {
 	m_documentation = documentation;
+}
+
+void Class::setInherited(std::vector<std::string> const& inherited) {
+	m_inherited = inherited;
 }
 }    // namespace Pybind::Proxy

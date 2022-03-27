@@ -16,7 +16,12 @@ TEST_CASE(
 	IR::Type::Container c;
 	c.m_container = IR::ContainerType::Vector;
 	returnType.m_type = c;
+	returnType.m_isConst = false;
+	returnType.m_isStatic = false;
+	returnType.m_isReference = false;
+	returnType.m_numPointers = 0;
 	f.m_returnType = returnType;
+	f.m_isStatic = false;
 	ns.m_functions.push_back(f);
 
 	std::string moduleName = "MyModule";
@@ -82,7 +87,7 @@ TEST_CASE("Two level namespace", "[moduleFileBuilder]") {
 
 	for (auto const& subNamespace : subNamespaces) {
 		auto expectedContains = fmt::format(
-		    R"(auto {moduleName}_{subNamespace} = {moduleName}.def_submodule("{subNamespace}");)",
+		    R"(auto {moduleName}_{subNamespace} = {moduleName}.def_submodule("{subNamespace}")",
 		    fmt::arg("moduleName", moduleName),
 		    fmt::arg("subNamespace", subNamespace));
 		CAPTURE(subNamespace);
@@ -112,11 +117,11 @@ TEST_CASE("Three level namespace", "[moduleFileBuilder]") {
 	auto pybind = file.getPybind();
 	CAPTURE(pybind);
 
-	auto firstSub = R"(auto MyModule_sub = MyModule.def_submodule("sub");)";
+	auto firstSub = R"(auto MyModule_sub = MyModule.def_submodule("sub")";
 
 	REQUIRE(TestUtil::contains(pybind, firstSub));
 
 	auto secondSub =
-	    R"(auto MyModule_sub_subsub = MyModule_sub.def_submodule("subsub");)";
+	    R"(auto MyModule_sub_subsub = MyModule_sub.def_submodule("subsub")";
 	REQUIRE(TestUtil::contains(pybind, secondSub));
 }

@@ -52,6 +52,7 @@ add_library(
   src/Pybind/Builders/moduleFileBuilder.cpp
   src/Pybind/Builders/typeToStringBuilder.cpp
   src/Pybind/Helpers/getDocumentationParameter.cpp
+  src/Pybind/Helpers/operatorNames.cpp
   src/Pybind/Helpers/split.cpp
   src/Pybind/Helpers/string.cpp
   src/Pybind/Helpers/types.cpp
