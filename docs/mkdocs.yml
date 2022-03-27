@@ -6,7 +6,7 @@ docs_dir: 'public'
 strict: true
 nav:
   - python:
-    - Introduction: 'introduction.md'
+    - Quickstart: 'quickstart.md'
     - Conversions: 'conversions.md'
     - Examples: 'examples.md'
     - Template Naming Convention: 'template_naming_convention.md'
