@@ -80,7 +80,8 @@ buildModule(IR::Namespace const& ns,
 	for (auto const& subNamespace : ns.m_namespaces) {
 		builtModule.addSubmodule(
 		    subNamespace.m_name,
-		    getVariableName(subNamespace.m_representation, rootModuleName));
+		    getVariableName(subNamespace.m_representation, rootModuleName),
+		    subNamespace.m_documentation);
 	}
 
 	return builtModule;

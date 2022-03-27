@@ -33,7 +33,7 @@ TEST_CASE("Modules defines their submodules", "[module]") {
 
 	std::vector<std::string> submodules = {"sub1", "mySub", "child"};
 	for (auto const& submodule : submodules) {
-		m.addSubmodule(submodule, moduleName + "__" + submodule);
+		m.addSubmodule(submodule, moduleName + "__" + submodule, "");
 	}
 
 	auto pybindCode = m.getPybind();

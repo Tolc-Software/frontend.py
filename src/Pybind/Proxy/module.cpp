@@ -1,4 +1,5 @@
 #include "Pybind/Proxy/module.hpp"
+#include "Pybind/Helpers/getDocumentationParameter.hpp"
 #include <algorithm>
 #include <fmt/format.h>
 #include <string>
@@ -24,12 +25,16 @@ std::string Module::getPybind() const {
 	}
 
 	// Define all the children
-	for (auto const& [submoduleName, submoduleVariable] : m_submodules) {
+	for (auto const& [submoduleName, submoduleVariable, documentation] :
+	     m_submodules) {
 		out += fmt::format(
-		    "\tauto {submoduleVariable} = {variableName}.def_submodule(\"{submoduleName}\");\n",
+		    "\tauto {submoduleVariable} = {variableName}.def_submodule(\"{submoduleName}\", {docs});\n",
 		    fmt::arg("submoduleVariable", submoduleVariable),
 		    fmt::arg("submoduleName", submoduleName),
-		    fmt::arg("variableName", m_variableName));
+		    fmt::arg("variableName", m_variableName),
+		    fmt::arg(
+		        "docs",
+		        Pybind::Helpers::getDocumentationParameter(documentation)));
 	}
 
 	return out;
@@ -60,8 +65,9 @@ std::string const& Module::getVariableName() const {
 }
 
 void Module::addSubmodule(std::string const& name,
-                          std::string const& variableName) {
-	m_submodules.push_back({name, variableName});
+                          std::string const& variableName,
+                          std::string const& documentation) {
+	m_submodules.push_back({name, variableName, documentation});
 }
 
 }    // namespace Pybind::Proxy

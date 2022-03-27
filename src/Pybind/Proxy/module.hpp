@@ -23,19 +23,23 @@ struct Module {
 
 	std::string const& getVariableName() const;
 
-	void addSubmodule(std::string const& name, std::string const& variableName);
+	void addSubmodule(std::string const& name,
+	                  std::string const& variableName,
+	                  std::string const& documentation);
 
 	std::string getPybind() const;
 
 private:
 	std::string m_variableName;
 
-	// If this is non empty,
-	// then this module is a submodule
-	// {Simple name, Variable name}
-	// E.g.
-	// {"Sub", "NS_Nested_Sub"}
-	std::vector<std::pair<std::string, std::string>> m_submodules;
+	struct SubModule {
+		std::string name;
+		// C++ variable to refer to the submodule
+		// E.g. "NS_Nested_Sub"
+		std::string variable;
+		std::string documentation;
+	};
+	std::vector<SubModule> m_submodules;
 
 	std::vector<Function> m_functions;
 	std::vector<Class> m_classes;
