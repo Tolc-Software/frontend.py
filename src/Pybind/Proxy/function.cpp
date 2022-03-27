@@ -21,12 +21,14 @@ std::string Function::getPybind() const {
 		// Results in
 		// def("myFunction", (void (*)(int, double))&MyNamespace::myFunction, "This is a function"
 		f = fmt::format(
-		    "def{}(\"{}\", {}&{}, {}",
-		    m_isStatic ? "_static" : "",
-		    m_name,
-		    m_isOverloaded ? getSignature() : "",
-		    m_fullyQualifiedName,
-		    Pybind::Helpers::getDocumentationParameter(m_documentation));
+		    R"(def{static}("{name}", {overload}&{fqName}, {docs})",
+		    fmt::arg("static", m_isStatic ? "_static" : ""),
+		    fmt::arg("name", m_pythonName ? m_pythonName.value() : m_name),
+		    fmt::arg("overload", m_isOverloaded ? getSignature() : ""),
+		    fmt::arg("fqName", m_fullyQualifiedName),
+		    fmt::arg(
+		        "docs",
+		        Pybind::Helpers::getDocumentationParameter(m_documentation)));
 
 		if (m_returnValuePolicy) {
 			f += fmt::format(", py::{returnPolicy}",
@@ -80,6 +82,10 @@ void Function::setAsStatic() {
 
 void Function::setAsOverloaded() {
 	m_isOverloaded = true;
+};
+
+void Function::setPythonName(std::string const& name) {
+	m_pythonName = name;
 };
 
 void Function::setDocumentation(std::string const& documentation) {

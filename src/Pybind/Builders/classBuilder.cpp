@@ -4,6 +4,7 @@
 #include "Pybind/Builders/typeToStringBuilder.hpp"
 #include "Pybind/Helpers/combine.hpp"
 #include "Pybind/Helpers/types.hpp"
+#include "Pybind/Proxy/function.hpp"
 #include "Pybind/Proxy/typeInfo.hpp"
 #include "Pybind/checkType.hpp"
 #include "Pybind/getOverloadedFunctions.hpp"
@@ -28,6 +29,69 @@ getTemplateParameterString(std::vector<IR::Type> const& parameters) {
 	                       });
 }
 
+std::optional<std::string> getOperatorName(IR::Operator op) {
+	using IR::Operator;
+	switch (op) {
+		case Operator::Addition:
+			// +
+			return "__add__";
+		case Operator::Subtraction:
+			// -
+			return "__sub__";
+		case Operator::Multiplication:
+			// *
+			return "__mul__";
+		case Operator::Division:
+			// /
+			return "__truediv__";
+		case Operator::Modulus:
+			// %
+			return "__mod__";
+		case Operator::Assignment:
+			// =
+			// No translation
+			return std::nullopt;
+		case Operator::Equal:
+			// ==
+			return "__eq__";
+		case Operator::NotEqual:
+			// !=
+			return "__ne__";
+		case Operator::GreaterThan:
+			// >
+			return "__gt__";
+		case Operator::GreaterThanOrEqualTo:
+			// >=
+			return "__ge__";
+		case Operator::LessThan:
+			// <
+			return "__lt__";
+		case Operator::LessThanOrEqualTo:
+			// <=
+			return "__le__";
+		case Operator::Subscript:
+			// []
+			return "__getitem__";
+		case Operator::Call:
+			// ()
+			return "__call__";
+	}
+	return "";
+}
+
+void buildMemberFunction(Pybind::Proxy::Function& pyFunction,
+                         IR::Function const& cppFunction,
+                         std::set<std::string> const& overloadedFunctions) {
+	if (cppFunction.m_isStatic) {
+		pyFunction.setAsStatic();
+	}
+
+	if (overloadedFunctions.find(cppFunction.m_representation) !=
+	    overloadedFunctions.end()) {
+		pyFunction.setAsOverloaded();
+	}
+}
+
 }    // namespace
 
 std::optional<Pybind::Proxy::Class>
@@ -43,16 +107,9 @@ buildClass(IR::Struct const& cppClass, Pybind::Proxy::TypeInfo& typeInfo) {
 	// Ignore private functions
 	for (auto const& function : cppClass.m_public.m_functions) {
 		if (auto maybePyFunction = buildFunction(function, typeInfo)) {
-			auto pyFunction = maybePyFunction.value();
+			auto& pyFunction = maybePyFunction.value();
 
-			if (function.m_isStatic) {
-				pyFunction.setAsStatic();
-			}
-
-			if (overloadedFunctions.find(function.m_representation) !=
-			    overloadedFunctions.end()) {
-				pyFunction.setAsOverloaded();
-			}
+			buildMemberFunction(pyFunction, function, overloadedFunctions);
 
 			pyClass.addFunction(pyFunction);
 		} else {
@@ -60,9 +117,28 @@ buildClass(IR::Struct const& cppClass, Pybind::Proxy::TypeInfo& typeInfo) {
 		}
 	}
 
+	auto overloadedOperators =
+	    Pybind::getOverloadedFunctions(cppClass.m_public.m_operators);
+	for (auto const& [op, function] : cppClass.m_public.m_operators) {
+		if (auto maybePyFunction = buildFunction(function, typeInfo)) {
+			if (auto maybeName = getOperatorName(op)) {
+				auto& pyFunction = maybePyFunction.value();
+
+				// The python operators have special names
+				pyFunction.setPythonName(maybeName.value());
+
+				buildMemberFunction(pyFunction, function, overloadedOperators);
+
+				pyClass.addFunction(pyFunction);
+			}
+		} else {
+			return std::nullopt;
+		}
+	}
+
 	for (auto const& constructor : cppClass.m_public.m_constructors) {
 		if (auto maybePyFunction = buildFunction(constructor, typeInfo)) {
-			auto pyFunction = maybePyFunction.value();
+			auto& pyFunction = maybePyFunction.value();
 
 			if (constructor.m_isStatic) {
 				pyFunction.setAsStatic();

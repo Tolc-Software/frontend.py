@@ -40,6 +40,8 @@ public:
 	// should call setReturnType("std::string")
 	void setReturnType(std::string const& typeName);
 
+	void setPythonName(std::string const& name);
+
 	// These are all 1-to-1 with pybind11
 	enum class return_value_policy {
 		take_ownership,
@@ -77,6 +79,9 @@ private:
 
 	// User defined name of the function
 	std::string m_name;
+	// Override the C++ name
+	// E.g. for operator names
+	std::optional<std::string> m_pythonName;
 	std::string m_fullyQualifiedName;
 	std::string m_documentation;
 	// Defaults to void
