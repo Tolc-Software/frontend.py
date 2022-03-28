@@ -61,6 +61,11 @@ Note that any restriction this poses only applies to the public interface of you
 | operator<=        | \_\_ge\_\_            |
 | operator[]        | \_\_getitem\_\_       |
 | operator()        | \_\_call\_\_          |
+| operator=         | Not converted         |
+| operator<<        | Not converted         |
+| operator>>        | Not converted         |
+| operator++        | Not converted         |
+| operator--        | Not converted         |
 
 | C++ Standard library class      | Python translation                                                |
 |:------------------------------- |:----------------------------------------------------------------- |
