@@ -24,7 +24,7 @@ std::string Class::getPybind(std::string const& moduleName) const {
             "";
 
 	std::string out = fmt::format(
-	    "py::class_<{fullyQualifiedName}{managedByShared}{inherited}>({moduleName}, \"{name}\", {documentation})\n",
+	    "\tpy::class_<{fullyQualifiedName}{managedByShared}{inherited}>({moduleName}, \"{name}\", {documentation})\n",
 	    fmt::arg("fullyQualifiedName", m_fullyQualifiedName),
 	    fmt::arg("managedByShared", managedByShared),
 	    fmt::arg("inherited", getInherited(m_inherited)),
@@ -34,12 +34,12 @@ std::string Class::getPybind(std::string const& moduleName) const {
 	    fmt::arg("moduleName", moduleName));
 
 	for (auto const& init : m_constructors) {
-		out += fmt::format("\t.{constructorPybind}\n",
+		out += fmt::format("\t\t.{constructorPybind}\n",
 		                   fmt::arg("constructorPybind", init.getPybind()));
 	}
 
 	for (auto const& function : m_functions) {
-		out += fmt::format("\t.{functionPybind}\n",
+		out += fmt::format("\t\t.{functionPybind}\n",
 		                   fmt::arg("functionPybind", function.getPybind()));
 	}
 
@@ -47,7 +47,7 @@ std::string Class::getPybind(std::string const& moduleName) const {
 		std::string accessor = variable.m_isConst ? "readonly" : "readwrite";
 		std::string staticness = variable.m_isStatic ? "_static" : "";
 		out += fmt::format(
-		    "\t.def_{accessor}{staticness}(\"{variableName}\", &{fullyQualifiedClassName}::{variableName}, {documentation})\n",
+		    "\t\t.def_{accessor}{staticness}(\"{variableName}\", &{fullyQualifiedClassName}::{variableName}, {documentation})\n",
 		    fmt::arg("accessor", accessor),
 		    fmt::arg("staticness", staticness),
 		    fmt::arg("fullyQualifiedClassName", m_fullyQualifiedName),
@@ -57,14 +57,17 @@ std::string Class::getPybind(std::string const& moduleName) const {
 		                 variable.m_documentation)));
 	}
 
+	// The last newline
+	out.pop_back();
+	out.push_back(';');
+	out.push_back('\n');
+
 	// To put the enums at the end of the class
-	// we have to do some trickery since we are not allowed to insert the last ';'
 	if (!m_enums.empty()) {
-		// End the class statement and put in a few newlines before enums
-		out += ";\n\n";
+		out.push_back('\n');
 
 		for (auto const& e : m_enums) {
-			out += fmt::format("{};\n", e.getPybind(m_name));
+			out += fmt::format("{}\n", e.getPybind(m_name));
 		}
 		// The last endline
 		out.pop_back();

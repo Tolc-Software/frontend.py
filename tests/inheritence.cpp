@@ -36,5 +36,5 @@ self.assertEqual(fido.bark(), "woof!")
 	auto errorCode = stage.runPybindTest(cppCode, pythonTestCode);
 	REQUIRE(errorCode == 0);
 
-	stage.exportAsExample("Inheritence");
+	stage.exportAsExample("Simple inheritence");
 }

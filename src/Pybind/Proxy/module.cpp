@@ -8,20 +8,20 @@ namespace Pybind::Proxy {
 
 std::string Module::getPybind() const {
 	std::string out;
-	for (auto const& function : m_functions) {
-		out += fmt::format("\t{}.{};\n", m_variableName, function.getPybind());
-	}
-
 	for (auto const& cls : m_classes) {
-		out += fmt::format("\t{};\n", cls.getPybind(m_variableName));
+		out += fmt::format("{}\n", cls.getPybind(m_variableName));
 	}
 
 	for (auto const& e : m_enums) {
-		out += fmt::format("\t{};\n", e.getPybind(m_variableName));
+		out += fmt::format("{}\n", e.getPybind(m_variableName));
 	}
 
 	for (auto const& attribute : m_attributes) {
-		out += fmt::format("\t{}.{};\n", m_variableName, attribute.getPybind());
+		out += fmt::format("{}.{}\n", m_variableName, attribute.getPybind());
+	}
+
+	for (auto const& function : m_functions) {
+		out += fmt::format("\t{}.{};\n", m_variableName, function.getPybind());
 	}
 
 	// Define all the children
