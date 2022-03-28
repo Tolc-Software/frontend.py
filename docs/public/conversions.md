@@ -41,21 +41,26 @@ Note that any restriction this poses only applies to the public interface of you
 
 \*\*\*\*\* Refers to documentation comments before namespaces, functions, classes etc. See [the examples for more information](examples.md).
 
-| C++ operator                    | Python operator                         |
-|:------------------------------- |:--------------------------------------- |
-| operator+                       | \_\_add\_\_                             |
-| operator-                       | \_\_sub\_\_                             |
-| operator*                       | \_\_mul\_\_                             |
-| operator/                       | \_\_truediv\_\_                         |
-| operator%                       | \_\_mod\_\_                             |
-| operator==                      | \_\_eq\_\_                              |
-| operator!=                      | \_\_ne\_\_                              |
-| operator>                       | \_\_gt\_\_                              |
-| operator>=                      | \_\_ge\_\_                              |
-| operator<                       | \_\_lt\_\_                              |
-| operator<=                      | \_\_ge\_\_                              |
-| operator[]                      | \_\_getitem\_\_                         |
-| operator()                      | \_\_call\_\_                            |
+| C++ operator      | Python operator       |
+|:----------------- |:--------------------- |
+| operator+         | \_\_add\_\_           |
+| operator-         | \_\_sub\_\_           |
+| operator*         | \_\_mul\_\_           |
+| operator/         | \_\_truediv\_\_       |
+| operator%         | \_\_mod\_\_           |
+| operator+=        | \_\_iadd\_\_          |
+| operator-=        | \_\_isub\_\_          |
+| operator*=        | \_\_imul\_\_          |
+| operator/=        | \_\_itruediv\_\_      |
+| operator%=        | \_\_imod\_\_          |
+| operator==        | \_\_eq\_\_            |
+| operator!=        | \_\_ne\_\_            |
+| operator>         | \_\_gt\_\_            |
+| operator>=        | \_\_ge\_\_            |
+| operator<         | \_\_lt\_\_            |
+| operator<=        | \_\_ge\_\_            |
+| operator[]        | \_\_getitem\_\_       |
+| operator()        | \_\_call\_\_          |
 
 | C++ Standard library class      | Python translation                                                |
 |:------------------------------- |:----------------------------------------------------------------- |

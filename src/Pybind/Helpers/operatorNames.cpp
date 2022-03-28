@@ -11,22 +11,33 @@ std::optional<std::string> getOperatorName(IR::Operator op) {
 		case Operator::Addition:
 			// +
 			return "__add__";
+		case Operator::AddEqual:
+			// +=
+			return "__iadd__";
 		case Operator::Subtraction:
 			// -
 			return "__sub__";
+		case Operator::SubEqual:
+			// -=
+			return "__isub__";
 		case Operator::Multiplication:
 			// *
 			return "__mul__";
+		case Operator::MulEqual:
+			// *=
+			return "__imul__";
 		case Operator::Division:
 			// /
 			return "__truediv__";
+		case Operator::DivEqual:
+			// /=
+			return "__itruediv__";
 		case Operator::Modulus:
 			// %
 			return "__mod__";
-		case Operator::Assignment:
-			// =
-			// No translation
-			return std::nullopt;
+		case Operator::ModEqual:
+			// %=
+			return "__imod__";
 		case Operator::Equal:
 			// ==
 			return "__eq__";
@@ -51,6 +62,13 @@ std::optional<std::string> getOperatorName(IR::Operator op) {
 		case Operator::Call:
 			// ()
 			return "__call__";
+		case Operator::Assignment:
+		case Operator::LeftShift:
+		case Operator::RightShift:
+		case Operator::Increment:
+		case Operator::Decrement:
+			// No translation
+			return std::nullopt;
 	}
 	return std::nullopt;
 }
