@@ -43,6 +43,7 @@ fido = m.Dog()
 grumpy = True
 
 # Overloaded function in C++
+self.assertEqual(fido.sound(1, grumpy), "No.")
 self.assertEqual(fido.sound(1, not grumpy), "woof! ")
 
 # Polymorphic function in C++
