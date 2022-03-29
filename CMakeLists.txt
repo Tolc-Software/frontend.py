@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 
 project(
   Frontend.py
-  VERSION 0.5.0
+  VERSION 0.6.0
   LANGUAGES CXX)
 
 configure_file(docs/ReleaseNotes/version.in
@@ -37,7 +37,7 @@ include(FetchContent)
 FetchContent_Declare(
   IRSpecification
   GIT_REPOSITORY https://github.com/Tolc-Software/IntermediateRepresentation.git
-  GIT_TAG v0.12.0)
+  GIT_TAG v0.14.0)
 
 FetchContent_MakeAvailable(IRSpecification)
 
@@ -52,8 +52,10 @@ add_library(
   src/Pybind/Builders/moduleFileBuilder.cpp
   src/Pybind/Builders/typeToStringBuilder.cpp
   src/Pybind/Helpers/getDocumentationParameter.cpp
+  src/Pybind/Helpers/operatorNames.cpp
   src/Pybind/Helpers/split.cpp
   src/Pybind/Helpers/string.cpp
+  src/Pybind/Helpers/trampolineClass.cpp
   src/Pybind/Helpers/types.cpp
   src/Pybind/Proxy/attribute.cpp
   src/Pybind/Proxy/class.cpp

@@ -11,6 +11,9 @@ TEST_CASE("Namespaces turn into modules", "[namespaces]") {
 	auto cppCode = R"(
 #include <string>
 
+/*
+* MyLib contains a bunch of MyLib functions
+*/
 namespace MyLib {
 
 int complexFunction() {
@@ -38,6 +41,10 @@ int complexFunction() {
 # Namespaces corresponds to submodules
 result = {moduleName}.MyLib.complexFunction()
 self.assertEqual(result, 5)
+
+# Documentation carries over for namespaces
+self.assertIn("MyLib contains a bunch of MyLib functions", \
+  {moduleName}.MyLib.__doc__)
 
 # You can nest namespaces arbitrarily deep
 lifeProTips = {moduleName}.MyLib.We.Are.Going.Pretty.Deep.meaningOfLife()

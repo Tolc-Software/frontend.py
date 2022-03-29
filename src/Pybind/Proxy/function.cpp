@@ -21,12 +21,14 @@ std::string Function::getPybind() const {
 		// Results in
 		// def("myFunction", (void (*)(int, double))&MyNamespace::myFunction, "This is a function"
 		f = fmt::format(
-		    "def{}(\"{}\", {}&{}, {}",
-		    m_isStatic ? "_static" : "",
-		    m_name,
-		    m_isOverloaded ? getSignature() : "",
-		    m_fullyQualifiedName,
-		    Pybind::Helpers::getDocumentationParameter(m_documentation));
+		    R"(def{static}("{name}", {overload}&{fqName}, {docs})",
+		    fmt::arg("static", m_isStatic ? "_static" : ""),
+		    fmt::arg("name", getPythonName()),
+		    fmt::arg("overload", m_isOverloaded ? getSignature() : ""),
+		    fmt::arg("fqName", m_fullyQualifiedName),
+		    fmt::arg(
+		        "docs",
+		        Pybind::Helpers::getDocumentationParameter(m_documentation)));
 
 		if (m_returnValuePolicy) {
 			f += fmt::format(", py::{returnPolicy}",
@@ -82,17 +84,35 @@ void Function::setAsOverloaded() {
 	m_isOverloaded = true;
 };
 
+void Function::setPythonName(std::string const& name) {
+	m_pythonName = name;
+};
+
 void Function::setDocumentation(std::string const& documentation) {
 	m_documentation = documentation;
 }
 
-std::string Function::getArgumentTypes() const {
+std::string Function::getArgumentNames() const {
+	// Get the typenames of the arguments
+	std::vector<std::string> names;
+	std::transform(m_arguments.begin(),
+	               m_arguments.end(),
+	               std::back_inserter(names),
+	               [=](auto const& argument) { return argument.name; });
+	return fmt::format("{}", fmt::join(names, ", "));
+}
+
+std::string Function::getArgumentTypes(bool withNames) const {
 	// Get the typenames of the arguments
 	std::vector<std::string> typeNames;
 	std::transform(m_arguments.begin(),
 	               m_arguments.end(),
 	               std::back_inserter(typeNames),
-	               [](auto const& argument) { return argument.typeName; });
+	               [=](auto const& argument) {
+		               return withNames ?
+		                          argument.typeName + " " + argument.name :
+                                  argument.typeName;
+	               });
 	return fmt::format("{}", fmt::join(typeNames, ", "));
 }
 
@@ -103,6 +123,18 @@ std::string Function::getSignature() const {
 	                            Pybind::Helpers::removeSubString(
 	                                m_fullyQualifiedName, m_name)),
 	                   fmt::arg("arguments", getArgumentTypes()));
+}
+
+std::string Function::getPythonName() const {
+	return m_pythonName ? m_pythonName.value() : m_name;
+}
+
+std::string Function::getName() const {
+	return m_name;
+}
+
+std::string Function::getReturnType() const {
+	return m_returnType;
 }
 
 }    // namespace Pybind::Proxy

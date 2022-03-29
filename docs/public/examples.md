@@ -72,11 +72,11 @@ namespace MyLib {
 /** Documentation carries over */
 struct Documentation {};
 
-/***********************************************************
+/*****************************
 * JavaDoc Style
 * is
 * boxy
-**********************************************************/
+****************************/
 struct JavaDoc {};
 
 ```
@@ -374,6 +374,39 @@ self.assertEqual(m.Nested.s, "Hello world")
 ```
 
 
+## Inheritence ##
+
+
+```cpp
+
+#include <string>
+
+struct Pet {
+    Pet(const std::string &name) : name(name) { }
+    std::string name;
+};
+
+struct Dog : public Pet {
+    Dog(const std::string &name) : Pet(name) { }
+    std::string bark() const { return "woof!"; }
+};
+
+```
+
+
+```python
+
+fido = m.Dog("Fido")
+
+# Inherits public properties
+self.assertEqual(fido.name, "Fido")
+
+# But has its new functions
+self.assertEqual(fido.bark(), "woof!")
+
+```
+
+
 ## Member Variables ##
 
 
@@ -460,6 +493,9 @@ self.assertEqual(nested.d, 4.3)
 
 #include <string>
 
+/*
+* MyLib contains a bunch of MyLib functions
+*/
 namespace MyLib {
 
 int complexFunction() {
@@ -491,9 +527,105 @@ int complexFunction() {
 result = m.MyLib.complexFunction()
 self.assertEqual(result, 5)
 
+# Documentation carries over for namespaces
+self.assertIn("MyLib contains a bunch of MyLib functions", \
+  m.MyLib.__doc__)
+
 # You can nest namespaces arbitrarily deep
 lifeProTips = m.MyLib.We.Are.Going.Pretty.Deep.meaningOfLife()
 self.assertEqual(lifeProTips, "42")
+
+```
+
+
+## Operators ##
+
+
+```cpp
+
+#include <string>
+
+class MyClass {
+public:
+  explicit MyClass(int v) : value(v) {}
+
+  // +-*/&
+  MyClass operator+(int i) { return MyClass(value + i); }
+  MyClass operator-(int i) { return MyClass(value - i); }
+  MyClass operator*(int i) { return MyClass(value * i); }
+  MyClass operator/(int i) { return MyClass(value / i); }
+  MyClass operator%(int i) { return MyClass(value % i); }
+
+  // Assignment
+  MyClass& operator+=(const MyClass& rhs) { value += rhs.value; return *this; }
+  MyClass& operator-=(const MyClass& rhs) { value -= rhs.value; return *this; }
+  MyClass& operator*=(const MyClass& rhs) { value *= rhs.value; return *this; }
+  MyClass& operator/=(const MyClass& rhs) { value /= rhs.value; return *this; }
+  MyClass& operator%=(const MyClass& rhs) { value %= rhs.value; return *this; }
+
+  // Comparisons
+  bool operator==(const MyClass &rhs) { return value == rhs.value; }
+  bool operator!=(const MyClass &rhs) { return value != rhs.value; }
+  bool operator<(const MyClass &rhs) { return value < rhs.value; }
+  bool operator>(const MyClass &rhs) { return value > rhs.value; }
+  bool operator<=(const MyClass &rhs) { return value <= rhs.value; }
+  bool operator>=(const MyClass &rhs) { return value >= rhs.value; }
+
+  // Subscript
+  MyClass operator[](unsigned idx) { return MyClass(static_cast<int>(idx)); }
+
+  // Call
+  int operator()(int x) { return value + x; }
+  std::string operator()(std::string const& x) { return x + std::to_string(value); }
+
+  int value;
+};
+
+```
+
+
+```python
+
+my_class = m.MyClass(10)
+self.assertEqual(my_class.value, 10)
+
+# Normal operators translate as expected
+self.assertEqual((my_class + 5).value, 15)
+self.assertEqual((my_class - 5).value, 5)
+self.assertEqual((my_class * 5).value, 50)
+self.assertEqual((my_class / 5).value, 2)
+self.assertEqual((my_class % 3).value, 1)
+
+other = m.MyClass(5)
+# Comparison operators
+self.assertTrue(my_class != other)
+self.assertTrue(my_class > other)
+self.assertTrue(my_class >= other)
+
+self.assertFalse(my_class == other)
+self.assertFalse(my_class < other)
+self.assertFalse(my_class <= other)
+
+# Can also use the {operator}= functions
+# other.value = 5
+my_class += other
+self.assertEqual(my_class.value, 15)
+my_class -= other
+self.assertEqual(my_class.value, 10)
+my_class *= other
+self.assertEqual(my_class.value, 50)
+my_class /= other
+self.assertEqual(my_class.value, 10)
+my_class %= other
+self.assertEqual(my_class.value, 0)
+
+# Subscript []
+self.assertEqual(my_class[100].value, 100)
+
+# Call ()
+self.assertEqual(my_class(100), 100)
+# Overloading works
+self.assertEqual(my_class("The inner value is: "), "The inner value is: 0")
 
 ```
 
@@ -547,6 +679,168 @@ self.assertEqual(overload.getStuff("My stuff"), "My stuff")
 
 self.assertEqual(overload.safety(), "Safe!")
 self.assertEqual(overload.safety(), m.safety())
+
+```
+
+
+## Overriding virtual functions in python ##
+
+
+```cpp
+
+#include <string>
+
+class Animal {
+public:
+	virtual ~Animal() { }
+	virtual std::string sound(int n_times, bool grumpy) = 0;
+};
+
+class Dog : public Animal {
+public:
+	std::string sound(int n_times, bool grumpy) override {
+		if (grumpy) {
+			return "No.";
+		}
+
+		std::string result;
+		for (int i = 0; i < n_times; ++i) {
+			result += "woof! ";
+		}
+		return result;
+	}
+};
+
+std::string call_sound(Animal *animal) {
+	return animal->sound(3, false);
+}
+
+```
+
+
+```python
+
+fido = m.Dog()
+grumpy = True
+
+# Overloaded function in C++
+self.assertEqual(fido.sound(1, not grumpy), "woof! ")
+
+# Polymorphic function in C++
+self.assertEqual(m.call_sound(fido), "woof! woof! woof! ")
+
+# Inherit from virtual C++ classes in python
+class Cat(m.Animal):
+  # Override C++ function
+  def sound(self, n_times, grumpy):
+    return "No." if grumpy else "meow! " * n_times
+
+whiskers = Cat()
+
+# Overloaded C++ function in python
+self.assertEqual(whiskers.sound(1, grumpy), "No.")
+self.assertEqual(whiskers.sound(1, not grumpy), "meow! ")
+
+# Polymorphic function in C++ called with python object
+self.assertEqual(m.call_sound(whiskers), "meow! meow! meow! ")
+
+```
+
+
+## Overriding virtual in python ##
+
+
+```cpp
+
+#include <string>
+
+class Animal {
+public:
+	virtual ~Animal() { }
+	virtual std::string sound(int n_times, bool grumpy) = 0;
+};
+
+class Dog : public Animal {
+public:
+	std::string sound(int n_times, bool grumpy) override {
+		if (grumpy) {
+			return "No.";
+		}
+
+		std::string result;
+		for (int i = 0; i < n_times; ++i) {
+			result += "woof! ";
+		}
+		return result;
+	}
+};
+
+std::string call_sound(Animal *animal) {
+	return animal->sound(3, false);
+}
+
+```
+
+
+```python
+
+fido = m.Dog()
+grumpy = True
+
+# Overloaded function in C++
+self.assertEqual(fido.sound(1, grumpy), "No.")
+self.assertEqual(fido.sound(1, not grumpy), "woof! ")
+
+# Polymorphic function in C++
+self.assertEqual(m.call_sound(fido), "woof! woof! woof! ")
+
+# Inherit from virtual C++ classes in python
+class Cat(m.Animal):
+  # Override C++ function
+  def sound(self, n_times, grumpy):
+    return "No." if grumpy else "meow! " * n_times
+
+whiskers = Cat()
+
+# Overloaded C++ function in python
+self.assertEqual(whiskers.sound(1, grumpy), "No.")
+self.assertEqual(whiskers.sound(1, not grumpy), "meow! ")
+
+# Polymorphic function in C++ called with python object
+self.assertEqual(m.call_sound(whiskers), "meow! meow! meow! ")
+
+```
+
+
+## Simple inheritence ##
+
+
+```cpp
+
+#include <string>
+
+struct Pet {
+    Pet(const std::string &name) : name(name) { }
+    std::string name;
+};
+
+struct Dog : public Pet {
+    Dog(const std::string &name) : Pet(name) { }
+    std::string bark() const { return "woof!"; }
+};
+
+```
+
+
+```python
+
+fido = m.Dog("Fido")
+
+# Inherits public properties
+self.assertEqual(fido.name, "Fido")
+
+# But has its new functions
+self.assertEqual(fido.bark(), "woof!")
 
 ```
 

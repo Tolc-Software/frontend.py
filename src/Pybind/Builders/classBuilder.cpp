@@ -3,7 +3,10 @@
 #include "Pybind/Builders/functionBuilder.hpp"
 #include "Pybind/Builders/typeToStringBuilder.hpp"
 #include "Pybind/Helpers/combine.hpp"
+#include "Pybind/Helpers/operatorNames.hpp"
+#include "Pybind/Helpers/trampolineClass.hpp"
 #include "Pybind/Helpers/types.hpp"
+#include "Pybind/Proxy/function.hpp"
 #include "Pybind/Proxy/typeInfo.hpp"
 #include "Pybind/checkType.hpp"
 #include "Pybind/getOverloadedFunctions.hpp"
@@ -28,6 +31,39 @@ getTemplateParameterString(std::vector<IR::Type> const& parameters) {
 	                       });
 }
 
+void buildMemberFunction(Pybind::Proxy::Function& pyFunction,
+                         IR::Function const& cppFunction,
+                         std::set<std::string> const& overloadedFunctions) {
+	if (cppFunction.m_isStatic) {
+		pyFunction.setAsStatic();
+	}
+
+	if (overloadedFunctions.find(cppFunction.m_representation) !=
+	    overloadedFunctions.end()) {
+		pyFunction.setAsOverloaded();
+	}
+}
+
+struct TrampolineFunctions {
+	std::vector<Pybind::Proxy::Function> virtualFunctions;
+	std::vector<Pybind::Proxy::Function> pureVirtualFunctions;
+};
+
+void addIfVirtual(IR::Polymorphic polymorphic,
+                  Pybind::Proxy::Function const& pyFunction,
+                  TrampolineFunctions& trampoline) {
+	using IR::Polymorphic;
+	switch (polymorphic) {
+		case Polymorphic::PureVirtual:
+			trampoline.pureVirtualFunctions.push_back(pyFunction);
+			break;
+		case Polymorphic::Virtual:
+			trampoline.virtualFunctions.push_back(pyFunction);
+			break;
+		case Polymorphic::NA: break;
+	}
+}
+
 }    // namespace
 
 std::optional<Pybind::Proxy::Class>
@@ -38,21 +74,20 @@ buildClass(IR::Struct const& cppClass, Pybind::Proxy::TypeInfo& typeInfo) {
 	    cppClass.m_representation);
 
 	pyClass.setDocumentation(cppClass.m_documentation);
+
+	pyClass.setInherited(cppClass.m_public.m_inherited);
+	TrampolineFunctions trampoline;
+
+	// Ignore private functions
 	auto overloadedFunctions =
 	    Pybind::getOverloadedFunctions(cppClass.m_public.m_functions);
-	// Ignore private functions
 	for (auto const& function : cppClass.m_public.m_functions) {
 		if (auto maybePyFunction = buildFunction(function, typeInfo)) {
-			auto pyFunction = maybePyFunction.value();
+			auto& pyFunction = maybePyFunction.value();
 
-			if (function.m_isStatic) {
-				pyFunction.setAsStatic();
-			}
+			buildMemberFunction(pyFunction, function, overloadedFunctions);
 
-			if (overloadedFunctions.find(function.m_representation) !=
-			    overloadedFunctions.end()) {
-				pyFunction.setAsOverloaded();
-			}
+			addIfVirtual(function.m_polymorphic, pyFunction, trampoline);
 
 			pyClass.addFunction(pyFunction);
 		} else {
@@ -60,9 +95,30 @@ buildClass(IR::Struct const& cppClass, Pybind::Proxy::TypeInfo& typeInfo) {
 		}
 	}
 
+	auto overloadedOperators =
+	    Pybind::getOverloadedFunctions(cppClass.m_public.m_operators);
+	for (auto const& [op, function] : cppClass.m_public.m_operators) {
+		if (auto maybePyFunction = buildFunction(function, typeInfo)) {
+			if (auto maybeName = Pybind::Helpers::getOperatorName(op)) {
+				auto& pyFunction = maybePyFunction.value();
+
+				// The python operators have special names
+				pyFunction.setPythonName(maybeName.value());
+
+				buildMemberFunction(pyFunction, function, overloadedOperators);
+
+				addIfVirtual(function.m_polymorphic, pyFunction, trampoline);
+
+				pyClass.addFunction(pyFunction);
+			}
+		} else {
+			return std::nullopt;
+		}
+	}
+
 	for (auto const& constructor : cppClass.m_public.m_constructors) {
 		if (auto maybePyFunction = buildFunction(constructor, typeInfo)) {
-			auto pyFunction = maybePyFunction.value();
+			auto& pyFunction = maybePyFunction.value();
 
 			if (constructor.m_isStatic) {
 				pyFunction.setAsStatic();
@@ -73,6 +129,9 @@ buildClass(IR::Struct const& cppClass, Pybind::Proxy::TypeInfo& typeInfo) {
 			}
 
 			pyFunction.setAsConstructor();
+
+			addIfVirtual(constructor.m_polymorphic, pyFunction, trampoline);
+
 			pyClass.addConstructor(pyFunction);
 		}
 	}
@@ -95,6 +154,20 @@ buildClass(IR::Struct const& cppClass, Pybind::Proxy::TypeInfo& typeInfo) {
 
 	for (auto const& e : cppClass.m_public.m_enums) {
 		pyClass.addEnum(buildEnum(e));
+	}
+
+	if (!trampoline.virtualFunctions.empty() ||
+	    !trampoline.pureVirtualFunctions.empty()) {
+		// There are virtual functions
+		auto [name, cls] = Pybind::Helpers::getTrampolineClass(
+		    cppClass.m_name,
+		    cppClass.m_representation,
+		    trampoline.virtualFunctions,
+		    trampoline.pureVirtualFunctions);
+
+		typeInfo.m_trampolineClasses.insert(cls);
+		pyClass.addTrampolineClass(typeInfo.m_extraFunctionsNamespace +
+		                           "::" + name);
 	}
 
 	if (typeInfo.m_classesMarkedShared.contains(cppClass.m_representation)) {

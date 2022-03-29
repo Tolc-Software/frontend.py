@@ -1,7 +1,7 @@
 include_guard()
 
 include(${modules}/GetParser.cmake)
-get_parser(VERSION v0.3.0)
+get_parser(VERSION v0.4.1)
 
 # Set the include path for the system library in the variable
 # We are using the standard library shipped
@@ -84,7 +84,6 @@ foreach(
   Pybind/Builders/functionBuilder.cpp
   Pybind/Builders/moduleFileBuilder.cpp
   Pybind/Builders/typeToStringBuilder.cpp
-  Pybind/checkType.cpp
   Pybind/Helpers/combine.cpp
   Pybind/Proxy/attribute.cpp
   Pybind/Proxy/class.cpp
@@ -92,6 +91,7 @@ foreach(
   Pybind/Proxy/function.cpp
   Pybind/Proxy/module.cpp
   Pybind/Proxy/moduleFile.cpp
+  Pybind/checkType.cpp
   arrays.cpp
   classes.cpp
   complex.cpp
@@ -102,11 +102,13 @@ foreach(
   functional.cpp
   functions.cpp
   globalVariables.cpp
+  inheritence.cpp
   lists.cpp
   maps.cpp
   memberVariables.cpp
   namespaceSameAsModule.cpp
   namespaces.cpp
+  operators.cpp
   optionals.cpp
   overloadedFunctions.cpp
   pairs.cpp
@@ -119,7 +121,8 @@ foreach(
   userDefined.cpp
   valarrays.cpp
   variants.cpp
-  vectors.cpp)
+  vectors.cpp
+  virtualInheritence.cpp)
   # Ex: Pybind/Proxy/moduleFile.cpp -> moduleFile
   get_filename_component(testName ${test} NAME_WLE)
 

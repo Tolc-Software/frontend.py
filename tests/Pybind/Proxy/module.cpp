@@ -33,7 +33,7 @@ TEST_CASE("Modules defines their submodules", "[module]") {
 
 	std::vector<std::string> submodules = {"sub1", "mySub", "child"};
 	for (auto const& submodule : submodules) {
-		m.addSubmodule(submodule, moduleName + "__" + submodule);
+		m.addSubmodule(submodule, moduleName + "__" + submodule, "");
 	}
 
 	auto pybindCode = m.getPybind();
@@ -42,7 +42,7 @@ TEST_CASE("Modules defines their submodules", "[module]") {
 	using TestUtil::contains;
 	for (auto const& submodule : submodules) {
 		auto expectedContains = fmt::format(
-		    R"(auto {moduleName}__{submodule} = {module}.def_submodule("{submodule}");)",
+		    R"(auto {moduleName}__{submodule} = {module}.def_submodule("{submodule}")",
 		    fmt::arg("moduleName", moduleName),
 		    fmt::arg("module", m.getVariableName()),
 		    fmt::arg("submodule", submodule));

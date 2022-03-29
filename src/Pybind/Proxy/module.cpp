@@ -1,4 +1,5 @@
 #include "Pybind/Proxy/module.hpp"
+#include "Pybind/Helpers/getDocumentationParameter.hpp"
 #include <algorithm>
 #include <fmt/format.h>
 #include <string>
@@ -7,29 +8,33 @@ namespace Pybind::Proxy {
 
 std::string Module::getPybind() const {
 	std::string out;
+	for (auto const& cls : m_classes) {
+		out += fmt::format("{}\n", cls.getPybind(m_variableName));
+	}
+
+	for (auto const& e : m_enums) {
+		out += fmt::format("{}\n", e.getPybind(m_variableName));
+	}
+
+	for (auto const& attribute : m_attributes) {
+		out += fmt::format("{}.{}\n", m_variableName, attribute.getPybind());
+	}
+
 	for (auto const& function : m_functions) {
 		out += fmt::format("\t{}.{};\n", m_variableName, function.getPybind());
 	}
 
-	for (auto const& cls : m_classes) {
-		out += fmt::format("\t{};\n", cls.getPybind(m_variableName));
-	}
-
-	for (auto const& e : m_enums) {
-		out += fmt::format("\t{};\n", e.getPybind(m_variableName));
-	}
-
-	for (auto const& attribute : m_attributes) {
-		out += fmt::format("\t{}.{};\n", m_variableName, attribute.getPybind());
-	}
-
 	// Define all the children
-	for (auto const& [submoduleName, submoduleVariable] : m_submodules) {
+	for (auto const& [submoduleName, submoduleVariable, documentation] :
+	     m_submodules) {
 		out += fmt::format(
-		    "\tauto {submoduleVariable} = {variableName}.def_submodule(\"{submoduleName}\");\n",
+		    "\tauto {submoduleVariable} = {variableName}.def_submodule(\"{submoduleName}\", {docs});\n",
 		    fmt::arg("submoduleVariable", submoduleVariable),
 		    fmt::arg("submoduleName", submoduleName),
-		    fmt::arg("variableName", m_variableName));
+		    fmt::arg("variableName", m_variableName),
+		    fmt::arg(
+		        "docs",
+		        Pybind::Helpers::getDocumentationParameter(documentation)));
 	}
 
 	return out;
@@ -60,8 +65,9 @@ std::string const& Module::getVariableName() const {
 }
 
 void Module::addSubmodule(std::string const& name,
-                          std::string const& variableName) {
-	m_submodules.push_back({name, variableName});
+                          std::string const& variableName,
+                          std::string const& documentation) {
+	m_submodules.push_back({name, variableName, documentation});
 }
 
 }    // namespace Pybind::Proxy

@@ -11,7 +11,7 @@ Enum::Enum(std::string const& name, std::string const& fullyQualifiedName)
 
 std::string Enum::getPybind(std::string const& moduleOrClass) const {
 	std::string out = fmt::format(
-	    "py::enum_<{fullyQualifiedName}>({moduleOrClass}, \"{name}\"",
+	    "\t\tpy::enum_<{fullyQualifiedName}>({moduleOrClass}, \"{name}\"",
 	    fmt::arg("fullyQualifiedName", m_fullyQualifiedName),
 	    fmt::arg("name", m_name),
 	    fmt::arg("moduleOrClass", moduleOrClass));
@@ -24,16 +24,17 @@ std::string Enum::getPybind(std::string const& moduleOrClass) const {
 
 	for (auto const& value : m_values) {
 		out += fmt::format(
-		    "\t.value(\"{value}\", {fullyQualifiedName}::{value})\n",
+		    "\t\t.value(\"{value}\", {fullyQualifiedName}::{value})\n",
 		    fmt::arg("fullyQualifiedName", m_fullyQualifiedName),
 		    fmt::arg("value", value));
 	}
 
 	if (!m_isScoped) {
-		out += "\t.export_values()\n";
+		out += "\t\t.export_values()\n";
 	}
 	// Remove the last newline
 	out.pop_back();
+	out += ";\n";
 
 	return out;
 }

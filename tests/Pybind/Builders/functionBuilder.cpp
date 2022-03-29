@@ -12,7 +12,7 @@ TEST_CASE("function returning containers adds the correct include", "[functionBu
 	auto pyFunction = Pybind::Builders::buildFunction(f, typeInfo).value();
 	REQUIRE(typeInfo.m_includes.size() == 1);
 	for (auto const& include : typeInfo.m_includes) {
-		REQUIRE(include == "<pybind11/stl.h>");
+		REQUIRE(include == "#include <pybind11/stl.h>");
 	}
 }
 
