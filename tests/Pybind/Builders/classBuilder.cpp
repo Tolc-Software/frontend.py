@@ -289,7 +289,7 @@ TEST_CASE("Class with vector in constructor gives the correct include",
 	auto myStruct = Pybind::Builders::buildClass(s, typeInfo).value();
 	REQUIRE(typeInfo.m_includes.size() == 1);
 	for (auto const& include : typeInfo.m_includes) {
-		REQUIRE(include == "<pybind11/stl.h>");
+		REQUIRE(include == "#include <pybind11/stl.h>");
 	}
 }
 
@@ -313,7 +313,7 @@ TEST_CASE("Class with vector in member function gives the correct include",
 	auto myStruct = Pybind::Builders::buildClass(s, typeInfo).value();
 	REQUIRE(typeInfo.m_includes.size() == 1);
 	for (auto const& include : typeInfo.m_includes) {
-		REQUIRE(include == "<pybind11/stl.h>");
+		REQUIRE(include == "#include <pybind11/stl.h>");
 	}
 }
 

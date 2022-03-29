@@ -69,7 +69,7 @@ TEST_CASE("Can find the include for container types", "[checkType]") {
 	Pybind::checkType(c, typeInfo);
 	REQUIRE(typeInfo.m_includes.size() == 1);
 	for (auto const& include : typeInfo.m_includes) {
-		REQUIRE(include == "<pybind11/stl.h>");
+		REQUIRE(include == "#include <pybind11/stl.h>");
 	}
 }
 
@@ -79,7 +79,7 @@ TEST_CASE("Can find the include for function types", "[checkType]") {
 	Pybind::checkType(f, typeInfo);
 	REQUIRE(typeInfo.m_includes.size() == 1);
 	for (auto const& include : typeInfo.m_includes) {
-		REQUIRE(include == "<pybind11/functional.h>");
+		REQUIRE(include == "#include <pybind11/functional.h>");
 	}
 }
 
@@ -89,7 +89,7 @@ TEST_CASE("Can find the include for complex types", "[checkType]") {
 	Pybind::checkType(c, typeInfo);
 	REQUIRE(typeInfo.m_includes.size() == 1);
 	for (auto const& include : typeInfo.m_includes) {
-		REQUIRE(include == "<pybind11/complex.h>");
+		REQUIRE(include == "#include <pybind11/complex.h>");
 	}
 }
 
@@ -99,6 +99,6 @@ TEST_CASE("Can find the include for path types", "[checkType]") {
 	Pybind::checkType(p, typeInfo);
 	REQUIRE(typeInfo.m_includes.size() == 1);
 	for (auto const& include : typeInfo.m_includes) {
-		REQUIRE(include == "<pybind11/stl/filesystem.h>");
+		REQUIRE(include == "#include <pybind11/stl/filesystem.h>");
 	}
 }

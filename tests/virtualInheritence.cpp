@@ -8,7 +8,6 @@ TEST_CASE("Virtual inheritence", "[virtualInheritence]") {
 	std::string moduleName = "m";
 	auto stage =
 	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
-	stage.keepAliveAfterTest();
 
 	auto cppCode = R"(
 #include <string>
@@ -16,12 +15,16 @@ TEST_CASE("Virtual inheritence", "[virtualInheritence]") {
 class Animal {
 public:
 	virtual ~Animal() { }
-	virtual std::string go(int n_times) = 0;
+	virtual std::string sound(int n_times, bool grumpy) = 0;
 };
 
 class Dog : public Animal {
 public:
-	std::string go(int n_times) override {
+	std::string sound(int n_times, bool grumpy) override {
+		if (grumpy) {
+			return "No.";
+		}
+
 		std::string result;
 		for (int i = 0; i < n_times; ++i) {
 			result += "woof! ";
@@ -30,20 +33,39 @@ public:
 	}
 };
 
-std::string call_go(Animal *animal) {
-	return animal->go(3);
+std::string call_sound(Animal *animal) {
+	return animal->sound(3, false);
 }
 )";
 
 	auto pythonTestCode = R"(
-fido = m.Dog("Fido")
+fido = m.Dog()
+grumpy = True
 
-# But has its new functions
-// self.assertEqual(fido.bark(), "woof!")
+# Overloaded function in C++
+self.assertEqual(fido.sound(1, not grumpy), "woof! ")
+
+# Polymorphic function in C++
+self.assertEqual(m.call_sound(fido), "woof! woof! woof! ")
+
+# Inherit from virtual C++ classes in python
+class Cat(m.Animal):
+  # Override C++ function
+  def sound(self, n_times, grumpy):
+    return "No." if grumpy else "meow! " * n_times
+
+whiskers = Cat()
+
+# Overloaded C++ function in python
+self.assertEqual(whiskers.sound(1, grumpy), "No.")
+self.assertEqual(whiskers.sound(1, not grumpy), "meow! ")
+
+# Polymorphic function in C++ called with python object
+self.assertEqual(m.call_sound(whiskers), "meow! meow! meow! ")
 )";
 
 	auto errorCode = stage.runPybindTest(cppCode, pythonTestCode);
 	REQUIRE(errorCode == 0);
 
-	stage.exportAsExample("Overriding virtual functions in python");
+	stage.exportAsExample("Overriding virtual in python");
 }

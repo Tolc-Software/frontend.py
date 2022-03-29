@@ -29,6 +29,9 @@ public:
 
 	void setInherited(std::vector<std::string> const& inherited);
 
+	// This class has virtual functions, so therefore it has a trampoline
+	void addTrampolineClass(std::string const& trampolineClass);
+
 	// Will be managed by a std::shared_ptr on the python side
 	// instead of the default std::unique_ptr
 	void setAsManagedByShared();

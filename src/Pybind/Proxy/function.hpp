@@ -40,7 +40,16 @@ public:
 	// should call setReturnType("std::string")
 	void setReturnType(std::string const& typeName);
 
+	// As it will be called in python
 	void setPythonName(std::string const& name);
+	std::string getPythonName() const;
+
+	std::string getName() const;
+
+	std::string getReturnType() const;
+
+	std::string getArgumentTypes(bool withNames = false) const;
+	std::string getArgumentNames() const;
 
 	// These are all 1-to-1 with pybind11
 	enum class return_value_policy {
@@ -65,7 +74,6 @@ public:
 
 private:
 	std::string getSignature() const;
-	std::string getArgumentTypes() const;
 
 	struct Argument {
 		// E.g.

@@ -55,6 +55,44 @@ std::string sayHello() {
 }
 }    // namespace MyNamespace
 
+class Animal {
+public:
+	virtual ~Animal() {}
+	virtual std::string go(int n_times) = 0;
+};
+
+class Dog : public Animal {
+public:
+	std::string go(int n_times) override {
+		std::string result;
+		for (int i = 0; i < n_times; ++i)
+			result += "woof! ";
+		return result;
+	}
+};
+
+std::string call_go(Animal* animal) {
+	return animal->go(3);
+}
+
+// Trampoline
+class PyAnimal : public Animal {
+public:
+	/* Inherit the constructors */
+	using Animal::Animal;
+
+	/* Trampoline (need one for each virtual function) */
+	std::string go(int n_times) override {
+		PYBIND11_OVERRIDE_PURE_NAME(
+		    std::string, /* Return type */
+		    Animal, /* Parent class */
+		    "go",
+		    go, /* Name of function in C++ (must match Python name) */
+		    n_times /* Argument(s) */
+		);
+	}
+};
+
 PYBIND11_MODULE(myModule, myModule) {
 	// NOTE:    ^-- This name needs to be the same as the CMake target output name
 
@@ -130,4 +168,12 @@ PYBIND11_MODULE(myModule, myModule) {
 	// Adding functions within a namespace
 	// is done with a fully qualified name
 	myNamespace.def("sayHello", &MyNamespace::sayHello);
+
+	py::class_<Animal, PyAnimal /* <--- trampoline*/>(myModule, "Animal")
+	    .def(py::init<>())
+	    .def("go", &Animal::go);
+
+	py::class_<Dog, Animal>(myModule, "Dog").def(py::init<>());
+
+	myModule.def("call_go", &call_go);
 }

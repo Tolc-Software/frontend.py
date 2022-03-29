@@ -55,6 +55,7 @@ add_library(
   src/Pybind/Helpers/operatorNames.cpp
   src/Pybind/Helpers/split.cpp
   src/Pybind/Helpers/string.cpp
+  src/Pybind/Helpers/trampolineClass.cpp
   src/Pybind/Helpers/types.cpp
   src/Pybind/Proxy/attribute.cpp
   src/Pybind/Proxy/class.cpp

@@ -116,6 +116,12 @@ void Class::setDocumentation(std::string const& documentation) {
 }
 
 void Class::setInherited(std::vector<std::string> const& inherited) {
-	m_inherited = inherited;
+	for (auto const& i : inherited) {
+		m_inherited.push_back(i);
+	}
+}
+
+void Class::addTrampolineClass(std::string const& trampolineClass) {
+	m_inherited.push_back(trampolineClass);
 }
 }    // namespace Pybind::Proxy

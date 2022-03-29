@@ -104,7 +104,7 @@ void checkType(IR::Type const& type, Pybind::Proxy::TypeInfo& info) {
 		auto& current = typesToCheck.front();
 
 		if (auto include = extractInclude(current)) {
-			info.m_includes.insert(include.value());
+			info.m_includes.insert(fmt::format("#include {}", include.value()));
 		}
 
 		if (auto sharedClass = extractShared(current)) {
