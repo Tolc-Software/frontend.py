@@ -23,7 +23,7 @@ TEST_CASE("function fails on unique_ptr argument", "[functionBuilder]") {
 	IR::Type::Container c;
 	c.m_container = IR::ContainerType::UniquePtr;
 	t.m_type = c;
-	IR::Variable v;
+	IR::Argument v;
 	v.m_type = t;
 	v.m_name = "v";
 	f.m_arguments.push_back(v);

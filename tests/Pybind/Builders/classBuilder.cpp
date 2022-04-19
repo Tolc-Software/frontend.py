@@ -163,7 +163,7 @@ TEST_CASE("Class with a constructor", "[classBuilder]") {
 	f.m_name = s.m_name;
 	f.m_representation = f.m_name;
 	f.m_isStatic = false;
-	IR::Variable v;
+	IR::Argument v;
 	v.m_name = 's';
 	IR::Type t;
 	t.m_representation = "const std::string&";
@@ -201,7 +201,7 @@ TEST_CASE("Class with functions", "[classBuilder]") {
 		f.m_representation = f.m_name;
 		f.m_isStatic = false;
 
-		IR::Variable v;
+		IR::Argument v;
 		v.m_name = "myVar";
 
 		IR::Type arg;
@@ -282,7 +282,7 @@ TEST_CASE("Class with vector in constructor gives the correct include",
 	IR::Type::Container c;
 	c.m_container = IR::ContainerType::Vector;
 	arg.m_type = c;
-	constructor.m_arguments.push_back({"myVar", "", arg});
+	constructor.m_arguments.push_back({"myVar", arg});
 	s.m_public.m_functions.push_back(constructor);
 
 	Pybind::Proxy::TypeInfo typeInfo;
@@ -306,7 +306,7 @@ TEST_CASE("Class with vector in member function gives the correct include",
 	IR::Type::Container c;
 	c.m_container = IR::ContainerType::Vector;
 	arg.m_type = c;
-	constructor.m_arguments.push_back({"myVar", "", arg});
+	constructor.m_arguments.push_back({"myVar", arg});
 	s.m_public.m_functions.push_back(constructor);
 
 	Pybind::Proxy::TypeInfo typeInfo;
