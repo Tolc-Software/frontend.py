@@ -66,7 +66,7 @@ int runPythonUnittest(std::filesystem::path const& stage,
 
 	// Switch to stage
 	std::filesystem::current_path(stage / "build");
-	auto cmd = "python3 test_" + moduleName + ".py";
+	auto cmd = "python test_" + moduleName + ".py";
 	std::cout << cmd << '\n';
 	auto errorCode = std::system(cmd.c_str());
 

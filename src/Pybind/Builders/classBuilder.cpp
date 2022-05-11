@@ -141,7 +141,7 @@ buildClass(IR::Struct const& cppClass, Pybind::Proxy::TypeInfo& typeInfo) {
 		pyClass.addMemberVariable(variable.m_name,
 		                          variable.m_documentation,
 		                          variable.m_type.m_isConst,
-		                          variable.m_type.m_isStatic);
+		                          variable.m_isStatic);
 	}
 
 	// Add default constructor

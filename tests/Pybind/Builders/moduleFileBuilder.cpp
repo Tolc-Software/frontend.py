@@ -17,7 +17,6 @@ TEST_CASE(
 	c.m_container = IR::ContainerType::Vector;
 	returnType.m_type = c;
 	returnType.m_isConst = false;
-	returnType.m_isStatic = false;
 	returnType.m_isReference = false;
 	returnType.m_numPointers = 0;
 	f.m_returnType = returnType;
