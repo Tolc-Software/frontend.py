@@ -1,9 +1,17 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.17)
+
+# Temporary workaround for clang 14
+# https://github.com/llvm/llvm-project/issues/53950
+if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL Windows)
+  set(frontend_languages CXX)
+else()
+  set(frontend_languages C CXX)
+endif()
 
 project(
   Frontend.py
-  VERSION 0.6.1
-  LANGUAGES CXX)
+  VERSION 0.7.0
+  LANGUAGES ${frontend_languages})
 
 configure_file(docs/ReleaseNotes/version.in
                ${CMAKE_CURRENT_LIST_DIR}/docs/ReleaseNotes/version @ONLY)
