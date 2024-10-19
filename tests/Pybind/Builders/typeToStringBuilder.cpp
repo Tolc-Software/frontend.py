@@ -1,6 +1,8 @@
 #include "Pybind/Builders/typeToStringBuilder.hpp"
+
 #include <TestUtil/types.hpp>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+
 #include <variant>
 
 TEST_CASE("Base cases", "[typeToStringBuilder]") {

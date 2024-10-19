@@ -1,7 +1,10 @@
 #include "TestStage/paths.hpp"
 #include "TestUtil/pybindStage.hpp"
-#include <catch2/catch.hpp>
+
+#include <catch2/catch_test_macros.hpp>
 #include <fmt/format.h>
+
+#include <string>
 
 TEST_CASE("Smart pointers of custom types work", "[smartPointers]") {
 	// NOTE: Smart pointers only work with custom defined types.

@@ -2,8 +2,11 @@
 #include "Pybind/Proxy/function.hpp"
 #include "Pybind/Proxy/module.hpp"
 #include "TestUtil/string.hpp"
-#include <catch2/catch.hpp>
+
+#include <catch2/catch_test_macros.hpp>
 #include <fmt/format.h>
+
+#include <string>
 
 TEST_CASE("ModuleFile can take a module", "[moduleFile]") {
 	std::string moduleName = "myModule";

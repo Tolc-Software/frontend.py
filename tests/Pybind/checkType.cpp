@@ -1,7 +1,11 @@
 #include "Pybind/checkType.hpp"
 #include "Pybind/Proxy/typeInfo.hpp"
+
 #include <IR/ir.hpp>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+
+#include <string>
+#include <variant>
 
 namespace {
 

@@ -1,7 +1,10 @@
 #include "Pybind/Proxy/attribute.hpp"
 #include "TestUtil/string.hpp"
-#include <catch2/catch.hpp>
+
+#include <catch2/catch_test_macros.hpp>
 #include <fmt/format.h>
+
+#include <string>
 
 TEST_CASE("Simple attribute", "[attribute]") {
 	std::string fqName = "Stuff::i";

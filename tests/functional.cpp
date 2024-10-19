@@ -1,7 +1,10 @@
 #include "TestStage/paths.hpp"
 #include "TestUtil/pybindStage.hpp"
-#include <catch2/catch.hpp>
+
+#include <catch2/catch_test_macros.hpp>
 #include <fmt/format.h>
+
+#include <string>
 
 TEST_CASE("Taking functions as arguments", "[functional]") {
 	std::string moduleName = "m";
@@ -57,4 +60,3 @@ self.assertEqual(result1, 10)
 
 	stage.exportAsExample("std::function");
 }
-

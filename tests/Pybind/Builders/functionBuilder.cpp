@@ -1,7 +1,9 @@
 #include "Pybind/Builders/functionBuilder.hpp"
-#include <catch2/catch.hpp>
 
-TEST_CASE("function returning containers adds the correct include", "[functionBuilder]") {
+#include <catch2/catch_test_macros.hpp>
+
+TEST_CASE("function returning containers adds the correct include",
+          "[functionBuilder]") {
 	IR::Function f;
 	IR::Type t;
 	IR::Type::Container c;

@@ -1,9 +1,11 @@
 #pragma once
 
 #include "TestUtil/parserConfig.hpp"
+
 #include <IR/ir.hpp>
 #include <Parser/Parse.hpp>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+
 #include <optional>
 #include <string>
 

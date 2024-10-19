@@ -1,7 +1,11 @@
 #include "Pybind/Proxy/class.hpp"
 #include "TestUtil/string.hpp"
-#include <catch2/catch.hpp>
+
+#include <catch2/catch_test_macros.hpp>
 #include <fmt/format.h>
+
+#include <string>
+#include <vector>
 
 TEST_CASE("Empty class", "[class]") {
 	std::string moduleName = "myModule";

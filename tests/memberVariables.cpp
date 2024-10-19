@@ -1,14 +1,16 @@
 #include "TestStage/paths.hpp"
 #include "TestUtil/pybindStage.hpp"
-#include <catch2/catch.hpp>
+
+#include <catch2/catch_test_macros.hpp>
 #include <fmt/format.h>
 
-TEST_CASE("Classes", "[namespaces]") {
-	std::string moduleName = "m";
-	auto stage =
-	    TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
+#include <string>
 
-	auto cppCode = R"(
+TEST_CASE("Classes", "[namespaces]") {
+  std::string moduleName = "m";
+  auto stage = TestUtil::PybindStage(TestStage::getRootStagePath(), moduleName);
+
+  auto cppCode = R"(
 #include <string>
 
 class SimpleMember {
@@ -41,7 +43,7 @@ namespace MyLib {
 
 )";
 
-	auto pythonTestCode = fmt::format(R"(
+  auto pythonTestCode = fmt::format(R"(
 # Mutable member variables can be changed
 simpleMember = {moduleName}.SimpleMember()
 self.assertEqual(simpleMember.myString, "Hello")
@@ -56,10 +58,8 @@ with self.assertRaises(AttributeError) as error_context:
     constMember.i = 0
 
 self.assertEqual(len(error_context.exception.args), 1)
-self.assertEqual(
-    "can't set attribute",
-    error_context.exception.args[0],
-    "Prohibiting changing const variables does not work!",
+self.assertTrue(
+    "'ConstMember' object has no setter" in error_context.exception.args[0]
 )
 
 # Private member variables are not available
@@ -77,10 +77,10 @@ self.assertEqual(
 nested = {moduleName}.MyLib.Nested()
 self.assertEqual(nested.d, 4.3)
 )",
-	                                  fmt::arg("moduleName", moduleName));
+                                    fmt::arg("moduleName", moduleName));
 
-	auto errorCode = stage.runPybindTest(cppCode, pythonTestCode);
-	REQUIRE(errorCode == 0);
+  auto errorCode = stage.runPybindTest(cppCode, pythonTestCode);
+  REQUIRE(errorCode == 0);
 
-	stage.exportAsExample("Member Variables");
+  stage.exportAsExample("Member Variables");
 }

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.25)
 
 # Temporary workaround for clang 14
 # https://github.com/llvm/llvm-project/issues/53950
@@ -18,14 +18,12 @@ project(
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(cmake/GetPybind11.cmake)
-get_pybind11(VERSION 2.9.2)
+get_pybind11(VERSION 2.13.6)
 
-# Get the variable 'target_name'
-# NOTE: This will be generated for each test
+# Get the variable 'target_name' NOTE: This will be generated for each test
 include(cmake/TargetName.cmake)
 
-# Get the variable 'sources'
-# NOTE: This will be generated for each test
+# Get the variable 'sources' NOTE: This will be generated for each test
 include(cmake/Sources.cmake)
 
 # Create the python module

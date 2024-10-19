@@ -1,7 +1,8 @@
 #pragma once
 
 #include <IR/ir.hpp>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+
 #include <variant>
 
 namespace TestUtil {
@@ -11,4 +12,4 @@ void compare(IR::Type returnType, IR::BaseType compareType) {
 	REQUIRE(valueType);
 	CHECK(valueType->m_valueType == compareType);
 }
-}
+}    // namespace TestUtil

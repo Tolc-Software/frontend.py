@@ -1,9 +1,13 @@
 #include "Pybind/Builders/moduleFileBuilder.hpp"
 #include "Pybind/Proxy/module.hpp"
 #include "TestUtil/string.hpp"
+
 #include <IR/ir.hpp>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <fmt/format.h>
+
+#include <string>
+#include <vector>
 
 TEST_CASE(
     "Adding a function with a vector for argument automaticall includes stl.h",

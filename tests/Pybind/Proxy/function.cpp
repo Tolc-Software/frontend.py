@@ -1,8 +1,12 @@
 #include "Pybind/Proxy/function.hpp"
 #include "Pybind/returnValuePolicy.hpp"
 #include "TestUtil/string.hpp"
-#include <catch2/catch.hpp>
+
+#include <catch2/catch_test_macros.hpp>
 #include <fmt/format.h>
+
+#include <string>
+#include <vector>
 
 TEST_CASE("Static global function", "[function]") {
 	Pybind::Proxy::Function f("f", "MyNamespace::f");

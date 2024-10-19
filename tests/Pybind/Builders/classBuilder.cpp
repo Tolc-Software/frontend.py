@@ -1,9 +1,14 @@
 #include "Pybind/Builders/classBuilder.hpp"
 #include "Pybind/Proxy/class.hpp"
 #include "TestUtil/string.hpp"
+
 #include <IR/ir.hpp>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <fmt/format.h>
+
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace {
 IR::Struct getStruct(std::string const& name) {

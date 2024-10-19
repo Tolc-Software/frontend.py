@@ -462,10 +462,8 @@ with self.assertRaises(AttributeError) as error_context:
     constMember.i = 0
 
 self.assertEqual(len(error_context.exception.args), 1)
-self.assertEqual(
-    "can't set attribute",
-    error_context.exception.args[0],
-    "Prohibiting changing const variables does not work!",
+self.assertTrue(
+    "'ConstMember' object has no setter" in error_context.exception.args[0]
 )
 
 # Private member variables are not available

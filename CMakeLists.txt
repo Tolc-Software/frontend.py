@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.25)
 
 # Temporary workaround for clang 14
 # https://github.com/llvm/llvm-project/issues/53950
@@ -16,37 +16,21 @@ project(
 configure_file(docs/ReleaseNotes/version.in
                ${CMAKE_CURRENT_LIST_DIR}/docs/ReleaseNotes/version @ONLY)
 
-include(FetchContent)
-FetchContent_Declare(
-  cmake_modules
-  GIT_REPOSITORY https://github.com/Tolc-Software/cmake-modules.git
-  GIT_TAG main)
-FetchContent_MakeAvailable(cmake_modules)
-# Basis of all shared CMake modules
-set(modules ${cmake_modules_SOURCE_DIR}/cmake)
-
 # Set ccache, ipo, etc.
-include(${modules}/ProjectSettings.cmake)
+include(./cmake/ProjectSettings.cmake)
 
-include(${modules}/WarningsAndOptions.cmake)
+include(./cmake/WarningsAndOptions.cmake)
 
-include(${modules}/Sanitizers.cmake)
+include(./cmake/Sanitizers.cmake)
 
-# Define run_conan
-include(${modules}/ConanHelpers.cmake)
-# Create the profile from variables known during configure
-setup_conan_profile(VARIABLE frontend_conan_profile)
-# This helps with packaging
-set(FRONTEND.PY_CONAN_REQUIRES_PACKAGES spdlog/1.9.2 fmt/8.1.1)
-find_conan_packages(REQUIRES ${FRONTEND.PY_CONAN_REQUIRES_PACKAGES} PROFILE
-                    ${frontend_conan_profile})
+find_package(fmt REQUIRED)
+find_package(spdlog REQUIRED)
 
 include(FetchContent)
 FetchContent_Declare(
   IRSpecification
   GIT_REPOSITORY https://github.com/Tolc-Software/IntermediateRepresentation.git
   GIT_TAG v0.15.1)
-
 FetchContent_MakeAvailable(IRSpecification)
 
 add_library(
@@ -84,36 +68,34 @@ enable_sanitizers(Frontend.py)
 target_link_libraries(
   Frontend.py
   PUBLIC IR::IR
-  PRIVATE fmt::fmt)
+  PRIVATE fmt::fmt spdlog::spdlog)
 
 target_include_directories(Frontend.py PRIVATE src)
 target_include_directories(
   Frontend.py PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
                      $<INSTALL_INTERFACE:include>)
 
-set_target_properties(
-  Frontend.py
-  PROPERTIES CXX_STANDARD_REQUIRED ON
-             CXX_EXTENSIONS OFF)
+set_target_properties(Frontend.py PROPERTIES CXX_STANDARD_REQUIRED ON
+                                             CXX_EXTENSIONS OFF)
 
 # Add library to link against
 add_library(Tolc::Frontend.py ALIAS Frontend.py)
 
 # Only build tests/benchmarks/packaging if building this project directly
 if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-  option(ENABLE_TESTING "Build the testing tree" OFF)
+  option(ENABLE_TESTING "Build the testing tree" ON)
   if(ENABLE_TESTING)
     option(ENABLE_COVERAGE "Use code coverage tools on the tests" OFF)
     enable_testing()
     add_subdirectory(tests)
   endif()
 
-  option(ENABLE_BENCHMARKS "Build the benchmarks" OFF)
+  option(ENABLE_BENCHMARKS "Build the benchmarks" ON)
   if(ENABLE_BENCHMARKS)
     # TODO: Add benchmarks
   endif()
 
-  option(ENABLE_PACKAGING "Enables install and packaging via CPack" OFF)
+  option(ENABLE_PACKAGING "Enables install and packaging via CPack" ON)
   if(ENABLE_PACKAGING)
     add_subdirectory(tools/packaging)
   endif()
