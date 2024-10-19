@@ -22,10 +22,10 @@ Requirements:
 Configure the project:
 
 ```shell
-$ cmake -S. -Bbuild -G Ninja -DCMAKE_CXX_COMPILER="clang++" -DCMAKE_C_COMPILER="clang" -DCMAKE_BUILD_TYPE="Debug" -DENABLE_TESTING=ON -DENABLE_PACKAGING=ON
+$ cmake -S. -Bbuild -G Ninja -DCMAKE_CXX_COMPILER="clang++" -DCMAKE_C_COMPILER="clang" -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_PROJECT_TOP_LEVEL_INCLUDES=cmake/conan_provider.cmake -DENABLE_TESTING=ON -DENABLE_PACKAGING=ON
 ```
 
-Build `tolc`:
+Build:
 
 ```shell
 $ cmake --build build
